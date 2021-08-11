@@ -10,7 +10,6 @@ import torch
 TIME_SCALES = {'s': 1, 'ms': 1000, 'us': 1000000}
 
 parser = argparse.ArgumentParser()
-parser.add_argument('example', choices=['py', 'cpp', 'cuda'])
 parser.add_argument('-b', '--batch-size', type=int, default=128)
 parser.add_argument('-f', '--features', type=int, default=32)
 parser.add_argument('-r', '--runs', type=int, default=100)
@@ -21,12 +20,12 @@ parser.add_argument('-n', '--n', type=int, default=20)
 
 options = parser.parse_args()
 
-if options.example == 'py':
-    from python.lltm import LLTM
-elif options.example == 'cpp':
-    from cpp.lltm import LLTM
-else:
-    from cuda.lltm import LLTM
+# if options.example == 'py':
+#     from python.lltm import LLTM
+# elif options.example == 'cpp':
+#     from cpp.lltm import LLTM
+# else:
+#     from cuda.lltm import LLTM
 
 options.cuda = True
 

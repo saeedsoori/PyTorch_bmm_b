@@ -26,7 +26,8 @@ elif options.example == 'cpp':
     from cpp.lltm import LLTM
 else:
     from cuda.lltm import LLTM
-    options.cuda = True
+
+options.cuda = True
 
 device = torch.device("cuda") if options.cuda else torch.device("cpu")
 dtype = torch.float64 if options.double else torch.float32

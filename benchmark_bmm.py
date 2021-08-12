@@ -20,15 +20,12 @@ parser.add_argument('-n', '--n', type=int, default=20)
 
 options = parser.parse_args()
 
-# if options.example == 'py':
-#     from python.lltm import LLTM
-# elif options.example == 'cpp':
-#     from cpp.lltm import LLTM
-# else:
-#     from cuda.lltm import LLTM
+# change this line
+from cuda import bmm_me
+
+
 
 options.cuda = True
-
 device = torch.device("cuda") if options.cuda else torch.device("cpu")
 dtype = torch.float64 if options.double else torch.float32
 
@@ -42,26 +39,29 @@ A = []
 B = []
 index = torch.randint(0,5, (options.n,))
 for i in range(options.n):
-    A.append(torch.randn(options.batch_size, index[i], **kwargs))
-    B.append(torch.randn(index[i], index[i] + 32, **kwargs))
+    A.append(torch.randn(options.batch_size, C[index[i]], **kwargs))
+    B.append(torch.randn(C[index[i]], C[index[i]] + 32, **kwargs))
     print(A[i].shape)
     print(B[i].shape)
     print('*'*10)
+
+C = bmm_me.forward(A, B)
+
 
 # Force CUDA initialization
 # new_h, new_C = rnn(X, (h, C))
 # (new_h.sum() + new_C.sum()).backward()
 
-# forward_min = math.inf
-# forward_time = 0
-# backward_min = math.inf
-# backward_time = 0
+forward_min = math.inf
+forward_time = 0
+backward_min = math.inf
+backward_time = 0
 # for _ in range(options.runs):
 #     rnn.zero_grad()
 
-#     start = time.time()
+    # start = time.time()
 #     new_h, new_C = rnn(X, (h, C))
-#     elapsed = time.time() - start
+    # elapsed = time.time() - start
 #     forward_min = min(forward_min, elapsed)
 #     forward_time += elapsed
 

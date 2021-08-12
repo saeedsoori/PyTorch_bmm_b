@@ -4,7 +4,7 @@
 
 // CUDA forward declarations
 
-std::vector<torch::Tensor> bmm_me_forward(
+std::vector<torch::Tensor> bmm_me_cuda_forward(
     torch::Tensor A,
     torch::Tensor B);
 

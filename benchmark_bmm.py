@@ -21,7 +21,7 @@ parser.add_argument('-n', '--n', type=int, default=20)
 options = parser.parse_args()
 
 # change this line
-from cuda import bmm_me
+from cuda import bmm_me_cuda
 
 
 
@@ -45,7 +45,7 @@ for i in range(options.n):
     print(B[i].shape)
     print('*'*10)
 
-C = bmm_me.forward(A, B)
+C = bmm_me_cuda.forward(A, B)
 
 
 # Force CUDA initialization

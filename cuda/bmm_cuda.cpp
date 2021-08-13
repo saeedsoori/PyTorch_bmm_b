@@ -22,8 +22,8 @@ int bmm_cuda_forward(
 int bmm_forward(
     torch::Tensor A,
     torch::Tensor B, int m, int n, int k) {
-    void *pA = A.data_ptr();
-    void *pB = B.data_ptr();
+    double *pA = (double *) A.data_ptr();
+    double *pB = (double *) B.data_ptr();
     std::cout<<"here\n";
     std::cout<<m<<" "<<n<<" "<<k<<"\n";
   // CHECK_INPUT(A);

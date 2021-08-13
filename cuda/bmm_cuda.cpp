@@ -21,16 +21,19 @@ int bmm_cuda_forward(
 
 int bmm_forward(
     torch::Tensor A,
-    torch::Tensor B, int* m, int* n, int* k) {
+    torch::Tensor B, List[int] m, List[int] n, List[int] k) {
     double *pA = (double *) A.data_ptr();
     double *pB = (double *) B.data_ptr();
+    int* m_arr = (int* )malloc(size_of(int)*m.size(0))
+    int* n_arr = (int* )malloc(size_of(int)*m.size(0))
+    int* k_arr = (int* )malloc(size_of(int)*m.size(0))
     std::cout<<"here\n";
-    std::cout<<m[0]<<" "<<n[0]<<" "<<k[0]<<"\n";
+    std::cout<<m_arr[0]<<" "<<n_arr[0]<<" "<<k_arr[0]<<"\n";
   // CHECK_INPUT(A);
   // CHECK_INPUT(B);
 
 
-  return bmm_cuda_forward(pA, pB, m ,n, k);
+  return bmm_cuda_forward(pA, pB, m_arr ,n_arr , k_arr);
 }
 
 

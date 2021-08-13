@@ -13,6 +13,18 @@
 
 #include <magma_v2.h>
 
+// Pulled from magma test code
+#define TESTING_CHECK( err )                                                 \
+    do {                                                                     \
+        magma_int_t err_ = (err);                                            \
+        if ( err_ != 0 ) {                                                   \
+            fprintf( stderr, "Error: %s\nfailed at %s:%d: error %lld: %s\n", \
+                     #err, __FILE__, __LINE__,                               \
+                     (long long) err_, magma_strerror(err_) );               \
+            exit(1);                                                         \
+        }                                                                    \
+    } while( 0 )
+
 namespace {
 
 
@@ -74,9 +86,18 @@ int bmm_cuda_forward(
   //       output_gate.packed_accessor<scalar_t,2,torch::RestrictPtrTraits,size_t>(),
   //       candidate_cell.packed_accessor<scalar_t,2,torch::RestrictPtrTraits,size_t>());
   // }));
+  magma_int_t* d_m;
+  magma_int_t* d_n;
+  magma_int_t* d_k;
+  
   magma_trans_t transA = MagmaNoTrans;
   magma_trans_t transB = MagmaNoTrans;
 
+  magma_int_t batchCount = 1;
+
+  TESTING_CHECK( magma_malloc((void**)&d_m, (batchCount+1)*sizeof(magma_int_t)) );
+  TESTING_CHECK( magma_malloc((void**)&d_n, (batchCount+1)*sizeof(magma_int_t)) );
+  TESTING_CHECK( magma_malloc((void**)&d_k, (batchCount+1)*sizeof(magma_int_t)) );
   // magmablas_dgemm_vbatched(       transA,
   //     /* magma_trans_t */         transB,
   //     /* magma_int_t * */         d_m,

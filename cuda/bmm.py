@@ -12,5 +12,5 @@ class BMM():
     def __init__(self):
         self.x = 1
 
-    def forward(self, A, B):
+    def forward(A, B):
         return bmm_cuda.forward(A, B)

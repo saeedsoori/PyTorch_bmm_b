@@ -21,7 +21,7 @@ int bmm_cuda_forward(
 
 int bmm_forward(
     torch::Tensor A,
-    torch::Tensor B, List[int] m, List[int] n, List[int] k) {
+    torch::Tensor B, int *m, int *n, int *k) {
     double *pA = (double *) A.data_ptr();
     double *pB = (double *) B.data_ptr();
     int* m_arr = (int* )malloc(size_of(int)*m.size(0))

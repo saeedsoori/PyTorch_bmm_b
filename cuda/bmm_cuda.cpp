@@ -4,9 +4,12 @@
 
 // CUDA forward declarations
 
-std::vector<torch::Tensor> bmm_cuda_forward(
-    torch::Tensor A,
-    torch::Tensor B);
+int bmm_cuda_forward(
+    double* pA,
+    double* pB,
+    int m,
+    int n,
+    int k);
 
 
 // C++ interface
@@ -16,18 +19,18 @@ std::vector<torch::Tensor> bmm_cuda_forward(
 #define CHECK_CONTIGUOUS(x) AT_ASSERTM(x.is_contiguous(), #x " must be contiguous")
 #define CHECK_INPUT(x) CHECK_CUDA(x); CHECK_CONTIGUOUS(x)
 
-std::vector<torch::Tensor> bmm_forward(
+int bmm_forward(
     torch::Tensor A,
     torch::Tensor B, int m, int n, int k) {
     void *pA = A.data_ptr();
     void *pB = B.data_ptr();
     std::cout<<"here\n";
-    std::cout<<m<<n<<k<<"\n";
+    std::cout<<m<<" "<<n<<" "<<k<<"\n";
   // CHECK_INPUT(A);
   // CHECK_INPUT(B);
 
 
-  return bmm_cuda_forward(A, B);
+  return bmm_cuda_forward(pA, pB, m ,n, k);
 }
 
 

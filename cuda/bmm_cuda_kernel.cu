@@ -42,9 +42,12 @@ namespace {
 
 } // namespace
 
-std::vector<torch::Tensor> bmm_cuda_forward(
-    torch::Tensor A,
-    torch::Tensor B) {
+int bmm_cuda_forward(
+    double* pA,
+    double* pB,
+    int m,
+    int n,
+    int k) {
   // auto X = torch::cat({old_h, input}, /*dim=*/1);
   // auto gate_weights = torch::addmm(bias, X, weights.transpose(0, 1));
 
@@ -90,5 +93,5 @@ std::vector<torch::Tensor> bmm_cuda_forward(
   //     /* magma_int_t */           batchCount,
   //     /* magma_queue_t */         queue);
 
-  return {A, B};
+  return m;
 }

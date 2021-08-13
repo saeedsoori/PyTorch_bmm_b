@@ -4,7 +4,7 @@
 
 // CUDA forward declarations
 
-std::vector<torch::Tensor> bmm_me_cuda_forward(
+std::vector<torch::Tensor> bmm_cuda_forward(
     torch::Tensor A,
     torch::Tensor B);
 
@@ -16,16 +16,18 @@ std::vector<torch::Tensor> bmm_me_cuda_forward(
 #define CHECK_CONTIGUOUS(x) AT_ASSERTM(x.is_contiguous(), #x " must be contiguous")
 #define CHECK_INPUT(x) CHECK_CUDA(x); CHECK_CONTIGUOUS(x)
 
-std::vector<torch::Tensor> bmm_me_forward(
+std::vector<torch::Tensor> bmm_forward(
     torch::Tensor A,
     torch::Tensor B) {
   CHECK_INPUT(A);
   CHECK_INPUT(B);
 
-  return bmm_me_cuda_forward(A, B);
+
+  return bmm_cuda_forward(A, B);
 }
 
 
+
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
-  m.def("forward", &bmm_me_forward, "bmm_me forward (CUDA)");
+  m.def("forward", &bmm_forward, "BMM forward (CUDA)");
 }

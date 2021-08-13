@@ -1,15 +1,16 @@
 import math
+from torch import nn
+from torch.autograd import Function
 import torch
 
-import bmm_me_cuda
+import bmm_cuda
 
 torch.manual_seed(42)
 
 
-
-class bmm_me():
+class BMM():
     def __init__(self):
         self.x = 1
 
     def forward(self, A, B):
-        return bmm_me.forward(A, B)
+        return bmm_cuda.forward(A, B)

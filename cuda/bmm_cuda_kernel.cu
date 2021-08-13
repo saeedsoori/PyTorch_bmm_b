@@ -9,7 +9,7 @@ namespace {
 
 
 // template <typename scalar_t>
-// __global__ void lltm_cuda_forward_kernel(
+// __global__ void bmm_cuda_forward_kernel(
 //     const torch::PackedTensorAccessor<scalar_t,3,torch::RestrictPtrTraits,size_t> gates,
 //     const torch::PackedTensorAccessor<scalar_t,2,torch::RestrictPtrTraits,size_t> old_cell,
 //     torch::PackedTensorAccessor<scalar_t,2,torch::RestrictPtrTraits,size_t> new_h,
@@ -34,7 +34,7 @@ namespace {
 
 } // namespace
 
-std::vector<torch::Tensor> bmm_me_cuda_forward(
+std::vector<torch::Tensor> bmm_cuda_forward(
     torch::Tensor A,
     torch::Tensor B) {
   // auto X = torch::cat({old_h, input}, /*dim=*/1);
@@ -66,5 +66,3 @@ std::vector<torch::Tensor> bmm_me_cuda_forward(
 
   return {A, B};
 }
-
-

@@ -5,6 +5,14 @@
 
 #include <vector>
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#include <string.h> //for memcpy
+
+#include <magma_v2.h>
+
 namespace {
 
 
@@ -63,6 +71,24 @@ std::vector<torch::Tensor> bmm_cuda_forward(
   //       output_gate.packed_accessor<scalar_t,2,torch::RestrictPtrTraits,size_t>(),
   //       candidate_cell.packed_accessor<scalar_t,2,torch::RestrictPtrTraits,size_t>());
   // }));
+  magma_trans_t transA = MagmaNoTrans;
+  magma_trans_t transB = MagmaNoTrans;
+
+  // magmablas_dgemm_vbatched(       transA,
+  //     /* magma_trans_t */         transB,
+  //     /* magma_int_t * */         d_m,
+  //     /* magma_int_t * */         d_n,
+  //     /* magma_int_t * */         d_k,
+  //     /* double */                alpha,
+  //     /* double const *const * */ dA_array,
+  //     /* magma_int_t * */         d_ldda,
+  //     /* double const *const * */ dB_array,
+  //     /* magma_int_t * */         d_lddb,
+  //     /* double */                beta,
+  //     /* double ** */             dC_array,
+  //     /* magma_int_t * */         d_lddc,
+  //     /* magma_int_t */           batchCount,
+  //     /* magma_queue_t */         queue);
 
   return {A, B};
 }

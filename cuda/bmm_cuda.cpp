@@ -19,8 +19,8 @@ std::vector<torch::Tensor> bmm_cuda_forward(
 std::vector<torch::Tensor> bmm_forward(
     torch::Tensor A,
     torch::Tensor B) {
-  CHECK_INPUT(A);
-  CHECK_INPUT(B);
+  // CHECK_INPUT(A);
+  // CHECK_INPUT(B);
 
 
   return bmm_cuda_forward(A, B);

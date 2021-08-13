@@ -37,16 +37,18 @@ kwargs = {'dtype': dtype,
 C = [32, 64, 128, 198, 256]
 A = []
 B = []
-index = torch.randint(0,5, (options.n,))
+index = torch.randint(0, 5, (options.n,))
 for i in range(options.n):
-    A.append(torch.randn(options.batch_size, C[index[i]], **kwargs))
-    B.append(torch.randn(C[index[i]], C[index[i]] + 32, **kwargs))
+    A_s = torch.randn(options.batch_size, C[index[i]], **kwargs)
+    B_s = torch.randn(C[index[i]], C[index[i]] + 32, **kwargs)
+    A.append(A_s)
+    B.append(B_s)
     print(A[i].shape)
     print(B[i].shape)
     print('*'*10)
 
 Mul = BMM()
-C = BMM.forward(A, B)
+C = BMM.forward(A_s, B_s)
 
 
 # Force CUDA initialization

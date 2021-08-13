@@ -13,4 +13,5 @@ class BMM():
         self.x = 1
 
     def forward(A, B):
+    	print('running....')
         return bmm_cuda.forward(A, B)

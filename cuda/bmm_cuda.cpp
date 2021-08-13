@@ -22,7 +22,7 @@ std::vector<torch::Tensor> bmm_forward(
     void *pA = A.data_ptr();
     void *pB = B.data_ptr();
     std::cout<<"here\n";
-    std::cout<<m<<n<<k<<\n;
+    std::cout<<m<<n<<k<<"\n";
   // CHECK_INPUT(A);
   // CHECK_INPUT(B);
 

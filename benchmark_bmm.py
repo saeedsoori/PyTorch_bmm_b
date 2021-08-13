@@ -16,7 +16,7 @@ parser.add_argument('-r', '--runs', type=int, default=100)
 parser.add_argument('--scale', choices=['s', 'ms', 'us'], default='us')
 parser.add_argument('-c', '--cuda', action='store_true')
 parser.add_argument('-d', '--double', action='store_true')
-parser.add_argument('-n', '--n', type=int, default=20)
+parser.add_argument('-n', '--n', type=int, default=2)
 
 options = parser.parse_args()
 
@@ -37,18 +37,25 @@ kwargs = {'dtype': dtype,
 C = [32, 64, 128, 198, 256]
 A = []
 B = []
+mshapes = []
+nshapes = []
+kshapes = []
 index = torch.randint(0, 5, (options.n,))
 for i in range(options.n):
     A_s = torch.randn(options.batch_size, C[index[i]], **kwargs)
     B_s = torch.randn(C[index[i]], C[index[i]] + 32, **kwargs)
     A.append(A_s)
     B.append(B_s)
+    mshapes.append(A_s.shape[0])
+    nshapes.append(A_s.shape[1])
+    kshapes.append(B_s.shape[1])
     print(A[i].shape)
     print(B[i].shape)
     print('*'*10)
 
 Mul = BMM()
-C = BMM.forward(A_s, B_s, A_s.shape[0], A_s.shape[1], B_s.shape[1])
+# C = BMM.forward(A_s, B_s, A_s.shape[0], A_s.shape[1], B_s.shape[1])
+C = BMM.forward(A, B, mshapes, nshapes, kshapes)
 
 
 # Force CUDA initialization

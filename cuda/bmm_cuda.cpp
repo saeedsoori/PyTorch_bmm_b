@@ -7,9 +7,9 @@
 int bmm_cuda_forward(
     double* pA,
     double* pB,
-    int m,
-    int n,
-    int k);
+    int* m,
+    int* n,
+    int* k);
 
 
 // C++ interface
@@ -21,11 +21,11 @@ int bmm_cuda_forward(
 
 int bmm_forward(
     torch::Tensor A,
-    torch::Tensor B, int m, int n, int k) {
+    torch::Tensor B, int* m, int* n, int* k) {
     double *pA = (double *) A.data_ptr();
     double *pB = (double *) B.data_ptr();
     std::cout<<"here\n";
-    std::cout<<m<<" "<<n<<" "<<k<<"\n";
+    std::cout<<m[0]<<" "<<n[0]<<" "<<k[0]<<"\n";
   // CHECK_INPUT(A);
   // CHECK_INPUT(B);
 

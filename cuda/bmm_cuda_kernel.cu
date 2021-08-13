@@ -57,9 +57,9 @@ namespace {
 int bmm_cuda_forward(
     double* pA,
     double* pB,
-    int m,
-    int n,
-    int k) {
+    int* m,
+    int* n,
+    int* k) {
   // auto X = torch::cat({old_h, input}, /*dim=*/1);
   // auto gate_weights = torch::addmm(bias, X, weights.transpose(0, 1));
 
@@ -89,7 +89,7 @@ int bmm_cuda_forward(
   magma_int_t* d_m;
   magma_int_t* d_n;
   magma_int_t* d_k;
-  
+
   magma_trans_t transA = MagmaNoTrans;
   magma_trans_t transB = MagmaNoTrans;
 
@@ -114,5 +114,5 @@ int bmm_cuda_forward(
   //     /* magma_int_t */           batchCount,
   //     /* magma_queue_t */         queue);
 
-  return m;
+  return 2;
 }

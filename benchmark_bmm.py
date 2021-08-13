@@ -48,7 +48,7 @@ for i in range(options.n):
     print('*'*10)
 
 Mul = BMM()
-C = BMM.forward(A_s, B_s)
+C = BMM.forward(A_s, B_s, A_s.shape[0], A_s.shape[1], B_s.shape[1])
 
 
 # Force CUDA initialization

@@ -55,7 +55,10 @@ for i in range(options.n):
 
 Mul = BMM()
 # C = BMM.forward(A_s, B_s, A_s.shape[0], A_s.shape[1], B_s.shape[1])
-C = BMM.forward(A, B, mshapes, nshapes, kshapes)
+m_arr = torch.cuda.IntTensor(mshapes)
+n_arr = torch.cuda.IntTensor(nshapes)
+k_arr = torch.cuda.IntTensor(kshapes)
+C = BMM.forward(A, B, m_arr, n_arr, k_arr)
 
 
 # Force CUDA initialization

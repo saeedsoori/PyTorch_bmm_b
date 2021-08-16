@@ -32,6 +32,12 @@ int bmm_forward(
     // int* n_arr = (int*) malloc (2*sizeof(int));
     // int* k_arr = (int*) malloc (2*sizeof(int));
 
+
+    // for (int i = 0; i < A.size(); ++i)
+    // {
+    	
+    // }
+
     int* m_arr = (int*) m.data_ptr();
     int* n_arr = (int*) n.data_ptr();
     int* k_arr = (int*) k.data_ptr();
@@ -41,7 +47,7 @@ int bmm_forward(
   // CHECK_INPUT(B);
 
 
-  return bmm_cuda_forward(pA, pB, m_arr ,n_arr , k_arr);
+  return bmm_cuda_forward(A, B, m_arr ,n_arr , k_arr);
 }
 
 

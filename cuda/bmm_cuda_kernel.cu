@@ -55,8 +55,8 @@ namespace {
 } // namespace
 
 int bmm_cuda_forward(
-    double* pA,
-    double* pB,
+    std::vector<torch::Tensor> A,
+    std::vector<torch::Tensor> B,
     int* m,
     int* n,
     int* k) {
@@ -86,6 +86,15 @@ int bmm_cuda_forward(
   //       output_gate.packed_accessor<scalar_t,2,torch::RestrictPtrTraits,size_t>(),
   //       candidate_cell.packed_accessor<scalar_t,2,torch::RestrictPtrTraits,size_t>());
   // }));
+
+  double ** hA_array;
+  double ** hB_array;
+  double ** hC_array;
+
+  double const* * dA_array;
+  double const* * dB_array;
+  double **dC_array;
+
   magma_int_t* d_m;
   magma_int_t* d_n;
   magma_int_t* d_k;
@@ -93,11 +102,47 @@ int bmm_cuda_forward(
   magma_trans_t transA = MagmaNoTrans;
   magma_trans_t transB = MagmaNoTrans;
 
-  magma_int_t batchCount = 1;
+  magma_int_t batchCount = 2;
+  magma_queue_t queue;
 
-  TESTING_CHECK( magma_malloc((void**)&d_m, (batchCount+1)*sizeof(magma_int_t)) );
-  TESTING_CHECK( magma_malloc((void**)&d_n, (batchCount+1)*sizeof(magma_int_t)) );
-  TESTING_CHECK( magma_malloc((void**)&d_k, (batchCount+1)*sizeof(magma_int_t)) );
+
+  TESTING_CHECK( magma_malloc_cpu( (void**)&hA_array, sizeof(double*)*batchCount ) );
+  TESTING_CHECK( magma_malloc_cpu( (void**)&hB_array, sizeof(double*)*batchCount ) );
+  TESTING_CHECK( magma_malloc_cpu( (void**)&hC_array, sizeof(double*)*batchCount ) );
+
+  for (int i = 0; i < batchCount; ++i)
+  {
+    hA_array[i] = (double *) A[i].data_ptr();
+    hB_array[i] = (double *) B[i].data_ptr();
+    hC_array[i] = (double *) C[i].data_ptr();
+  }
+
+
+
+
+
+  
+
+  // dA_array is the array of pointers need by dgemm
+  // d_A_elems are the actual mtx elements being pointed to
+  // hA_array is the host side pointers that will get passed to dA_array
+  // double const* * dA_array;
+  // double const* * dB_array;
+  // double ** dC_array;
+
+  TESTING_CHECK( magma_malloc( (void**)&dA_array, sizeof(double*)*batchCount ) );
+  TESTING_CHECK( magma_malloc( (void**)&dB_array, sizeof(double*)*batchCount ) );
+  TESTING_CHECK( magma_malloc( (void**)&dC_array, sizeof(double*)*batchCount ) );
+
+  magma_setvector(batchCount, sizeof(double*), hA_array, 1, dA_array, 1, queue);
+  magma_setvector(batchCount, sizeof(double*), hB_array, 1, dB_array, 1, queue);
+  magma_setvector(batchCount, sizeof(double*), hC_array, 1, dC_array, 1, queue);
+
+  // TESTING_CHECK( magma_malloc((void**)&d_m, (batchCount+1)*sizeof(magma_int_t)) );
+  // TESTING_CHECK( magma_malloc((void**)&d_n, (batchCount+1)*sizeof(magma_int_t)) );
+  // TESTING_CHECK( magma_malloc((void**)&d_k, (batchCount+1)*sizeof(magma_int_t)) );
+
+
   // magmablas_dgemm_vbatched(       transA,
   //     /* magma_trans_t */         transB,
   //     /* magma_int_t * */         d_m,

@@ -5,8 +5,8 @@
 // CUDA forward declarations
 
 int bmm_cuda_forward(
-    double* pA,
-    double* pB,
+    std::vector<torch::Tensor> A,
+    std::vector<torch::Tensor> B,
     int* m,
     int* n,
     int* k);
@@ -32,6 +32,7 @@ int bmm_forward(
     // int* n_arr = (int*) malloc (2*sizeof(int));
     // int* k_arr = (int*) malloc (2*sizeof(int));
 
+    
 
     // for (int i = 0; i < A.size(); ++i)
     // {

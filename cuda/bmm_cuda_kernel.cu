@@ -100,6 +100,14 @@ int bmm_cuda_forward(
   magma_int_t* d_n;
   magma_int_t* d_k;
 
+  double  alpha = 1.0;
+  double  beta = 0.0;
+  magma_int_t* d_lddb;
+  magma_int_t* d_ldda;
+  magma_int_t* d_lddc;
+
+
+
   magma_trans_t transA = MagmaNoTrans;
   magma_trans_t transB = MagmaNoTrans;
 
@@ -111,6 +119,13 @@ int bmm_cuda_forward(
   TESTING_CHECK( magma_malloc_cpu( (void**)&hB_array, sizeof(double*)*batchCount ) );
   TESTING_CHECK( magma_malloc_cpu( (void**)&hC_array, sizeof(double*)*batchCount ) );
 
+  TESTING_CHECK( magma_malloc((void**)&d_m, (batchCount+1)*sizeof(magma_int_t)) );
+  TESTING_CHECK( magma_malloc((void**)&d_n, (batchCount+1)*sizeof(magma_int_t)) );
+  TESTING_CHECK( magma_malloc((void**)&d_k, (batchCount+1)*sizeof(magma_int_t)) );
+
+  TESTING_CHECK( magma_malloc((void**)&d_ldda, (batchCount+1)*sizeof(magma_int_t) ) );
+  TESTING_CHECK( magma_malloc((void**)&d_lddb, (batchCount+1)*sizeof(magma_int_t) ) );
+  TESTING_CHECK( magma_malloc((void**)&d_lddc, (batchCount+1)*sizeof(magma_int_t) ) );
 
   for (int i = 0; i < batchCount; ++i)
   {
@@ -136,26 +151,34 @@ int bmm_cuda_forward(
   magma_setvector(batchCount, sizeof(double*), hB_array, 1, dB_array, 1, queue);
   magma_setvector(batchCount, sizeof(double*), hC_array, 1, dC_array, 1, queue);
 
+
+  magma_setvector(batchCount, sizeof(magma_int_t), m, 1, d_m, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), n, 1, d_n, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), k, 1, d_k, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), m, 1, d_ldda, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), k, 1, d_lddb, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), m, 1, d_lddc, 1, queue);
+
   // TESTING_CHECK( magma_malloc((void**)&d_m, (batchCount+1)*sizeof(magma_int_t)) );
   // TESTING_CHECK( magma_malloc((void**)&d_n, (batchCount+1)*sizeof(magma_int_t)) );
   // TESTING_CHECK( magma_malloc((void**)&d_k, (batchCount+1)*sizeof(magma_int_t)) );
 
 
-  // magmablas_dgemm_vbatched(       transA,
-  //     /* magma_trans_t */         transB,
-  //     /* magma_int_t * */         d_m,
-  //     /* magma_int_t * */         d_n,
-  //     /* magma_int_t * */         d_k,
-  //     /* double */                alpha,
-  //     /* double const *const * */ dA_array,
-  //     /* magma_int_t * */         d_ldda,
-  //     /* double const *const * */ dB_array,
-  //     /* magma_int_t * */         d_lddb,
-  //     /* double */                beta,
-  //     /* double ** */             dC_array,
-  //     /* magma_int_t * */         d_lddc,
-  //     /* magma_int_t */           batchCount,
-  //     /* magma_queue_t */         queue);
+  magmablas_dgemm_vbatched(       transA,
+      /* magma_trans_t */         transB,
+      /* magma_int_t * */         d_m,
+      /* magma_int_t * */         d_n,
+      /* magma_int_t * */         d_k,
+      /* double */                alpha,
+      /* double const *const * */ dA_array,
+      /* magma_int_t * */         d_ldda,
+      /* double const *const * */ dB_array,
+      /* magma_int_t * */         d_lddb,
+      /* double */                beta,
+      /* double ** */             dC_array,
+      /* magma_int_t * */         d_lddc,
+      /* magma_int_t */           batchCount,
+      /* magma_queue_t */         queue);
 
   return 2;
 }

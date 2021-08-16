@@ -114,7 +114,7 @@ int bmm_cuda_forward(
   {
     hA_array[i] = (double *) A[i].data_ptr();
     hB_array[i] = (double *) B[i].data_ptr();
-    hC_array[i] = (double *) C[i].data_ptr();
+    // hC_array[i] = (double *) C[i].data_ptr();
   }
 
 

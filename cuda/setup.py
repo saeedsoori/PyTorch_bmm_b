@@ -6,8 +6,9 @@ setup(
     ext_modules=[
         CUDAExtension('bmm_cuda', [
             'bmm_cuda.cpp',
-            'bmm_cuda_kernel.cu',
-        ]),
+            'bmm_cuda_kernel.cu',],
+            extra_compile_args=['-lmagma'],
+            ),
     ],
     cmdclass={
         'build_ext': BuildExtension

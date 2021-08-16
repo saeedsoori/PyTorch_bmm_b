@@ -57,6 +57,7 @@ namespace {
 int bmm_cuda_forward(
     std::vector<torch::Tensor> A,
     std::vector<torch::Tensor> B,
+    std::vector<torch::Tensor> C,
     int* m,
     int* n,
     int* k) {
@@ -110,18 +111,15 @@ int bmm_cuda_forward(
   TESTING_CHECK( magma_malloc_cpu( (void**)&hB_array, sizeof(double*)*batchCount ) );
   TESTING_CHECK( magma_malloc_cpu( (void**)&hC_array, sizeof(double*)*batchCount ) );
 
+
   for (int i = 0; i < batchCount; ++i)
   {
     hA_array[i] = (double *) A[i].data_ptr();
     hB_array[i] = (double *) B[i].data_ptr();
-    // hC_array[i] = (double *) C[i].data_ptr();
+    hC_array[i] = (double *) C[i].data_ptr();
   }
 
 
-
-
-
-  
 
   // dA_array is the array of pointers need by dgemm
   // d_A_elems are the actual mtx elements being pointed to

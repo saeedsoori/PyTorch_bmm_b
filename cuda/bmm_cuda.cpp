@@ -7,6 +7,7 @@
 int bmm_cuda_forward(
     std::vector<torch::Tensor> A,
     std::vector<torch::Tensor> B,
+    std::vector<torch::Tensor> C,
     int* m,
     int* n,
     int* k);
@@ -21,12 +22,14 @@ int bmm_cuda_forward(
 
 int bmm_forward(
     std::vector<torch::Tensor> A,
-    std::vector<torch::Tensor> B, torch::Tensor m, torch::Tensor n, torch::Tensor k) {
+    std::vector<torch::Tensor> B,
+    std::vector<torch::Tensor> C,
+    torch::Tensor m, torch::Tensor n, torch::Tensor k) {
     double *pA = (double *) A[0].data_ptr();
     double *pB = (double *) B[0].data_ptr();
 
-    std::cout<<"elements in A: "<<A.size();
-    std::cout<<"elements in B: "<<B.size();
+    std::cout<<"elements in A: "<<A.size()<<"\n";
+    std::cout<<"elements in B: "<<B.size()<<"\n";
 
     // int* m_arr = (int*) malloc (2*sizeof(int));
     // int* n_arr = (int*) malloc (2*sizeof(int));
@@ -48,7 +51,7 @@ int bmm_forward(
   // CHECK_INPUT(B);
 
 
-  return bmm_cuda_forward(A, B, m_arr ,n_arr , k_arr);
+  return bmm_cuda_forward(A, B, C, m_arr ,n_arr , k_arr);
 }
 
 

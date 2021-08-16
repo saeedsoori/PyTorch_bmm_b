@@ -20,8 +20,8 @@ int bmm_cuda_forward(
 #define CHECK_INPUT(x) CHECK_CUDA(x); CHECK_CONTIGUOUS(x)
 
 int bmm_forward(
-    std::vector[torch::Tensor] A,
-    std::vector[torch::Tensor] B, torch::Tensor m, torch::Tensor n, torch::Tensor k) {
+    std::vector<torch::Tensor> A,
+    std::vector<torch::Tensor> B, torch::Tensor m, torch::Tensor n, torch::Tensor k) {
     double *pA = (double *) A[0].data_ptr();
     double *pB = (double *) B[0].data_ptr();
 

@@ -113,6 +113,10 @@ int bmm_cuda_forward(
 
   magma_int_t batchCount = 2;
   magma_queue_t queue;
+  magma_device_t device;
+
+  magma_getdevice( &device );
+  magma_queue_create( device, &queue );
 
 
   TESTING_CHECK( magma_malloc_cpu( (void**)&hA_array, sizeof(double*)*batchCount ) );

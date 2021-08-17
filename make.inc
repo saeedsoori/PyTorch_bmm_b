@@ -1,17 +1,11 @@
 GPU_TARGET =  Turing
-CC        = gcc
-CXX       = g++
-NVCC      = nvcc
-#FORT      = gfortran
+
 
 ARCH      = ar
 ARCHFLAGS = cr
 RANLIB    = ranlib
 
-FPIC      = -fPIC
-CFLAGS    = -O3 $(FPIC) -fopenmp -DADD_ -Wall -Wno-strict-aliasing -Wshadow 
-CXXFLAGS := $(CFLAGS) -std=c++11
-NVCCFLAGS  ?= -O3         -DADD_ -Xcompiler   "-fopenmp $(FPIC) -Wall -Wno-unused-function" -std=c++11 
+
 
 
 # --------------------

@@ -1677,7 +1677,7 @@ for test in tests:
 		# skip tests not in args, or duplicates
 		# skip and warn about non-existing
 		if (    (args and not cmdp in args)
-		     or (cmd_opts not in seen) ):
+		     or (cmd_opts in seen) ):
 			continue
 		# end
 		if (not os.path.exists( cmdp )):

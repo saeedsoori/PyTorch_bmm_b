@@ -1695,7 +1695,7 @@ for test in tests:
 			
 			print()
 			print('*'*100)
-			print cmd_args
+			print(cmd_args)
 			print('*'*100)
 			sys.stdout.flush()
 			

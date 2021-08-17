@@ -10,7 +10,6 @@
 #include <time.h>
 
 // includes, project
-#include "flops.h"
 #include "magma_v2.h"
 #include "magma_lapack.h"
 // #include "testings.h"

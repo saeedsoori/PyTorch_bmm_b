@@ -7,7 +7,7 @@ setup(
         CUDAExtension('bmm_cuda', [
             'bmm_cuda.cpp',
             'bmm_cuda_kernel.cu',],
-            extra_compile_args=['-I/content/magma-2.5.4/include/', '-L. lmagma'],
+            extra_compile_args=['-O3',  '-Wl,-rpath,/content/magma-2.5.4/lib','-L./lib -lmagma_sparse -lmagma','-L/usr/local/cuda/lib64  -lcudart -lcudadevrt -lcublas -lcusparse -llapack -lblas -lpthread -lm'],
             ),
     ],
     cmdclass={

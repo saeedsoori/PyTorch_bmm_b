@@ -9,9 +9,8 @@ ARCHFLAGS = cr
 RANLIB    = ranlib
 
 #FPIC      = -fPIC
-
+CFLAGS    = -O3 $(FPIC) -fopenmp -DADD_ -Wall -Wno-strict-aliasing -Wshadow 
 CXXFLAGS := $(CFLAGS) -std=c++11
-CFLAGS    = -O3 $(FPIC) -fopenmp -DNDEBUG -DADD_ -Wall -Wno-strict-aliasing -Wshadow 
 
 
 # --------------------

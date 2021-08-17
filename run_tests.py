@@ -1609,7 +1609,7 @@ def run( cmd ):
 		line = p.stdout.readline()
 		if not line:
 			break
-		print line.rstrip()
+		print(line.rstrip())
 		if re.search( r'\bok *$', line ):
 			okay += 1
 		if re.search( 'failed', line ):

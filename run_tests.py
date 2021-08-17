@@ -1693,10 +1693,10 @@ for test in tests:
 		while repeat_test:
 			repeat_test = False
 			
-			print
-			print '*'*100
+			print()
+			print('*'*100)
 			print cmd_args
-			print '*'*100
+			print('*'*100)
 			sys.stdout.flush()
 			
 			if (output_to_file):
@@ -1747,7 +1747,7 @@ for test in tests:
 				x = raw_input( '[enter to continue; M to make and re-run] ' )
 				if (x in ('m','M')):
 					make = 'make ' + cmdp
-					print make
+					print(make)
 					run( make )
 					repeat_test = True
 				# end

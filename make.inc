@@ -11,7 +11,7 @@ RANLIB    = ranlib
 FPIC      = -fPIC
 CFLAGS    = -O3 $(FPIC) -fopenmp -DADD_ -Wall -Wno-strict-aliasing -Wshadow 
 CXXFLAGS := $(CFLAGS) -std=c++11
-NVCCFLAGS  ?= -O3         -DADD_ -Xcompiler "$(FPIC) -Wall -Wno-unused-function" -std=c++11 -openmp 
+NVCCFLAGS  ?= -O3         -DADD_ -Xcompiler -openmp  "$(FPIC) -Wall -Wno-unused-function" -std=c++11 
 
 
 # --------------------

@@ -12,7 +12,6 @@ RANLIB    = ranlib
 
 CXXFLAGS := $(CFLAGS) -std=c++11
 CFLAGS    = -O3 $(FPIC) -fopenmp -DNDEBUG -DADD_ -Wall -Wno-strict-aliasing -Wshadow 
-CFLAGS   += -std=c99
 
 
 # --------------------

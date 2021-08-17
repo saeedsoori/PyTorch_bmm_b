@@ -9,9 +9,15 @@
 #include <stdlib.h>
 #include <time.h>
 
+// includes, project
+#include "flops.h"
+#include "magma_v2.h"
+#include "magma_lapack.h"
+// #include "testings.h"
+
 #include <string.h> //for memcpy
 
-#include <magma_v2.h>
+// #include <magma_v2.h>
 
 // Pulled from magma test code
 #define TESTING_CHECK( err )                                                 \

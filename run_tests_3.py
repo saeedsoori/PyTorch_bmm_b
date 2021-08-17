@@ -1610,7 +1610,7 @@ def run( cmd ):
 		if not line:
 			break
 		print(line.rstrip())
-		if re.search( 'ok', line ):
+		if re.search( r'\bok *$', line ):
 			okay += 1
 		if re.search( 'failed', line ):
 			fail += 1

@@ -14,8 +14,11 @@ prefix = /usr/local/magma
 # define library directories preferably in your environment, or here.
 #ACMLDIR  ?= /opt/acml
 CUDADIR  = /usr/local/cuda
+BLASDIR  = /usr/local/cuda
 -include make.check-cuda
 
-LIBDIR    = -L$(CUDADIR)/lib64 
+LIBDIR    = -L$(CUDADIR)/lib64 \
+            -L$(BLASDIR)/
 
-INC       = -I$(CUDADIR)/include
+INC       = -I$(CUDADIR)/include \
+            -I$(BLAS)/

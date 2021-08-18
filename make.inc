@@ -1,5 +1,6 @@
 GPU_TARGET =  Turing
 FPIC      = -fPIC
+CFLAGS    = -O3 $(FPIC) -DADD_ -Wall -MMD
 
 prefix = /usr/local/magma
 

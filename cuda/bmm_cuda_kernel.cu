@@ -172,21 +172,21 @@ int bmm_cuda_forward(
   // TESTING_CHECK( magma_malloc((void**)&d_n, (batchCount+1)*sizeof(magma_int_t)) );
   // TESTING_CHECK( magma_malloc((void**)&d_k, (batchCount+1)*sizeof(magma_int_t)) );
 
-  magmablas_dgemm_vbatched(       transA,
-      /* magma_trans_t */         transB,
-      /* magma_int_t * */         d_m,
-      /* magma_int_t * */         d_n,
-      /* magma_int_t * */         d_k,
-      /* double */                alpha,
-      /* double const *const * */ dA_array,
-      /* magma_int_t * */         d_ldda,
-      /* double const *const * */ dB_array,
-      /* magma_int_t * */         d_lddb,
-      /* double */                beta,
-      /* double ** */             dC_array,
-      /* magma_int_t * */         d_lddc,
-      /* magma_int_t */           batchCount,
-      /* magma_queue_t */         queue);
+  // magmablas_dgemm_vbatched(       transA,
+  //     /* magma_trans_t */         transB,
+  //     /* magma_int_t * */         d_m,
+  //     /* magma_int_t * */         d_n,
+  //     /* magma_int_t * */         d_k,
+  //     /* double */                alpha,
+  //     /* double const *const * */ dA_array,
+  //      magma_int_t *          d_ldda,
+  //     /* double const *const * */ dB_array,
+  //     /* magma_int_t * */         d_lddb,
+  //     /* double */                beta,
+  //     /* double ** */             dC_array,
+  //     /* magma_int_t * */         d_lddc,
+  //     /* magma_int_t */           batchCount,
+  //     /* magma_queue_t */         queue);
 
   return 2;
 }

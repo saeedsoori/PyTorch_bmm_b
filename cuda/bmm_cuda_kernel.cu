@@ -172,9 +172,7 @@ int bmm_cuda_forward(
   // TESTING_CHECK( magma_malloc((void**)&d_n, (batchCount+1)*sizeof(magma_int_t)) );
   // TESTING_CHECK( magma_malloc((void**)&d_k, (batchCount+1)*sizeof(magma_int_t)) );
 
-  magmablas_dgemm_vbatched(       transA,
-      /* magma_trans_t */         transB,
-      /* magma_int_t * */         d_m,
+  magmablas_dgemm_vbatched(transA,transB, d_m,
       /* magma_int_t * */         d_n,
       /* magma_int_t * */         d_k,
       /* double */                alpha,

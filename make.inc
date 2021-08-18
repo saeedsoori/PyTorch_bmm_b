@@ -6,7 +6,7 @@ ARCHFLAGS = cr
 RANLIB    = ranlib
 FPIC      = -fPIC
 
-
+prefix = /usr/local/magma
 
 # --------------------
 # directories

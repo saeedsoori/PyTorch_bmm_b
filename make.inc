@@ -4,7 +4,7 @@ GPU_TARGET =  Turing
 ARCH      = ar
 ARCHFLAGS = cr
 RANLIB    = ranlib
-
+FPIC      = -fPIC
 
 
 

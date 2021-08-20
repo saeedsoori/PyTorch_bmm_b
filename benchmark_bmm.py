@@ -10,7 +10,7 @@ import torch
 TIME_SCALES = {'s': 1, 'ms': 1000, 'us': 1000000}
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-b', '--batch-size', type=int, default=4)
+parser.add_argument('-b', '--batch-size', type=int, default=2)
 parser.add_argument('-f', '--features', type=int, default=32)
 parser.add_argument('-r', '--runs', type=int, default=100)
 parser.add_argument('--scale', choices=['s', 'ms', 'us'], default='us')

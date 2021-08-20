@@ -131,11 +131,17 @@ int bmm_cuda_forward(
 
   // check if 
   std::cout<<"is the input correct?"<<"\n";
-  int *hy_dst;
-  TESTING_CHECK( magma_malloc_cpu( (void**)&hy_dst, sizeof(int*)*2 ) );
+  int *m_dst, *n_dst, *k_dst;
+  TESTING_CHECK( magma_malloc_cpu( (void**)&m_dst, sizeof(int*)*2 ) );
+  TESTING_CHECK( magma_malloc_cpu( (void**)&n_dst, sizeof(int*)*2 ) );
+  TESTING_CHECK( magma_malloc_cpu( (void**)&k_dst, sizeof(int*)*2 ) );
   int nelem = 2;
-  magma_getvector(nelem, sizeof(int), m, 1, hy_dst, 1, queue); 
-  std::cout<<"checking for m is finsihed: "<<hy_dst[0]<<" "<<hy_dst[1]<<"\n";
+  magma_getvector(nelem, sizeof(int), m, 1, m_dst, 1, queue); 
+  magma_getvector(nelem, sizeof(int), n, 1, n_dst, 1, queue); 
+  magma_getvector(nelem, sizeof(int), k, 1, k_dst, 1, queue); 
+  std::cout<<"checking for m is finsihed: "<<m_dst[0]<<" "<<m_dst[1]<<"\n";
+  std::cout<<"checking for n is finsihed: "<<n_dst[0]<<" "<<n_dst[1]<<"\n";
+  std::cout<<"checking for k is finsihed: "<<k_dst[0]<<" "<<k_dst[1]<<"\n";
 
 
   TESTING_CHECK( magma_malloc_cpu( (void**)&hA_array, sizeof(double*)*batchCount ) );

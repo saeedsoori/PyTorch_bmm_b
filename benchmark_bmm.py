@@ -38,6 +38,7 @@ r_size = [32, 64, 128, 198, 256]
 A = []
 B = []
 C = []
+C_true = []
 mshapes = []
 nshapes = []
 kshapes = []
@@ -46,10 +47,11 @@ for i in range(options.n):
     A_s = torch.randn(options.batch_size, r_size[index[i]], **kwargs)
     B_s = torch.randn(r_size[index[i]], r_size[index[i]] + 32, **kwargs)
     C_s = torch.zeros(options.batch_size, r_size[index[i]] + 32, **kwargs)
-
+    C_s_true = torch.matmul(A_s, B_s)
     A.append(A_s)
     B.append(B_s)
     C.append(C_s)
+    C_true.append(C_s_true)
     mshapes.append(A_s.shape[0])
     nshapes.append(B_s.shape[1])
     kshapes.append(A_s.shape[1])
@@ -65,6 +67,7 @@ k_arr = torch.cuda.IntTensor(kshapes)
 result = BMM.forward(A, B, C, m_arr, n_arr, k_arr)
 
 print(C)
+print(C_s_true)
 
 
 # Force CUDA initialization

@@ -66,6 +66,8 @@ int bmm_cuda_forward(
     int* m,
     int* n,
     int* k) {
+  std::cout<<"kernel started..."<<"\n";
+
   // auto X = torch::cat({old_h, input}, /*dim=*/1);
   // auto gate_weights = torch::addmm(bias, X, weights.transpose(0, 1));
 
@@ -119,6 +121,7 @@ int bmm_cuda_forward(
   magma_int_t batchCount = 2;
   magma_queue_t queue;
   magma_device_t device;
+  std::cout<<"initialization finsihed..."<<"\n";
 
   magma_getdevice( &device );
   magma_queue_create( device, &queue );

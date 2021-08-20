@@ -65,6 +65,7 @@ for i in range(options.n):
 Mul = BMM()
 # C = BMM.forward(A_s, B_s, A_s.shape[0], A_s.shape[1], B_s.shape[1])
 m_arr = torch.cuda.IntTensor(mshapes)
+print('original m:', m_arr)
 n_arr = torch.cuda.IntTensor(nshapes)
 k_arr = torch.cuda.IntTensor(kshapes)
 result = BMM.forward(A, B, C, m_arr, n_arr, k_arr)

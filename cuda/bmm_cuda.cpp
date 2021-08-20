@@ -25,8 +25,8 @@ int bmm_forward(
     std::vector<torch::Tensor> B,
     std::vector<torch::Tensor> C,
     torch::Tensor m, torch::Tensor n, torch::Tensor k) {
-    double *pA = (double *) A[0].data_ptr();
-    double *pB = (double *) B[0].data_ptr();
+    // double *pA = (double *) A[0].data_ptr();
+    // double *pB = (double *) B[0].data_ptr();
 
     std::cout<<"elements in A: "<<A.size()<<"\n";
     std::cout<<"elements in B: "<<B.size()<<"\n";

@@ -135,7 +135,7 @@ int bmm_cuda_forward(
   TESTING_CHECK( magma_malloc_cpu( (void**)&hy_dst, sizeof(int*)*2 ) );
   int nelem = 2;
   magma_getvector(nelem, sizeof(int), m, 1, hy_dst, 1, queue); 
-  std::cout<<"checking finsihed"<<"\n";
+  std::cout<<"checking for m is finsihed: "<<hy_dst[0]<<" "<<hy_dst[2]<<"\n";
 
 
   TESTING_CHECK( magma_malloc_cpu( (void**)&hA_array, sizeof(double*)*batchCount ) );

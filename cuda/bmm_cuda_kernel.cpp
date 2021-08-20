@@ -160,6 +160,7 @@ int bmm_cuda_forward(
   magma_setvector(batchCount, sizeof(double*), hB_array, 1, dB_array, 1, queue);
   magma_setvector(batchCount, sizeof(double*), hC_array, 1, dC_array, 1, queue);
 
+  std::cout<<"moving host array to device finsihed..."<<"\n";
 
   magma_setvector(batchCount, sizeof(magma_int_t), m, 1, d_m, 1, queue);
   magma_setvector(batchCount, sizeof(magma_int_t), n, 1, d_n, 1, queue);
@@ -167,6 +168,9 @@ int bmm_cuda_forward(
   magma_setvector(batchCount, sizeof(magma_int_t), m, 1, d_ldda, 1, queue);
   magma_setvector(batchCount, sizeof(magma_int_t), k, 1, d_lddb, 1, queue);
   magma_setvector(batchCount, sizeof(magma_int_t), m, 1, d_lddc, 1, queue);
+  
+  std::cout<<"maga set_vector of d vars finsihed..."<<"\n";
+
 
   // TESTING_CHECK( magma_malloc((void**)&d_m, (batchCount+1)*sizeof(magma_int_t)) );
   // TESTING_CHECK( magma_malloc((void**)&d_n, (batchCount+1)*sizeof(magma_int_t)) );

@@ -8,7 +8,7 @@ NVCCFLAGS = -O3         -DADD_ -Xcompiler "$(FPIC) -Wall -Wno-unused-function" -
 FFLAGS    = -O3 $(FPIC) -DADD_ -Wall -Wno-unused-dummy-argument
 F90FLAGS  = -O3 $(FPIC) -DADD_ -Wall -Wno-unused-dummy-argument
 prefix = /usr/local/magma
-
+LDFLAGS   = $(FPIC) -lgfortran
 # --------------------
 # libraries
 

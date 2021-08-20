@@ -35,7 +35,7 @@ kwargs = {'dtype': dtype,
 
 # generate "n" random matrix with different #columns
 # r_size = [32, 64, 128, 198, 256]
-r_size = [2, 4, 8]
+r_size = [2]
 A = []
 B = []
 C = []

@@ -152,6 +152,8 @@ int bmm_cuda_forward(
 
   for (int i = 0; i < batchCount; ++i)
   {
+    std::cout<<"processing input tensor:"<< i<< " \n";
+
     hA_array[i] = (double *) A[i].data_ptr();
     hB_array[i] = (double *) B[i].data_ptr();
     hC_array[i] = (double *) C[i].data_ptr();

@@ -14,7 +14,7 @@ prefix = /usr/local/magma
 
 # see MKL Link Advisor at http://software.intel.com/sites/products/mkl/
 # gcc/gfortran with MKL 10.3, GNU OpenMP threads (use -fopenmp in CFLAGS, LDFLAGS)
-LIB       = -lpthread -lstdc++ -lm -lgfortran
+LIB       = -llapack -lcblas -lpthread -lstdc++ -lm -lgfortran
 
 # Supposedly, gcc can use Intel threads (libiomp5) instead, but be careful that
 # libiomp5 and libgomp are NOT BOTH linked. Above, we use gnu threads as a safer option.

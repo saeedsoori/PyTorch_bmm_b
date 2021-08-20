@@ -1,4 +1,5 @@
 GPU_TARGET =  Turing
+FORT = gfortran
 FPIC      = -fPIC
 CFLAGS    = -O3 $(FPIC) -DADD_ -Wall -MMD
 CFLAGS    = -O3 $(FPIC) -DADD_ -Wall -MMD

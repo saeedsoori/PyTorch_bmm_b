@@ -67,7 +67,7 @@ k_arr = torch.cuda.IntTensor(kshapes)
 result = BMM.forward(A, B, C, m_arr, n_arr, k_arr)
 
 print(C)
-print(C_s_true)
+print(C_true)
 
 
 # Force CUDA initialization

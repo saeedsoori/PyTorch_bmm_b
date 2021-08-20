@@ -10,7 +10,7 @@ import torch
 TIME_SCALES = {'s': 1, 'ms': 1000, 'us': 1000000}
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-b', '--batch-size', type=int, default=128)
+parser.add_argument('-b', '--batch-size', type=int, default=4)
 parser.add_argument('-f', '--features', type=int, default=32)
 parser.add_argument('-r', '--runs', type=int, default=100)
 parser.add_argument('--scale', choices=['s', 'ms', 'us'], default='us')
@@ -34,7 +34,8 @@ kwargs = {'dtype': dtype,
           'requires_grad': True}
 
 # generate "n" random matrix with different #columns
-r_size = [32, 64, 128, 198, 256]
+# r_size = [32, 64, 128, 198, 256]
+r_size = [2, 4, 8]
 A = []
 B = []
 C = []
@@ -42,11 +43,13 @@ C_true = []
 mshapes = []
 nshapes = []
 kshapes = []
-index = torch.randint(0, 5, (options.n,))
+index = torch.randint(0, len(r_size), (options.n,))
 for i in range(options.n):
-    A_s = torch.randn(options.batch_size, r_size[index[i]], **kwargs)
-    B_s = torch.randn(r_size[index[i]], r_size[index[i]] + 32, **kwargs)
-    C_s = torch.zeros(options.batch_size, r_size[index[i]] + 32, **kwargs)
+    A_s = torch.randn(options.batch_size, r_size[index[i]], **kwargs, requires_grad=False)
+    # B_s = torch.randn(r_size[index[i]], r_size[index[i]] + 32, **kwargs)
+    B_s = torch.randn(r_size[index[i]], r_size[index[i]], **kwargs, requires_grad=False)
+    # C_s = torch.zeros(options.batch_size, r_size[index[i]] + 32, **kwargs)
+    C_s = torch.zeros(options.batch_size, r_size[index[i]], **kwargs, requires_grad=False)
     C_s_true = torch.matmul(A_s, B_s)
     A.append(A_s)
     B.append(B_s)
@@ -66,8 +69,12 @@ n_arr = torch.cuda.IntTensor(nshapes)
 k_arr = torch.cuda.IntTensor(kshapes)
 result = BMM.forward(A, B, C, m_arr, n_arr, k_arr)
 
-print(C)
-print(C_true)
+print('results...........')
+print('A tensors:', A)
+print('B tensors:', B)
+print('C tensors:', C)
+print('C true tensors:', C_true)
+
 
 
 # Force CUDA initialization

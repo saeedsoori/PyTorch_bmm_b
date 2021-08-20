@@ -132,9 +132,9 @@ int bmm_cuda_forward(
   // check if 
   std::cout<<"is the input correct?"<<"\n";
   int *hy_dst;
-  TESTING_CHECK( magma_malloc_cpu( (void*)&hy_dst, sizeof(int*)*2 ) );
+  TESTING_CHECK( magma_malloc_cpu( (void**)&hy_dst, sizeof(int*)*2 ) );
   int nelem = 2;
-  magma_getvector(nelem, sizeof(int), m, 1, hy_dst, 1, queue) 
+  magma_getvector(nelem, sizeof(int), m, 1, hy_dst, 1, queue); 
   std::cout<<"checking finsihed"<<"\n";
 
 

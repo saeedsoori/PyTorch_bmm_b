@@ -42,11 +42,11 @@ int bmm_forward(
     	
     // }
 
-    int* m_arr = (int*) m.data();
-    int* n_arr = (int*) n.data();
-    int* k_arr = (int*) k.data();
+    int* m_arr = (int*) m.data_ptr();
+    int* n_arr = (int*) n.data_ptr();
+    int* k_arr = (int*) k.data_ptr();
     std::cout<<"here\n";
-    std::cout<<m_arr[0]<<" "<<n_arr[0]<<" "<<k_arr[0]<<"\n";
+    // std::cout<<m_arr[0]<<" "<<n_arr[0]<<" "<<k_arr[0]<<"\n";
     std::cout<<"finsihing arrays print\n";
 
   // CHECK_INPUT(A);

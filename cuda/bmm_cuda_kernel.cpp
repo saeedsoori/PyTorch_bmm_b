@@ -68,6 +68,8 @@ int bmm_cuda_forward(
     int* k) {
   std::cout<<"kernel started..."<<"\n";
 
+
+  
   // auto X = torch::cat({old_h, input}, /*dim=*/1);
   // auto gate_weights = torch::addmm(bias, X, weights.transpose(0, 1));
 
@@ -125,6 +127,14 @@ int bmm_cuda_forward(
 
   magma_getdevice( &device );
   magma_queue_create( device, &queue );
+
+
+  // check if 
+  std::cout<<"is the input correct?"<<"\n";
+  TESTING_CHECK( magma_malloc_cpu( (void*)&hy_dst, sizeof(int*)*2 ) );
+  int nelem = 2;
+  magma_getvector(nelem, sizeof(int), m, 1, hy_dst, 1, queue) 
+  std::cout<<"checking finsihed"<<"\n";
 
 
   TESTING_CHECK( magma_malloc_cpu( (void**)&hA_array, sizeof(double*)*batchCount ) );

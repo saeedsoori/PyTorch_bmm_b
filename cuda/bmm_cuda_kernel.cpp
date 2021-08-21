@@ -294,9 +294,9 @@ int bmm_cuda_single(
   TESTING_CHECK( magma_malloc_cpu( (void**)&n_dst, sizeof(int*)*batchCount ) );
   TESTING_CHECK( magma_malloc_cpu( (void**)&k_dst, sizeof(int*)*batchCount ) );
   int nelem = batchCount;
-  m_dst[0] = m
-  n_dst[0] = n
-  k_dst[0] = k
+  m_dst[0] = m;
+  n_dst[0] = n;
+  k_dst[0] = k;
   // magma_getvector(nelem, sizeof(int), m, 1, m_dst, 1, queue); 
   // magma_getvector(nelem, sizeof(int), n, 1, n_dst, 1, queue); 
   // magma_getvector(nelem, sizeof(int), k, 1, k_dst, 1, queue); 

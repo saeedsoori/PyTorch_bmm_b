@@ -71,6 +71,9 @@ int bmm_single(
     torch::Tensor C,
     int m, int n, int k) {
 	std::cout<<"cpp single mode\n";
+	CHECK_CONTIGUOUS(A);
+	CHECK_CONTIGUOUS(B);
+	CHECK_CONTIGUOUS(C);
 
     // double *pA = (double *) A[0].data_ptr();
     // double *pB = (double *) B[0].data_ptr();

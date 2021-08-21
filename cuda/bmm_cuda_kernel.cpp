@@ -327,6 +327,29 @@ int bmm_cuda_single(
   hB_array[0] = (double *) B.data_ptr();
   hC_array[0] = (double *) C.data_ptr();
   
+  // check that A and B are correct 
+  std::cout<<"single kernel:  is the input correct?"<<"\n";
+  double *A_dst, *B_dst;
+  TESTING_CHECK( magma_malloc_cpu( (void**)&A_dst, sizeof(double)*m*k ) );
+  TESTING_CHECK( magma_malloc_cpu( (void**)&B_dst, sizeof(double)*k*n  ) );
+  int nelem_A = m*k ;
+  int nelem_B = k*n;
+  
+  magma_getvector(nelem_A, sizeof(int), hA_array[0], 1, A_dst, 1, queue); 
+  magma_getvector(nelem_B, sizeof(int), hB_array[0], 1, B_dst, 1, queue); 
+  std::cout<<"single kernel: checking for A and B is finsihed: "<<"\n";
+  std::cout<<"single kernel:>  A:"<<"\n";
+
+  for (int i = 0; i < nelem_A; ++i)
+  {
+  std::cout<<A_dst[i];
+  }
+  std::cout<<"single kernel:>  B:"<<"\n";
+
+  for (int i = 0; i < nelem_B; ++i)
+  {
+  std::cout<<B_dst[i];
+  }
 
 
 

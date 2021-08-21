@@ -290,10 +290,10 @@ int bmm_cuda_single(
   // check if 
   std::cout<<"single kernel:  is the input correct?"<<"\n";
   int *m_dst, *n_dst, *k_dst;
-  TESTING_CHECK( magma_malloc_cpu( (void**)&m_dst, sizeof(int*)*2 ) );
-  TESTING_CHECK( magma_malloc_cpu( (void**)&n_dst, sizeof(int*)*2 ) );
-  TESTING_CHECK( magma_malloc_cpu( (void**)&k_dst, sizeof(int*)*2 ) );
-  int nelem = 2;
+  TESTING_CHECK( magma_malloc_cpu( (void**)&m_dst, sizeof(int*)*batchCount ) );
+  TESTING_CHECK( magma_malloc_cpu( (void**)&n_dst, sizeof(int*)*batchCount ) );
+  TESTING_CHECK( magma_malloc_cpu( (void**)&k_dst, sizeof(int*)*batchCount ) );
+  int nelem = batchCount;
   magma_getvector(nelem, sizeof(int), m, 1, m_dst, 1, queue); 
   magma_getvector(nelem, sizeof(int), n, 1, n_dst, 1, queue); 
   magma_getvector(nelem, sizeof(int), k, 1, k_dst, 1, queue); 
@@ -319,6 +319,10 @@ int bmm_cuda_single(
   hA_array[0] = (double *) A.data_ptr();
   hB_array[0] = (double *) B.data_ptr();
   hC_array[0] = (double *) C.data_ptr();
+
+  hA_array[0] = (double *) A.data_ptr();
+  hB_array[0] = (double *) B.data_ptr();
+  hC_array[0] = (double *) C.data_ptr();
   
 
 
@@ -340,12 +344,12 @@ int bmm_cuda_single(
 
   std::cout<<"single kernel: moving host array to device finsihed..."<<"\n";
 
-  magma_setvector(batchCount, sizeof(magma_int_t), m, 1, d_m, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), n, 1, d_n, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), k, 1, d_k, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), m, 1, d_ldda, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), k, 1, d_lddb, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), m, 1, d_lddc, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), m_dst, 1, d_m, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_n, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), k_dst, 1, d_k, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), m_dst, 1, d_ldda, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), k_dst, 1, d_lddb, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), m_dst, 1, d_lddc, 1, queue);
   
   std::cout<<"single kernel: maga set_vector of d vars finsihed..."<<"\n";
 

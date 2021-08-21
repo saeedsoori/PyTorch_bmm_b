@@ -65,12 +65,13 @@ int bmm_forward(
 }
 
 int bmm_single(
-    std::cout<<"cpp single mode\n";
 
     torch::Tensor A,
     torch::Tensor B,
     torch::Tensor C,
     int m, int n, int k) {
+	std::cout<<"cpp single mode\n";
+
     // double *pA = (double *) A[0].data_ptr();
     // double *pB = (double *) B[0].data_ptr();
 
@@ -93,7 +94,7 @@ int bmm_single(
     // int* k_arr = (int*) k.data_ptr();
     // std::cout<<"here\n";
     // std::cout<<m_arr[0]<<" "<<n_arr[0]<<" "<<k_arr[0]<<"\n";
-    std::cout<<"finsihing single mode cpp\n";
+    std::cout<<"finsihing single cpp\n";
 
   // CHECK_INPUT(A);
   // CHECK_INPUT(B);

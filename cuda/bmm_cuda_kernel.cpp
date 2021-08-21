@@ -294,12 +294,15 @@ int bmm_cuda_single(
   TESTING_CHECK( magma_malloc_cpu( (void**)&n_dst, sizeof(int*)*batchCount ) );
   TESTING_CHECK( magma_malloc_cpu( (void**)&k_dst, sizeof(int*)*batchCount ) );
   int nelem = batchCount;
-  magma_getvector(nelem, sizeof(int), m, 1, m_dst, 1, queue); 
-  magma_getvector(nelem, sizeof(int), n, 1, n_dst, 1, queue); 
-  magma_getvector(nelem, sizeof(int), k, 1, k_dst, 1, queue); 
-  std::cout<<"single kernel: checking for m is finsihed: "<<m_dst[0]<<" "<<m_dst[1]<<"\n";
-  std::cout<<"single kernel: checking for n is finsihed: "<<n_dst[0]<<" "<<n_dst[1]<<"\n";
-  std::cout<<"single kernel: checking for k is finsihed: "<<k_dst[0]<<" "<<k_dst[1]<<"\n";
+  m_dst[0] = m
+  n_dst[0] = n
+  k_dst[0] = k
+  // magma_getvector(nelem, sizeof(int), m, 1, m_dst, 1, queue); 
+  // magma_getvector(nelem, sizeof(int), n, 1, n_dst, 1, queue); 
+  // magma_getvector(nelem, sizeof(int), k, 1, k_dst, 1, queue); 
+  std::cout<<"single kernel: checking for m is finsihed: "<<m_dst[0]<<"\n";
+  std::cout<<"single kernel: checking for n is finsihed: "<<n_dst[0]<<"\n";
+  std::cout<<"single kernel: checking for k is finsihed: "<<k_dst[0]<<"\n";
 
 
   TESTING_CHECK( magma_malloc_cpu( (void**)&hA_array, sizeof(double*)*batchCount ) );

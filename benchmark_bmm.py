@@ -76,6 +76,8 @@ print('A tensors:', A)
 print('B tensors:', B)
 print('C tensors:', C)
 print('C true tensors:', C_true)
+print('Single mode: C true:', C_s_true)
+print('Single mode: C magma:', C_s)
 
 
 

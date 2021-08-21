@@ -69,13 +69,17 @@ print('original m:', m_arr)
 n_arr = torch.cuda.IntTensor(nshapes)
 k_arr = torch.cuda.IntTensor(kshapes)
 result = BMM.forward(A, B, C, m_arr, n_arr, k_arr)
-result_single = BMM.single(A_s, B_s, C_s, A_s.shape[0], B_s.shape[1], A_s.shape[1])
 
 print('results...........')
 print('A tensors:', A)
 print('B tensors:', B)
 print('C tensors:', C)
 print('C true tensors:', C_true)
+
+result_single = BMM.single(A_s, B_s, C_s, A_s.shape[0], B_s.shape[1], A_s.shape[1])
+
+
+
 print('Single mode: C true:', C_s_true)
 print('Single mode: C magma:', C_s)
 

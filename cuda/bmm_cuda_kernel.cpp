@@ -342,13 +342,13 @@ int bmm_cuda_single(
 
   for (int i = 0; i < nelem_A; ++i)
   {
-  std::cout<<A_dst[i];
+  std::cout<<A_dst[i]<<"\n";
   }
   std::cout<<"single kernel:>  B:"<<"\n";
 
   for (int i = 0; i < nelem_B; ++i)
   {
-  std::cout<<B_dst[i];
+  std::cout<<B_dst[i]<<"\n";
   }
 
 

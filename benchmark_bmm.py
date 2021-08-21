@@ -27,7 +27,7 @@ from cuda.bmm import BMM
 
 options.cuda = True
 device = torch.device("cuda") if options.cuda else torch.device("cpu")
-dtype = torch.float32
+dtype = torch.float64
 
 kwargs = {'dtype': dtype,
           'device': device,

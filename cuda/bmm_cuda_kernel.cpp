@@ -214,3 +214,159 @@ int bmm_cuda_forward(
 
   return 2;
 }
+
+
+
+int bmm_cuda_single(
+    torch::Tensor A,
+    torch::Tensor B,
+    torch::Tensor C,
+    int m,
+    int n,
+    int k) {
+  std::cout<<"single kernel started..."<<"\n";
+
+
+  
+  // auto X = torch::cat({old_h, input}, /*dim=*/1);
+  // auto gate_weights = torch::addmm(bias, X, weights.transpose(0, 1));
+
+  // const auto batch_size = old_cell.size(0);
+  // const auto state_size = old_cell.size(1);
+
+  // auto gates = gate_weights.reshape({batch_size, 3, state_size});
+  // auto new_h = torch::zeros_like(old_cell);
+  // auto new_cell = torch::zeros_like(old_cell);
+  // auto input_gate = torch::zeros_like(old_cell);
+  // auto output_gate = torch::zeros_like(old_cell);
+  // auto candidate_cell = torch::zeros_like(old_cell);
+
+  // const int threads = 1024;
+  // const dim3 blocks((state_size + threads - 1) / threads, batch_size);
+
+  // AT_DISPATCH_FLOATING_TYPES(gates.type(), "lltm_forward_cuda", ([&] {
+  //   lltm_cuda_forward_kernel<scalar_t><<<blocks, threads>>>(
+  //       gates.packed_accessor<scalar_t,3,torch::RestrictPtrTraits,size_t>(),
+  //       old_cell.packed_accessor<scalar_t,2,torch::RestrictPtrTraits,size_t>(),
+  //       new_h.packed_accessor<scalar_t,2,torch::RestrictPtrTraits,size_t>(),
+  //       new_cell.packed_accessor<scalar_t,2,torch::RestrictPtrTraits,size_t>(),
+  //       input_gate.packed_accessor<scalar_t,2,torch::RestrictPtrTraits,size_t>(),
+  //       output_gate.packed_accessor<scalar_t,2,torch::RestrictPtrTraits,size_t>(),
+  //       candidate_cell.packed_accessor<scalar_t,2,torch::RestrictPtrTraits,size_t>());
+  // }));
+
+  double ** hA_array;
+  double ** hB_array;
+  double ** hC_array;
+
+  double const* * dA_array;
+  double const* * dB_array;
+  double **dC_array;
+
+  magma_int_t* d_m;
+  magma_int_t* d_n;
+  magma_int_t* d_k;
+
+  double  alpha = 1.0;
+  double  beta = 0.0;
+  magma_int_t* d_lddb;
+  magma_int_t* d_ldda;
+  magma_int_t* d_lddc;
+
+
+
+  magma_trans_t transA = MagmaNoTrans;
+  magma_trans_t transB = MagmaNoTrans;
+
+  magma_int_t batchCount = 1;
+  magma_queue_t queue;
+  magma_device_t device;
+  std::cout<<"single kernel: initialization finsihed..."<<"\n";
+
+  magma_getdevice( &device );
+  magma_queue_create( device, &queue );
+
+
+  // check if 
+  std::cout<<"single kernel:  is the input correct?"<<"\n";
+  int *m_dst, *n_dst, *k_dst;
+  TESTING_CHECK( magma_malloc_cpu( (void**)&m_dst, sizeof(int*)*2 ) );
+  TESTING_CHECK( magma_malloc_cpu( (void**)&n_dst, sizeof(int*)*2 ) );
+  TESTING_CHECK( magma_malloc_cpu( (void**)&k_dst, sizeof(int*)*2 ) );
+  int nelem = 2;
+  magma_getvector(nelem, sizeof(int), m, 1, m_dst, 1, queue); 
+  magma_getvector(nelem, sizeof(int), n, 1, n_dst, 1, queue); 
+  magma_getvector(nelem, sizeof(int), k, 1, k_dst, 1, queue); 
+  std::cout<<"single kernel: checking for m is finsihed: "<<m_dst[0]<<" "<<m_dst[1]<<"\n";
+  std::cout<<"single kernel: checking for n is finsihed: "<<n_dst[0]<<" "<<n_dst[1]<<"\n";
+  std::cout<<"single kernel: checking for k is finsihed: "<<k_dst[0]<<" "<<k_dst[1]<<"\n";
+
+
+  TESTING_CHECK( magma_malloc_cpu( (void**)&hA_array, sizeof(double*)*batchCount ) );
+  TESTING_CHECK( magma_malloc_cpu( (void**)&hB_array, sizeof(double*)*batchCount ) );
+  TESTING_CHECK( magma_malloc_cpu( (void**)&hC_array, sizeof(double*)*batchCount ) );
+
+  TESTING_CHECK( magma_malloc((void**)&d_m, (batchCount+1)*sizeof(magma_int_t)) );
+  TESTING_CHECK( magma_malloc((void**)&d_n, (batchCount+1)*sizeof(magma_int_t)) );
+  TESTING_CHECK( magma_malloc((void**)&d_k, (batchCount+1)*sizeof(magma_int_t)) );
+
+  TESTING_CHECK( magma_malloc((void**)&d_ldda, (batchCount+1)*sizeof(magma_int_t) ) );
+  TESTING_CHECK( magma_malloc((void**)&d_lddb, (batchCount+1)*sizeof(magma_int_t) ) );
+  TESTING_CHECK( magma_malloc((void**)&d_lddc, (batchCount+1)*sizeof(magma_int_t) ) );
+
+  
+
+  hA_array[0] = (double *) A.data_ptr();
+  hB_array[0] = (double *) B.data_ptr();
+  hC_array[0] = (double *) C.data_ptr();
+  
+
+
+
+  // dA_array is the array of pointers need by dgemm
+  // d_A_elems are the actual mtx elements being pointed to
+  // hA_array is the host side pointers that will get passed to dA_array
+  // double const* * dA_array;
+  // double const* * dB_array;
+  // double ** dC_array;
+
+  TESTING_CHECK( magma_malloc( (void**)&dA_array, sizeof(double*)*batchCount ) );
+  TESTING_CHECK( magma_malloc( (void**)&dB_array, sizeof(double*)*batchCount ) );
+  TESTING_CHECK( magma_malloc( (void**)&dC_array, sizeof(double*)*batchCount ) );
+
+  magma_setvector(batchCount, sizeof(double*), hA_array, 1, dA_array, 1, queue);
+  magma_setvector(batchCount, sizeof(double*), hB_array, 1, dB_array, 1, queue);
+  magma_setvector(batchCount, sizeof(double*), hC_array, 1, dC_array, 1, queue);
+
+  std::cout<<"single kernel: moving host array to device finsihed..."<<"\n";
+
+  magma_setvector(batchCount, sizeof(magma_int_t), m, 1, d_m, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), n, 1, d_n, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), k, 1, d_k, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), m, 1, d_ldda, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), k, 1, d_lddb, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), m, 1, d_lddc, 1, queue);
+  
+  std::cout<<"single kernel: maga set_vector of d vars finsihed..."<<"\n";
+
+
+  // TESTING_CHECK( magma_malloc((void**)&d_m, (batchCount+1)*sizeof(magma_int_t)) );
+  // TESTING_CHECK( magma_malloc((void**)&d_n, (batchCount+1)*sizeof(magma_int_t)) );
+  // TESTING_CHECK( magma_malloc((void**)&d_k, (batchCount+1)*sizeof(magma_int_t)) );
+
+  magmablas_dgemm_vbatched(transA,transB, d_m,
+      /* magma_int_t * */         d_n,
+      /* magma_int_t * */         d_k,
+      /* double */                alpha,
+      /* double const *const * */ dA_array,
+      /* magma_int_t */          d_ldda,
+      /* double const *const * */ dB_array,
+      /* magma_int_t * */         d_lddb,
+      /* double */                beta,
+      /* double ** */             dC_array,
+      /* magma_int_t * */         d_lddc,
+      /* magma_int_t */           batchCount,
+      /* magma_queue_t */         queue);
+
+  return 2;
+}

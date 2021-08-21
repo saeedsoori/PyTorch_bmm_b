@@ -10,13 +10,13 @@ import torch
 TIME_SCALES = {'s': 1, 'ms': 1000, 'us': 1000000}
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-b', '--batch-size', type=int, default=2)
+parser.add_argument('-b', '--batch-size', type=int, default=4)
 parser.add_argument('-f', '--features', type=int, default=32)
 parser.add_argument('-r', '--runs', type=int, default=100)
 parser.add_argument('--scale', choices=['s', 'ms', 'us'], default='us')
 parser.add_argument('-c', '--cuda', action='store_true')
 parser.add_argument('-d', '--double', action='store_true')
-parser.add_argument('-n', '--n', type=int, default=2)
+parser.add_argument('-n', '--n', type=int, default=1)
 
 options = parser.parse_args()
 
@@ -69,6 +69,7 @@ print('original m:', m_arr)
 n_arr = torch.cuda.IntTensor(nshapes)
 k_arr = torch.cuda.IntTensor(kshapes)
 result = BMM.forward(A, B, C, m_arr, n_arr, k_arr)
+result_single = BMM.single(A_s, B_s, C_s, A_s.shape[0], B_s.shape[1], A_s.shape[1])
 
 print('results...........')
 print('A tensors:', A)

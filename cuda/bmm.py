@@ -21,3 +21,12 @@ class BMM():
         # print('converting finshed....')
         # return bmm_cuda.forward(A, B, m_arr, n_arr, k_arr)
         return bmm_cuda.forward(A, B, C, m, n, k)
+
+    def single(A, B, C, m , n, k):
+        print('running single mode....')
+        # m_arr = (ctypes.c_int * len(m))(*m)
+        # n_arr = (ctypes.c_int * len(n))(*n)
+        # k_arr = (ctypes.c_int * len(k))(*k)
+        # print('converting finshed....')
+        # return bmm_cuda.forward(A, B, m_arr, n_arr, k_arr)
+        return bmm_cuda.single(A, B, C, m, n, k)

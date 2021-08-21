@@ -335,8 +335,8 @@ int bmm_cuda_single(
   int nelem_A = m*k ;
   int nelem_B = k*n;
   
-  magma_getvector(nelem_A, sizeof(int), hA_array[0], 1, A_dst, 1, queue); 
-  magma_getvector(nelem_B, sizeof(int), hB_array[0], 1, B_dst, 1, queue); 
+  magma_getvector(nelem_A, sizeof(double), hA_array[0], 1, A_dst, 1, queue); 
+  magma_getvector(nelem_B, sizeof(double), hB_array[0], 1, B_dst, 1, queue); 
   std::cout<<"single kernel: checking for A and B is finsihed: "<<"\n";
   std::cout<<"single kernel:>  A:"<<"\n";
 

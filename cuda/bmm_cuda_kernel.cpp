@@ -383,8 +383,8 @@ int bmm_cuda_single(
   magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_m, 1, queue);
   magma_setvector(batchCount, sizeof(magma_int_t), m_dst, 1, d_n, 1, queue);
   magma_setvector(batchCount, sizeof(magma_int_t), k_dst, 1, d_k, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_ldda, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), k_dst, 1, d_lddb, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_lddb, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), k_dst, 1, d_ldda, 1, queue);
   magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_lddc, 1, queue);
   
   std::cout<<"single kernel: maga set_vector of d vars finsihed..."<<"\n";
@@ -399,9 +399,9 @@ int bmm_cuda_single(
       /* magma_int_t * */         d_k,
       /* double */                alpha,
       /* double const *const * */ dB_array,
-      /* magma_int_t */          d_ldda,
+      /* magma_int_t */          d_lddb,
       /* double const *const * */ dA_array,
-      /* magma_int_t * */         d_lddb,
+      /* magma_int_t * */         d_ldda,
       /* double */                beta,
       /* double ** */             dC_array,
       /* magma_int_t * */         d_lddc,

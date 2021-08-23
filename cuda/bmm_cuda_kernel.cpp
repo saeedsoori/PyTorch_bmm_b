@@ -193,8 +193,8 @@ int bmm_cuda_forward(
   magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_m, 1, queue);
   magma_setvector(batchCount, sizeof(magma_int_t), m_dst, 1, d_n, 1, queue);
   magma_setvector(batchCount, sizeof(magma_int_t), k_dst, 1, d_k, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_ldda, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), k_dst, 1, d_lddb, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_lddb, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), k_dst, 1, d_ldda, 1, queue);
   magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_lddc, 1, queue);
   
   std::cout<<"maga set_vector of d vars finsihed..."<<"\n";

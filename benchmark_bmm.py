@@ -78,7 +78,7 @@ k_arr = torch.cuda.IntTensor(kshapes)
 # Force CUDA initialization
 result = BMM.forward(A, B, C, m_arr, n_arr, k_arr, options.n)
 
-for j in range(options.r):
+for j in range(options.runs):
     C_true = []
     for i in range(options.n):
         start = time.time()
@@ -103,8 +103,8 @@ for j in range(options.r):
 scale = TIME_SCALES[options.scale]
 pytorch_min *= scale
 magma_min *= scale
-pytorch_average = pytorch_time / 1 * scale
-magma_average = magma_time / 1 * scale
+pytorch_average = pytorch_time / options.runs * scale
+magma_average = magma_time / options.runs * scale
 
 print('PyTorch: {0:.3f}/{1:.3f} {4} | Magma {2:.3f}/{3:.3f} {4}'.format(
     pytorch_min, pytorch_average, magma_min, magma_average,

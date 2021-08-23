@@ -10,7 +10,8 @@ int bmm_cuda_forward(
     std::vector<torch::Tensor> C,
     int* m,
     int* n,
-    int* k);
+    int* k,
+    int batch_size);
 
 int bmm_cuda_single(
     torch::Tensor A,
@@ -32,7 +33,7 @@ int bmm_forward(
     std::vector<torch::Tensor> A,
     std::vector<torch::Tensor> B,
     std::vector<torch::Tensor> C,
-    torch::Tensor m, torch::Tensor n, torch::Tensor k) {
+    torch::Tensor m, torch::Tensor n, torch::Tensor k, int batch_count) {
     // double *pA = (double *) A[0].data_ptr();
     // double *pB = (double *) B[0].data_ptr();
 
@@ -61,7 +62,7 @@ int bmm_forward(
   // CHECK_INPUT(B);
 
 
-  return bmm_cuda_forward(A, B, C, m_arr ,n_arr , k_arr);
+  return bmm_cuda_forward(A, B, C, m_arr ,n_arr , k_arr, batch_size);
 }
 
 int bmm_single(

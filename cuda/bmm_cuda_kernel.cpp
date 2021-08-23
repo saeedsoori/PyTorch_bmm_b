@@ -65,7 +65,8 @@ int bmm_cuda_forward(
     std::vector<torch::Tensor> C,
     int* m,
     int* n,
-    int* k) {
+    int* k,
+    int batch_size) {
   std::cout<<"kernel started..."<<"\n";
 
 
@@ -120,7 +121,7 @@ int bmm_cuda_forward(
   magma_trans_t transA = MagmaNoTrans;
   magma_trans_t transB = MagmaNoTrans;
 
-  magma_int_t batchCount = 2;
+  magma_int_t batchCount = batch_size;
   magma_queue_t queue;
   magma_device_t device;
   std::cout<<"initialization finsihed..."<<"\n";
@@ -132,10 +133,10 @@ int bmm_cuda_forward(
   // check if 
   std::cout<<"is the input correct?"<<"\n";
   int *m_dst, *n_dst, *k_dst;
-  TESTING_CHECK( magma_malloc_cpu( (void**)&m_dst, sizeof(int*)*3 ) );
-  TESTING_CHECK( magma_malloc_cpu( (void**)&n_dst, sizeof(int*)*3 ) );
-  TESTING_CHECK( magma_malloc_cpu( (void**)&k_dst, sizeof(int*)*3 ) );
-  int nelem = 2;
+  TESTING_CHECK( magma_malloc_cpu( (void**)&m_dst, sizeof(int*)*batchCount ) );
+  TESTING_CHECK( magma_malloc_cpu( (void**)&n_dst, sizeof(int*)*batchCount ) );
+  TESTING_CHECK( magma_malloc_cpu( (void**)&k_dst, sizeof(int*)*batchCount ) );
+  int nelem = batchCount;
   magma_getvector(nelem, sizeof(int), m, 1, m_dst, 1, queue); 
   magma_getvector(nelem, sizeof(int), n, 1, n_dst, 1, queue); 
   magma_getvector(nelem, sizeof(int), k, 1, k_dst, 1, queue); 

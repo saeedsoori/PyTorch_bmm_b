@@ -91,9 +91,9 @@ all_offset_A = [offset_A]
 all_offset_B= [offset_B]
 all_offset_C = [offset_C]
 for i in range(options.n):
-    A_con[0 + offset_A:A[i].numel() + offset_A] = torch.reshape(A[i], -1)
-    B_con[0 + offset_B:B[i].numel() + offset_B] = torch.reshape(B[i], -1)
-    C_con[0 + offset_C:C[i].numel() + offset_C] = torch.reshape(C[i], -1)
+    A_con[0 + offset_A:A[i].numel() + offset_A] = torch.reshape(A[i], [1,-1])
+    B_con[0 + offset_B:B[i].numel() + offset_B] = torch.reshape(B[i], [1,-1])
+    C_con[0 + offset_C:C[i].numel() + offset_C] = torch.reshape(C[i], [1,-1])
     offset_A = offset_A + A[i].numel()
     offset_B = offset_B + B[i].numel()
     offset_C = offset_C + C[i].numel()
@@ -128,8 +128,10 @@ for j in range(options.runs):
     magma_min = min(magma_min, elapsed)
     magma_time += elapsed
 
+
     for k in range(options.n):
-        print(torch.allclose(C[i], C_true[i]))
+        C[k] = C_con[0 + all_offset_C[k]: C_true[k].numel() + all_offset_C[k]]
+        print(torch.allclose(C[k], C_true[k]))
     
 
  

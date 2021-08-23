@@ -16,7 +16,7 @@ parser.add_argument('-r', '--runs', type=int, default=100)
 parser.add_argument('--scale', choices=['s', 'ms', 'us'], default='us')
 parser.add_argument('-c', '--cuda', action='store_true')
 parser.add_argument('-d', '--double', action='store_true')
-parser.add_argument('-n', '--n', type=int, default=1)
+parser.add_argument('-n', '--n', type=int, default=2)
 
 options = parser.parse_args()
 
@@ -76,12 +76,12 @@ print('B tensors:', B)
 print('C tensors:', C)
 print('C true tensors:', C_true)
 
-result_single = BMM.single(A_s, B_s, C_s, A_s.shape[0], B_s.shape[1], A_s.shape[1])
+# result_single = BMM.single(A_s, B_s, C_s, A_s.shape[0], B_s.shape[1], A_s.shape[1])
 
 
 
-print('Single mode: C true:', C_s_true)
-print('Single mode: C magma:', C_s)
+# print('Single mode: C true:', C_s_true)
+# print('Single mode: C magma:', C_s)
 
 
 

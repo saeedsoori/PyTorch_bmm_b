@@ -120,13 +120,13 @@ int bmm_cuda_forward(
   TESTING_CHECK( magma_malloc_cpu( (void**)&hB_array, sizeof(double*)*batchCount ) );
   TESTING_CHECK( magma_malloc_cpu( (void**)&hC_array, sizeof(double*)*batchCount ) );
 
-  TESTING_CHECK( magma_malloc((void**)&d_m, (batchCount+1)*sizeof(magma_int_t)) );
-  TESTING_CHECK( magma_malloc((void**)&d_n, (batchCount+1)*sizeof(magma_int_t)) );
-  TESTING_CHECK( magma_malloc((void**)&d_k, (batchCount+1)*sizeof(magma_int_t)) );
+  // TESTING_CHECK( magma_malloc((void**)&d_m, (batchCount+1)*sizeof(magma_int_t)) );
+  // TESTING_CHECK( magma_malloc((void**)&d_n, (batchCount+1)*sizeof(magma_int_t)) );
+  // TESTING_CHECK( magma_malloc((void**)&d_k, (batchCount+1)*sizeof(magma_int_t)) );
 
-  TESTING_CHECK( magma_malloc((void**)&d_ldda, (batchCount+1)*sizeof(magma_int_t) ) );
-  TESTING_CHECK( magma_malloc((void**)&d_lddb, (batchCount+1)*sizeof(magma_int_t) ) );
-  TESTING_CHECK( magma_malloc((void**)&d_lddc, (batchCount+1)*sizeof(magma_int_t) ) );
+  // TESTING_CHECK( magma_malloc((void**)&d_ldda, (batchCount+1)*sizeof(magma_int_t) ) );
+  // TESTING_CHECK( magma_malloc((void**)&d_lddb, (batchCount+1)*sizeof(magma_int_t) ) );
+  // TESTING_CHECK( magma_malloc((void**)&d_lddc, (batchCount+1)*sizeof(magma_int_t) ) );
 
   for (int i = 0; i < batchCount; ++i)
   {
@@ -162,12 +162,12 @@ int bmm_cuda_forward(
   // magma_setvector(batchCount, sizeof(magma_int_t), k_dst, 1, d_ldda, 1, queue);
   // magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_lddc, 1, queue);
 
-  magma_setvector(batchCount, sizeof(magma_int_t), n, 1, d_m, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), m, 1, d_n, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), k, 1, d_k, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), n, 1, d_lddb, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), k, 1, d_ldda, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), n, 1, d_lddc, 1, queue);
+  // magma_setvector(batchCount, sizeof(magma_int_t), n, 1, d_m, 1, queue);
+  // magma_setvector(batchCount, sizeof(magma_int_t), m, 1, d_n, 1, queue);
+  // magma_setvector(batchCount, sizeof(magma_int_t), k, 1, d_k, 1, queue);
+  // magma_setvector(batchCount, sizeof(magma_int_t), n, 1, d_lddb, 1, queue);
+  // magma_setvector(batchCount, sizeof(magma_int_t), k, 1, d_ldda, 1, queue);
+  // magma_setvector(batchCount, sizeof(magma_int_t), n, 1, d_lddc, 1, queue);
   
   // std::cout<<"maga set_vector of d vars finsihed..."<<"\n";
 
@@ -176,17 +176,17 @@ int bmm_cuda_forward(
   // TESTING_CHECK( magma_malloc((void**)&d_n, (batchCount+1)*sizeof(magma_int_t)) );
   // TESTING_CHECK( magma_malloc((void**)&d_k, (batchCount+1)*sizeof(magma_int_t)) );
 
-  magmablas_dgemm_vbatched(transA,transB, d_m,
-      /* magma_int_t * */         d_n,
-      /* magma_int_t * */         d_k,
+  magmablas_dgemm_vbatched(transA,transB, n,
+      /* magma_int_t * */         m,
+      /* magma_int_t * */         k,
       /* double */                alpha,
       /* double const *const * */ dB_array,
-      /* magma_int_t */          d_lddb,
+      /* magma_int_t */           n,
       /* double const *const * */ dA_array,
-      /* magma_int_t * */         d_ldda,
+      /* magma_int_t * */         k,
       /* double */                beta,
       /* double ** */             dC_array,
-      /* magma_int_t * */         d_lddc,
+      /* magma_int_t * */         n,
       /* magma_int_t */           batchCount,
       /* magma_queue_t */         queue);
 

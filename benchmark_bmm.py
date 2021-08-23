@@ -68,7 +68,10 @@ for i in range(options.n):
     mshapes.append(A_s.shape[0])
     nshapes.append(B_s.shape[1])
     kshapes.append(A_s.shape[1])
-
+# adding one extra elements since magma needs it
+mshapes.append(0)
+nshapes.append(0)
+kshapes.append(0)
 
 
 m_arr = torch.cuda.IntTensor(mshapes)

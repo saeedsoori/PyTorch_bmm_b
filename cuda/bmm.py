@@ -14,7 +14,7 @@ class BMM():
         self.x = 1
 
     def forward(A, B, C, m , n, k, batch_size):
-        print('running....')
+        # print('running....')
         # m_arr = (ctypes.c_int * len(m))(*m)
         # n_arr = (ctypes.c_int * len(n))(*n)
         # k_arr = (ctypes.c_int * len(k))(*k)
@@ -23,7 +23,7 @@ class BMM():
         return bmm_cuda.forward(A, B, C, m, n, k, batch_size)
 
     def single(A, B, C, m , n, k):
-        print('running single mode....')
+        # print('running single mode....')
         # m_arr = (ctypes.c_int * len(m))(*m)
         # n_arr = (ctypes.c_int * len(n))(*n)
         # k_arr = (ctypes.c_int * len(k))(*k)

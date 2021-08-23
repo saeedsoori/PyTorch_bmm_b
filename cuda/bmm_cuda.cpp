@@ -37,8 +37,8 @@ int bmm_forward(
     // double *pA = (double *) A[0].data_ptr();
     // double *pB = (double *) B[0].data_ptr();
 
-    std::cout<<"elements in A: "<<A.size()<<"\n";
-    std::cout<<"elements in B: "<<B.size()<<"\n";
+    // std::cout<<"elements in A: "<<A.size()<<"\n";
+    // std::cout<<"elements in B: "<<B.size()<<"\n";
 
     // int* m_arr = (int*) malloc (2*sizeof(int));
     // int* n_arr = (int*) malloc (2*sizeof(int));
@@ -54,9 +54,9 @@ int bmm_forward(
     int* m_arr = (int*) m.data_ptr();
     int* n_arr = (int*) n.data_ptr();
     int* k_arr = (int*) k.data_ptr();
-    std::cout<<"here\n";
+    // std::cout<<"here\n";
     // std::cout<<m_arr[0]<<" "<<n_arr[0]<<" "<<k_arr[0]<<"\n";
-    std::cout<<"finsihing arrays print\n";
+    // std::cout<<"finsihing arrays print\n";
 
   // CHECK_INPUT(A);
   // CHECK_INPUT(B);

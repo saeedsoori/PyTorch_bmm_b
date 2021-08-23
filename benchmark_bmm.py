@@ -34,8 +34,8 @@ kwargs = {'dtype': dtype,
           'requires_grad': False}
 
 # generate "n" random matrix with different #columns
-r_size = [32, 64, 128, 198, 256]
-# r_size = [2]
+# r_size = [32, 64, 128, 198, 256]
+r_size = [2,4,8,16]
 A = []
 B = []
 C = []
@@ -75,8 +75,8 @@ Mul = BMM()
 m_arr = torch.cuda.IntTensor(mshapes)
 n_arr = torch.cuda.IntTensor(nshapes)
 k_arr = torch.cuda.IntTensor(kshapes)
-start = time.time()
 
+start = time.time()
 result = BMM.forward(A, B, C, m_arr, n_arr, k_arr, options.n)
 elapsed = time.time() - start
 magma_min = min(magma_min, elapsed)

@@ -85,7 +85,7 @@ A_con = torch.zeros(sum_size_A, **kwargs)
 B_con = torch.zeros(sum_size_B, **kwargs)
 C_con = torch.zeros(sum_size_C, **kwargs)
 
-print('tensors created with size:', sum_size_A)
+# print('tensors created with size:', sum_size_A)
 offset_A = 0
 offset_B = 0
 offset_C = 0
@@ -124,7 +124,7 @@ for j in range(options.runs):
         C_true.append(C_s_true)
 
     # calling magma
-    print('start calling mamgma')
+    # print('start calling mamgma')
     start = time.time()
     result = BMM.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
     elapsed = time.time() - start

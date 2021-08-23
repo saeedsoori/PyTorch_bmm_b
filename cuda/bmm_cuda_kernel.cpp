@@ -67,36 +67,7 @@ int bmm_cuda_forward(
     int* n,
     int* k,
     int batch_size) {
-  // std::cout<<"kernel started..."<<"\n";
-
-
   
-  // auto X = torch::cat({old_h, input}, /*dim=*/1);
-  // auto gate_weights = torch::addmm(bias, X, weights.transpose(0, 1));
-
-  // const auto batch_size = old_cell.size(0);
-  // const auto state_size = old_cell.size(1);
-
-  // auto gates = gate_weights.reshape({batch_size, 3, state_size});
-  // auto new_h = torch::zeros_like(old_cell);
-  // auto new_cell = torch::zeros_like(old_cell);
-  // auto input_gate = torch::zeros_like(old_cell);
-  // auto output_gate = torch::zeros_like(old_cell);
-  // auto candidate_cell = torch::zeros_like(old_cell);
-
-  // const int threads = 1024;
-  // const dim3 blocks((state_size + threads - 1) / threads, batch_size);
-
-  // AT_DISPATCH_FLOATING_TYPES(gates.type(), "lltm_forward_cuda", ([&] {
-  //   lltm_cuda_forward_kernel<scalar_t><<<blocks, threads>>>(
-  //       gates.packed_accessor<scalar_t,3,torch::RestrictPtrTraits,size_t>(),
-  //       old_cell.packed_accessor<scalar_t,2,torch::RestrictPtrTraits,size_t>(),
-  //       new_h.packed_accessor<scalar_t,2,torch::RestrictPtrTraits,size_t>(),
-  //       new_cell.packed_accessor<scalar_t,2,torch::RestrictPtrTraits,size_t>(),
-  //       input_gate.packed_accessor<scalar_t,2,torch::RestrictPtrTraits,size_t>(),
-  //       output_gate.packed_accessor<scalar_t,2,torch::RestrictPtrTraits,size_t>(),
-  //       candidate_cell.packed_accessor<scalar_t,2,torch::RestrictPtrTraits,size_t>());
-  // }));
 
   double ** hA_array;
   double ** hB_array;
@@ -132,14 +103,14 @@ int bmm_cuda_forward(
 
   // check if 
   // std::cout<<"is the input correct?"<<"\n";
-  int *m_dst, *n_dst, *k_dst;
-  TESTING_CHECK( magma_malloc_cpu( (void**)&m_dst, sizeof(int*)*batchCount ) );
-  TESTING_CHECK( magma_malloc_cpu( (void**)&n_dst, sizeof(int*)*batchCount ) );
-  TESTING_CHECK( magma_malloc_cpu( (void**)&k_dst, sizeof(int*)*batchCount ) );
-  int nelem = batchCount;
-  magma_getvector(nelem, sizeof(int), m, 1, m_dst, 1, queue); 
-  magma_getvector(nelem, sizeof(int), n, 1, n_dst, 1, queue); 
-  magma_getvector(nelem, sizeof(int), k, 1, k_dst, 1, queue); 
+  // int *m_dst, *n_dst, *k_dst;
+  // TESTING_CHECK( magma_malloc_cpu( (void**)&m_dst, sizeof(int*)*batchCount ) );
+  // TESTING_CHECK( magma_malloc_cpu( (void**)&n_dst, sizeof(int*)*batchCount ) );
+  // TESTING_CHECK( magma_malloc_cpu( (void**)&k_dst, sizeof(int*)*batchCount ) );
+  // int nelem = batchCount;
+  // magma_getvector(nelem, sizeof(int), m, 1, m_dst, 1, queue); 
+  // magma_getvector(nelem, sizeof(int), n, 1, n_dst, 1, queue); 
+  // magma_getvector(nelem, sizeof(int), k, 1, k_dst, 1, queue); 
   // std::cout<<"checking for m is finsihed: "<<m_dst[0]<<" "<<m_dst[1]<<"\n";
   // std::cout<<"checking for n is finsihed: "<<n_dst[0]<<" "<<n_dst[1]<<"\n";
   // std::cout<<"checking for k is finsihed: "<<k_dst[0]<<" "<<k_dst[1]<<"\n";
@@ -191,12 +162,12 @@ int bmm_cuda_forward(
   // magma_setvector(batchCount, sizeof(magma_int_t), k_dst, 1, d_ldda, 1, queue);
   // magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_lddc, 1, queue);
 
-  magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_m, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), m_dst, 1, d_n, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), k_dst, 1, d_k, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_lddb, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), k_dst, 1, d_ldda, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_lddc, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), n, 1, d_m, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), m, 1, d_n, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), k, 1, d_k, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), n, 1, d_lddb, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), k, 1, d_ldda, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), n, 1, d_lddc, 1, queue);
   
   // std::cout<<"maga set_vector of d vars finsihed..."<<"\n";
 

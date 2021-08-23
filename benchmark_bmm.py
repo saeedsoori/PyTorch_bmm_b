@@ -34,7 +34,7 @@ kwargs = {'dtype': dtype,
           'requires_grad': False}
 
 # generate "n" random matrix with different #columns
-r_size = [32, 64, 128, 198, 256]
+r_size = [16, 24, 32, 64, 72, 128]
 # r_size = [2,4,8,16]
 A = []
 B = []
@@ -51,13 +51,15 @@ magma_min = math.inf
 magma_time = 0
 
 Mul = BMM()
-
+sum_size_A = 0
+sum_size_B = 0
+sum_size_C = 0
 
 for i in range(options.n):
     A_s = torch.randn(options.batch_size, r_size[index[i]], **kwargs)
     B_s = torch.randn(r_size[index[i]], r_size[index[i]] + 32, **kwargs)
     C_s = torch.zeros(options.batch_size, r_size[index[i]] + 32, **kwargs)
-    
+
     # Force CUDA initialization
     C_s_true = torch.matmul(A_s, B_s)
 
@@ -68,10 +70,37 @@ for i in range(options.n):
     mshapes.append(A_s.shape[0])
     nshapes.append(B_s.shape[1])
     kshapes.append(A_s.shape[1])
+
+    sum_size_A = sum_size_A + A_s.numel()
+    sum_size_B = sum_size_B + B_s.numel()
+    sum_size_C = sum_size_C + C_s.numel()
+
 # adding one extra elements since magma needs it
 mshapes.append(0)
 nshapes.append(0)
 kshapes.append(0)
+
+### making a contiguous tensor
+A_con = torch.zeros(sum_size_A)
+B_con = torch.zeros(sum_size_B)
+C_con = torch.zeros(sum_size_C)
+offset_A = 0
+offset_B = 0
+offset_C = 0
+all_offset_A = [offset_A]
+all_offset_B= [offset_B]
+all_offset_C = [offset_C]
+for i in range(options.n):
+    A_con[0 + offset_A:A[i].numel() + offset_A] = torch.reshape(A[i], -1)
+    B_con[0 + offset_B:B[i].numel() + offset_B] = torch.reshape(B[i], -1)
+    C_con[0 + offset_C:C[i].numel() + offset_C] = torch.reshape(C[i], -1)
+    offset_A = offset_A + A[i].numel()
+    offset_B = offset_B + B[i].numel()
+    offset_C = offset_C + C[i].numel()
+    all_offset_A.append(offset_A)
+    all_offset_B.append(offset_B)
+    all_offset_C.append(offset_C)
+
 
 
 m_arr = torch.cuda.IntTensor(mshapes)
@@ -79,7 +108,8 @@ n_arr = torch.cuda.IntTensor(nshapes)
 k_arr = torch.cuda.IntTensor(kshapes)
 
 # Force CUDA initialization
-result = BMM.forward(A, B, C, m_arr, n_arr, k_arr, options.n)
+# result = BMM.forward(A, B, C, m_arr, n_arr, k_arr, options.n)
+result = BMM.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
 
 for j in range(options.runs):
     C_true = []
@@ -93,7 +123,7 @@ for j in range(options.runs):
 
     # calling magma
     start = time.time()
-    result = BMM.forward(A, B, C, m_arr, n_arr, k_arr, options.n)
+    result = BMM.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
     elapsed = time.time() - start
     magma_min = min(magma_min, elapsed)
     magma_time += elapsed

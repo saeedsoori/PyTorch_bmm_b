@@ -60,16 +60,13 @@ namespace {
 } // namespace
 
 int bmm_cuda_forward(
-    torch::Tensor A,
-    torch::Tensor B,
-    torch::Tensor C,
+    std::vector<torch::Tensor> A,
+    std::vector<torch::Tensor> B,
+    std::vector<torch::Tensor> C,
     int* m,
     int* n,
     int* k,
-    int batch_size,
-    std::vector<int> offset_A,
-    std::vector<int> offset_B,
-    std::vector<int> offset_C) {
+    int batch_size) {
   
 
   double ** hA_array;
@@ -135,9 +132,9 @@ int bmm_cuda_forward(
   {
     // std::cout<<"processing input tensor:"<< i<< " \n";
 
-    hA_array[i] = (double *) A.data_ptr() + offset_A[i];
-    hB_array[i] = (double *) B.data_ptr() + offset_B[i];
-    hC_array[i] = (double *) C.data_ptr() + offset_C[i];
+    hA_array[i] = (double *) A[i].data_ptr();
+    hB_array[i] = (double *) B[i].data_ptr();
+    hC_array[i] = (double *) C[i].data_ptr();
   }
 
 

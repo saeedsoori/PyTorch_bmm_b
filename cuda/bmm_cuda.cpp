@@ -5,13 +5,27 @@
 // CUDA forward declarations
 
 int bmm_cuda_forward(
-    std::vector<torch::Tensor> A,
-    std::vector<torch::Tensor> B,
-    std::vector<torch::Tensor> C,
+    torch::Tensor A,
+    torch::Tensor B,
+    torch::Tensor C,
     int* m,
     int* n,
     int* k,
-    int batch_size);
+    int batch_size,
+    std::vector<int> offset_A,
+    std::vector<int> offset_B,
+    std::vector<int> offset_C);
+
+
+// int bmm_cuda_forward(
+    // std::vector<torch::Tensor> A,
+    // std::vector<torch::Tensor> B,
+    // std::vector<torch::Tensor> C,
+    // int* m,
+    // int* n,
+    // int* k,
+    // int batch_size);
+
 
 int bmm_cuda_single(
     torch::Tensor A,
@@ -29,40 +43,38 @@ int bmm_cuda_single(
 #define CHECK_CONTIGUOUS(x) AT_ASSERTM(x.is_contiguous(), #x " must be contiguous")
 #define CHECK_INPUT(x) CHECK_CUDA(x); CHECK_CONTIGUOUS(x)
 
-int bmm_forward(
-    std::vector<torch::Tensor> A,
-    std::vector<torch::Tensor> B,
-    std::vector<torch::Tensor> C,
-    torch::Tensor m, torch::Tensor n, torch::Tensor k, int batch_size) {
-    // double *pA = (double *) A[0].data_ptr();
-    // double *pB = (double *) B[0].data_ptr();
+// int bmm_forward(
+//     std::vector<torch::Tensor> A,
+//     std::vector<torch::Tensor> B,
+//     std::vector<torch::Tensor> C,
+//     torch::Tensor m, torch::Tensor n, torch::Tensor k, int batch_size) {
+    
+//     int* m_arr = (int*) m.data_ptr();
+//     int* n_arr = (int*) n.data_ptr();
+//     int* k_arr = (int*) k.data_ptr();
 
-    // std::cout<<"elements in A: "<<A.size()<<"\n";
-    // std::cout<<"elements in B: "<<B.size()<<"\n";
-
-    // int* m_arr = (int*) malloc (2*sizeof(int));
-    // int* n_arr = (int*) malloc (2*sizeof(int));
-    // int* k_arr = (int*) malloc (2*sizeof(int));
 
     
+//   return bmm_cuda_forward(A, B, C, m_arr ,n_arr , k_arr, batch_size);
+// }
 
-    // for (int i = 0; i < A.size(); ++i)
-    // {
-    	
-    // }
-
+int bmm_forward(
+    torch::Tensor A,
+    torch::Tensor B,
+    torch::Tensor C,
+    torch::Tensor m, torch::Tensor n, torch::Tensor k, int batch_size,
+    std::vector<int> offset_A,
+    std::vector<int> offset_B,
+    std::vector<int> offset_C,
+    ) {
+    
     int* m_arr = (int*) m.data_ptr();
     int* n_arr = (int*) n.data_ptr();
     int* k_arr = (int*) k.data_ptr();
-    // std::cout<<"here\n";
-    // std::cout<<m_arr[0]<<" "<<n_arr[0]<<" "<<k_arr[0]<<"\n";
-    // std::cout<<"finsihing arrays print\n";
 
-  // CHECK_INPUT(A);
-  // CHECK_INPUT(B);
-
-
-  return bmm_cuda_forward(A, B, C, m_arr ,n_arr , k_arr, batch_size);
+    
+    
+  return bmm_cuda_forward(A, B, C, m_arr ,n_arr , k_arr, batch_size, offset_A, offset_B, offset_C);
 }
 
 int bmm_single(
@@ -72,9 +84,9 @@ int bmm_single(
     torch::Tensor C,
     int m, int n, int k) {
 	std::cout<<"cpp single mode\n";
-	CHECK_CONTIGUOUS(A);
-	CHECK_CONTIGUOUS(B);
-	CHECK_CONTIGUOUS(C);
+	// CHECK_CONTIGUOUS(A);
+	// CHECK_CONTIGUOUS(B);
+	// CHECK_CONTIGUOUS(C);
 
     // double *pA = (double *) A[0].data_ptr();
     // double *pB = (double *) B[0].data_ptr();

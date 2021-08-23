@@ -35,7 +35,7 @@ kwargs = {'dtype': dtype,
 
 # generate "n" random matrix with different #columns
 # r_size = [32, 64, 128, 198, 256]
-r_size = [3]
+r_size = [2]
 A = []
 B = []
 C = []
@@ -47,9 +47,9 @@ index = torch.randint(0, len(r_size), (options.n,))
 for i in range(options.n):
     A_s = torch.randn(options.batch_size, r_size[index[i]], **kwargs)
     # B_s = torch.randn(r_size[index[i]], r_size[index[i]] + 32, **kwargs)
-    B_s = torch.randn(r_size[index[i]], r_size[index[i]], **kwargs)
+    B_s = torch.randn(r_size[index[i]], r_size[index[i]]+1, **kwargs)
     # C_s = torch.zeros(options.batch_size, r_size[index[i]] + 32, **kwargs)
-    C_s = torch.zeros(options.batch_size, r_size[index[i]], **kwargs)
+    C_s = torch.zeros(options.batch_size, r_size[index[i]]+1, **kwargs)
     C_s_true = torch.matmul(A_s, B_s)
     A.append(A_s)
     B.append(B_s)

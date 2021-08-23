@@ -76,6 +76,10 @@ print('B tensors:', B)
 print('C tensors:', C)
 print('C true tensors:', C_true)
 
+for i in range(options.n):
+    print(torch.allclose(C[i], C_true[i]))
+    
+
 # result_single = BMM.single(A_s, B_s, C_s, A_s.shape[0], B_s.shape[1], A_s.shape[1])
 
 

@@ -65,7 +65,7 @@ int bmm_forward(
     torch::Tensor m, torch::Tensor n, torch::Tensor k, int batch_size,
     std::vector<int> offset_A,
     std::vector<int> offset_B,
-    std::vector<int> offset_C,
+    std::vector<int> offset_C
     ) {
     
     int* m_arr = (int*) m.data_ptr();

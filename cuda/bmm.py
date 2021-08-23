@@ -13,7 +13,7 @@ class BMM():
     def __init__(self):
         self.x = 1
 
-    def forward(A, B, C, m , n, k, batch_count):
+    def forward(A, B, C, m , n, k, batch_size):
         print('running....')
         # m_arr = (ctypes.c_int * len(m))(*m)
         # n_arr = (ctypes.c_int * len(n))(*n)

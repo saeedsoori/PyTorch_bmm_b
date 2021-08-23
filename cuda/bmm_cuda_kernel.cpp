@@ -275,8 +275,11 @@ int bmm_cuda_single(
 
 
 
-  magma_trans_t transA = MagmaTrans;
-  magma_trans_t transB = MagmaTrans;
+  // magma_trans_t transA = MagmaTrans;
+  // magma_trans_t transB = MagmaTrans;
+
+  magma_trans_t transA = MagmaNoTrans;
+  magma_trans_t transB = MagmaNoTrans;
 
   magma_int_t batchCount = 1;
   magma_queue_t queue;
@@ -370,12 +373,19 @@ int bmm_cuda_single(
 
   std::cout<<"single kernel: moving host array to device finsihed..."<<"\n";
 
-  magma_setvector(batchCount, sizeof(magma_int_t), m_dst, 1, d_m, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_n, 1, queue);
+  // magma_setvector(batchCount, sizeof(magma_int_t), m_dst, 1, d_m, 1, queue);
+  // magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_n, 1, queue);
+  // magma_setvector(batchCount, sizeof(magma_int_t), k_dst, 1, d_k, 1, queue);
+  // magma_setvector(batchCount, sizeof(magma_int_t), k_dst, 1, d_ldda, 1, queue);
+  // magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_lddb, 1, queue);
+  // magma_setvector(batchCount, sizeof(magma_int_t), m_dst, 1, d_lddc, 1, queue);
+
+  magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_m, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), m_dst, 1, d_n, 1, queue);
   magma_setvector(batchCount, sizeof(magma_int_t), k_dst, 1, d_k, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), k_dst, 1, d_ldda, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_lddb, 1, queue);
-  magma_setvector(batchCount, sizeof(magma_int_t), m_dst, 1, d_lddc, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_ldda, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), k_dst, 1, d_lddb, 1, queue);
+  magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_lddc, 1, queue);
   
   std::cout<<"single kernel: maga set_vector of d vars finsihed..."<<"\n";
 

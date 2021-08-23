@@ -50,48 +50,56 @@ pytorch_time = 0
 magma_min = math.inf
 magma_time = 0
 
+Mul = BMM()
+
+
 for i in range(options.n):
     A_s = torch.randn(options.batch_size, r_size[index[i]], **kwargs)
     B_s = torch.randn(r_size[index[i]], r_size[index[i]] + 32, **kwargs)
     C_s = torch.zeros(options.batch_size, r_size[index[i]] + 32, **kwargs)
-    start = time.time()
-    C_s_true = torch.matmul(A_s, B_s)
-    elapsed = time.time() - start
-    pytorch_min = min(pytorch_min, elapsed)
-    pytorch_time += elapsed
+    
+    # Force CUDA initialization
+    C_s_true = torch.matmul(A[i], B[i])
 
     A.append(A_s)
     B.append(B_s)
     C.append(C_s)
-    C_true.append(C_s_true)
+    
     mshapes.append(A_s.shape[0])
     nshapes.append(B_s.shape[1])
     kshapes.append(A_s.shape[1])
-    # print(A[i].shape)
-    # print(B[i].shape)
-    print('*'*10)
 
-Mul = BMM()
+
+
 m_arr = torch.cuda.IntTensor(mshapes)
 n_arr = torch.cuda.IntTensor(nshapes)
 k_arr = torch.cuda.IntTensor(kshapes)
 
-start = time.time()
+# Force CUDA initialization
 result = BMM.forward(A, B, C, m_arr, n_arr, k_arr, options.n)
-elapsed = time.time() - start
-magma_min = min(magma_min, elapsed)
-magma_time += elapsed
 
-# 
-# print('results...........')
-# print('A tensors:', A)
-# print('B tensors:', B)
-# print('C tensors:', C)
-# print('C true tensors:', C_true)
+for j in range(options.r):
+    C_true = []
+    for i in range(options.n):
+        start = time.time()
+        C_s_true = torch.matmul(A[i], B[i])
+        elapsed = time.time() - start
+        pytorch_min = min(pytorch_min, elapsed)
+        pytorch_time += elapsed
+        C_true.append(C_s_true)
 
-for i in range(options.n):
-    print(torch.allclose(C[i], C_true[i]))
+    # calling magma
+    start = time.time()
+    result = BMM.forward(A, B, C, m_arr, n_arr, k_arr, options.n)
+    elapsed = time.time() - start
+    magma_min = min(magma_min, elapsed)
+    magma_time += elapsed
+
+    for k in range(options.n):
+        print(torch.allclose(C[i], C_true[i]))
     
+
+ 
 scale = TIME_SCALES[options.scale]
 pytorch_min *= scale
 magma_min *= scale

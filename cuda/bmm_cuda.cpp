@@ -33,7 +33,7 @@ int bmm_forward(
     std::vector<torch::Tensor> A,
     std::vector<torch::Tensor> B,
     std::vector<torch::Tensor> C,
-    torch::Tensor m, torch::Tensor n, torch::Tensor k, int batch_count) {
+    torch::Tensor m, torch::Tensor n, torch::Tensor k, int batch_size) {
     // double *pA = (double *) A[0].data_ptr();
     // double *pB = (double *) B[0].data_ptr();
 

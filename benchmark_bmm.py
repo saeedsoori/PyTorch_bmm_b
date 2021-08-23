@@ -44,13 +44,22 @@ mshapes = []
 nshapes = []
 kshapes = []
 index = torch.randint(0, len(r_size), (options.n,))
+
+pytorch_min = math.inf
+pytorch_time = 0
+magma_min = math.inf
+magma_time = 0
+
 for i in range(options.n):
     A_s = torch.randn(options.batch_size, r_size[index[i]], **kwargs)
     B_s = torch.randn(r_size[index[i]], r_size[index[i]] + 32, **kwargs)
-    # B_s = torch.randn(r_size[index[i]], r_size[index[i]]+1, **kwargs)
     C_s = torch.zeros(options.batch_size, r_size[index[i]] + 32, **kwargs)
-    # C_s = torch.zeros(options.batch_size, r_size[index[i]]+1, **kwargs)
+    start = time.time()
     C_s_true = torch.matmul(A_s, B_s)
+    elapsed = time.time() - start
+    pytorch_min = min(pytorch_min, elapsed)
+    pytorch_time += elapsed
+
     A.append(A_s)
     B.append(B_s)
     C.append(C_s)
@@ -58,27 +67,41 @@ for i in range(options.n):
     mshapes.append(A_s.shape[0])
     nshapes.append(B_s.shape[1])
     kshapes.append(A_s.shape[1])
-    print(A[i].shape)
-    print(B[i].shape)
+    # print(A[i].shape)
+    # print(B[i].shape)
     print('*'*10)
 
 Mul = BMM()
-# C = BMM.forward(A_s, B_s, A_s.shape[0], A_s.shape[1], B_s.shape[1])
 m_arr = torch.cuda.IntTensor(mshapes)
-print('original m:', m_arr)
 n_arr = torch.cuda.IntTensor(nshapes)
 k_arr = torch.cuda.IntTensor(kshapes)
-result = BMM.forward(A, B, C, m_arr, n_arr, k_arr, options.n)
+start = time.time()
 
-print('results...........')
-print('A tensors:', A)
-print('B tensors:', B)
-print('C tensors:', C)
-print('C true tensors:', C_true)
+result = BMM.forward(A, B, C, m_arr, n_arr, k_arr, options.n)
+elapsed = time.time() - start
+magma_min = min(magma_min, elapsed)
+magma_time += elapsed
+
+# 
+# print('results...........')
+# print('A tensors:', A)
+# print('B tensors:', B)
+# print('C tensors:', C)
+# print('C true tensors:', C_true)
 
 for i in range(options.n):
     print(torch.allclose(C[i], C_true[i]))
     
+scale = TIME_SCALES[options.scale]
+pytorch_min *= scale
+magma_min *= scale
+pytorch_average = pytorch_time / 1 * scale
+magma_average = magma_time / 1 * scale
+
+print('PyTorch: {0:.3f}/{1:.3f} {4} | Magma {2:.3f}/{3:.3f} {4}'.format(
+    pytorch_min, pytorch_average, magma_min, magma_average,
+    options.scale))
+
 
 # result_single = BMM.single(A_s, B_s, C_s, A_s.shape[0], B_s.shape[1], A_s.shape[1])
 
@@ -93,10 +116,7 @@ for i in range(options.n):
 # new_h, new_C = rnn(X, (h, C))
 # (new_h.sum() + new_C.sum()).backward()
 
-forward_min = math.inf
-forward_time = 0
-backward_min = math.inf
-backward_time = 0
+
 # for _ in range(options.runs):
 #     rnn.zero_grad()
 
@@ -112,12 +132,4 @@ backward_time = 0
 #     backward_min = min(backward_min, elapsed)
 #     backward_time += elapsed
 
-# scale = TIME_SCALES[options.scale]
-# forward_min *= scale
-# backward_min *= scale
-# forward_average = forward_time / options.runs * scale
-# backward_average = backward_time / options.runs * scale
 
-# print('Forward: {0:.3f}/{1:.3f} {4} | Backward {2:.3f}/{3:.3f} {4}'.format(
-#     forward_min, forward_average, backward_min, backward_average,
-#     options.scale))

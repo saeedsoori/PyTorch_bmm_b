@@ -81,9 +81,9 @@ nshapes.append(0)
 kshapes.append(0)
 
 ### making a contiguous tensor
-A_con = torch.zeros(sum_size_A)
-B_con = torch.zeros(sum_size_B)
-C_con = torch.zeros(sum_size_C)
+A_con = torch.zeros(sum_size_A, **kwargs)
+B_con = torch.zeros(sum_size_B, **kwargs)
+C_con = torch.zeros(sum_size_C, **kwargs)
 
 print('tensors created with size:', sum_size_A)
 offset_A = 0

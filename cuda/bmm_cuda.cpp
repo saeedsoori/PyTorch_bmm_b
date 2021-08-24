@@ -160,6 +160,7 @@ public:
     std::vector<int> offset_B,
     std::vector<int> offset_C){
 
+  cublasStatus_t status;
 
   	A_array = (float **) malloc(batchCount*sizeof(float*));
   	B_array = (float **) malloc(batchCount*sizeof(float*));

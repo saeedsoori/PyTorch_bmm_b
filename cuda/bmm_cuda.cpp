@@ -160,7 +160,7 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
 	py::class_<Foo>(m, name.c_str())
       .def(py::init<>())
       .def("setKey", &Foo::setKey)
-      .def("getKey", &Foo::getKey)
+      .def("getKey", &Foo::getKey);
   m.def("forward", &bmm_forward, "BMM forward (CUDA)");
   // m.def("cublas_gemm_call", &cublas_forward, "BMM cublas_gemm_call (CUDA)");
 }

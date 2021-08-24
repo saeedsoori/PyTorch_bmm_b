@@ -27,13 +27,17 @@ int bmm_cuda_forward(
     // int batch_size);
 
 
-int bmm_cuda_single(
+int cublas_gemm_call(
     torch::Tensor A,
     torch::Tensor B,
     torch::Tensor C,
-    int m,
-    int n,
-    int k);
+    int* m,
+    int* n,
+    int* k,
+    int batch_size,
+    std::vector<int> offset_A,
+    std::vector<int> offset_B,
+    std::vector<int> offset_C);
 
 
 // C++ interface
@@ -77,13 +81,18 @@ int bmm_forward(
   return bmm_cuda_forward(A, B, C, m_arr ,n_arr , k_arr, batch_size, offset_A, offset_B, offset_C);
 }
 
-int bmm_single(
+int cublas_gemm_call(
 
     torch::Tensor A,
     torch::Tensor B,
     torch::Tensor C,
-    int m, int n, int k) {
-	std::cout<<"cpp single mode\n";
+    int* m,
+    int* n,
+    int* k,
+    int batch_size,
+    std::vector<int> offset_A,
+    std::vector<int> offset_B,
+    std::vector<int> offset_C) {
 	// CHECK_CONTIGUOUS(A);
 	// CHECK_CONTIGUOUS(B);
 	// CHECK_CONTIGUOUS(C);
@@ -110,17 +119,16 @@ int bmm_single(
     // int* k_arr = (int*) k.data_ptr();
     // std::cout<<"here\n";
     // std::cout<<m_arr[0]<<" "<<n_arr[0]<<" "<<k_arr[0]<<"\n";
-    std::cout<<"finsihing single cpp\n";
 
   // CHECK_INPUT(A);
   // CHECK_INPUT(B);
 
 
-  return bmm_cuda_single(A, B, C, m ,n , k);
+  return cublas_gemm_call(A, B, C, m ,n , k);
 }
 
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
   m.def("forward", &bmm_forward, "BMM forward (CUDA)");
-  m.def("single", &bmm_single, "BMM single (CUDA)");
+  m.def("cublas_gemm_call", &cublas_gemm_call, "BMM cublas_gemm_call (CUDA)");
 }

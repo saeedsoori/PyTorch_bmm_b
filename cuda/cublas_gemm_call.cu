@@ -10,8 +10,8 @@
 #include <time.h>
 
 // includes, project
-#include "magma_v2.h"
-#include "magma_lapack.h"
+// #include "magma_v2.h"
+// #include "magma_lapack.h"
 // #include "testings.h"
 
 #include <string.h> //for memcpy
@@ -59,14 +59,17 @@ namespace {
 
 } // namespace
 
-int bmm_cuda_forward(
-    std::vector<torch::Tensor> A,
-    std::vector<torch::Tensor> B,
-    std::vector<torch::Tensor> C,
+int cublas_gemm_call(
+    torch::Tensor A,
+    torch::Tensor B,
+    torch::Tensor C,
     int* m,
     int* n,
     int* k,
-    int batch_size) {
+    int batch_size,
+    std::vector<int> offset_A,
+    std::vector<int> offset_B,
+    std::vector<int> offset_C) {
   
 
   double ** hA_array;
@@ -101,19 +104,7 @@ int bmm_cuda_forward(
   magma_queue_create( device, &queue );
 
 
-  // check if 
-  // std::cout<<"is the input correct?"<<"\n";
-  // int *m_dst, *n_dst, *k_dst;
-  // TESTING_CHECK( magma_malloc_cpu( (void**)&m_dst, sizeof(int*)*batchCount ) );
-  // TESTING_CHECK( magma_malloc_cpu( (void**)&n_dst, sizeof(int*)*batchCount ) );
-  // TESTING_CHECK( magma_malloc_cpu( (void**)&k_dst, sizeof(int*)*batchCount ) );
-  // int nelem = batchCount;
-  // magma_getvector(nelem, sizeof(int), m, 1, m_dst, 1, queue); 
-  // magma_getvector(nelem, sizeof(int), n, 1, n_dst, 1, queue); 
-  // magma_getvector(nelem, sizeof(int), k, 1, k_dst, 1, queue); 
-  // std::cout<<"checking for m is finsihed: "<<m_dst[0]<<" "<<m_dst[1]<<"\n";
-  // std::cout<<"checking for n is finsihed: "<<n_dst[0]<<" "<<n_dst[1]<<"\n";
-  // std::cout<<"checking for k is finsihed: "<<k_dst[0]<<" "<<k_dst[1]<<"\n";
+  
 
 
   TESTING_CHECK( magma_malloc_cpu( (void**)&hA_array, sizeof(double*)*batchCount ) );
@@ -132,9 +123,9 @@ int bmm_cuda_forward(
   {
     // std::cout<<"processing input tensor:"<< i<< " \n";
 
-    hA_array[i] = (double *) A[i].data_ptr();
-    hB_array[i] = (double *) B[i].data_ptr();
-    hC_array[i] = (double *) C[i].data_ptr();
+    hA_array[i] = (double *) A.data_ptr() + offset_A[i];
+    hB_array[i] = (double *) B.data_ptr() + offset_B[i];
+    hC_array[i] = (double *) C.data_ptr() + offset_C[i];
   }
 
 

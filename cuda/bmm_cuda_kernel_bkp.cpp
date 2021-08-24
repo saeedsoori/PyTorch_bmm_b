@@ -30,6 +30,34 @@
         }                                                                    \
     } while( 0 )
 
+namespace {
+
+
+// template <typename scalar_t>
+// __global__ void bmm_cuda_forward_kernel(
+//     const torch::PackedTensorAccessor<scalar_t,3,torch::RestrictPtrTraits,size_t> gates,
+//     const torch::PackedTensorAccessor<scalar_t,2,torch::RestrictPtrTraits,size_t> old_cell,
+//     torch::PackedTensorAccessor<scalar_t,2,torch::RestrictPtrTraits,size_t> new_h,
+//     torch::PackedTensorAccessor<scalar_t,2,torch::RestrictPtrTraits,size_t> new_cell,
+//     torch::PackedTensorAccessor<scalar_t,2,torch::RestrictPtrTraits,size_t> input_gate,
+//     torch::PackedTensorAccessor<scalar_t,2,torch::RestrictPtrTraits,size_t> output_gate,
+//     torch::PackedTensorAccessor<scalar_t,2,torch::RestrictPtrTraits,size_t> candidate_cell) {
+//   //batch index
+//   const int n = blockIdx.y;
+//   // column index
+//   const int c = blockIdx.x * blockDim.x + threadIdx.x;
+//   if (c < gates.size(2)){
+//     input_gate[n][c] = sigmoid(gates[n][0][c]);
+//     output_gate[n][c] = sigmoid(gates[n][1][c]);
+//     candidate_cell[n][c] = elu(gates[n][2][c]);
+//     new_cell[n][c] =
+//         old_cell[n][c] + candidate_cell[n][c] * input_gate[n][c];
+//     new_h[n][c] = tanh(new_cell[n][c]) * output_gate[n][c];
+//   }
+// }
+
+
+} // namespace
 
 int bmm_cuda_forward(
     torch::Tensor A,
@@ -76,11 +104,32 @@ int bmm_cuda_forward(
   magma_queue_create( device, &queue );
 
 
+  // check if 
+  // std::cout<<"is the input correct?"<<"\n";
+  // int *m_dst, *n_dst, *k_dst;
+  // TESTING_CHECK( magma_malloc_cpu( (void**)&m_dst, sizeof(int*)*batchCount ) );
+  // TESTING_CHECK( magma_malloc_cpu( (void**)&n_dst, sizeof(int*)*batchCount ) );
+  // TESTING_CHECK( magma_malloc_cpu( (void**)&k_dst, sizeof(int*)*batchCount ) );
+  // int nelem = batchCount;
+  // magma_getvector(nelem, sizeof(int), m, 1, m_dst, 1, queue); 
+  // magma_getvector(nelem, sizeof(int), n, 1, n_dst, 1, queue); 
+  // magma_getvector(nelem, sizeof(int), k, 1, k_dst, 1, queue); 
+  // std::cout<<"checking for m is finsihed: "<<m_dst[0]<<" "<<m_dst[1]<<"\n";
+  // std::cout<<"checking for n is finsihed: "<<n_dst[0]<<" "<<n_dst[1]<<"\n";
+  // std::cout<<"checking for k is finsihed: "<<k_dst[0]<<" "<<k_dst[1]<<"\n";
+
 
   TESTING_CHECK( magma_malloc_cpu( (void**)&hA_array, sizeof(float*)*batchCount ) );
   TESTING_CHECK( magma_malloc_cpu( (void**)&hB_array, sizeof(float*)*batchCount ) );
   TESTING_CHECK( magma_malloc_cpu( (void**)&hC_array, sizeof(float*)*batchCount ) );
 
+  // TESTING_CHECK( magma_malloc((void**)&d_m, (batchCount+1)*sizeof(magma_int_t)) );
+  // TESTING_CHECK( magma_malloc((void**)&d_n, (batchCount+1)*sizeof(magma_int_t)) );
+  // TESTING_CHECK( magma_malloc((void**)&d_k, (batchCount+1)*sizeof(magma_int_t)) );
+
+  // TESTING_CHECK( magma_malloc((void**)&d_ldda, (batchCount+1)*sizeof(magma_int_t) ) );
+  // TESTING_CHECK( magma_malloc((void**)&d_lddb, (batchCount+1)*sizeof(magma_int_t) ) );
+  // TESTING_CHECK( magma_malloc((void**)&d_lddc, (batchCount+1)*sizeof(magma_int_t) ) );
 
   for (int i = 0; i < batchCount; ++i)
   {
@@ -92,6 +141,13 @@ int bmm_cuda_forward(
   }
 
 
+
+  // dA_array is the array of pointers need by dgemm
+  // d_A_elems are the actual mtx elements being pointed to
+  // hA_array is the host side pointers that will get passed to dA_array
+  // double const* * dA_array;
+  // double const* * dB_array;
+  // double ** dC_array;
 
   TESTING_CHECK( magma_malloc( (void**)&dA_array, sizeof(float*)*batchCount ) );
   TESTING_CHECK( magma_malloc( (void**)&dB_array, sizeof(float*)*batchCount ) );

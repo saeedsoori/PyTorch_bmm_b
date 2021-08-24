@@ -1,6 +1,7 @@
 #include <torch/extension.h>
 
 #include <vector>
+#include "pybind/extern.hpp"
 
 // CUDA forward declarations
 namespace py = pybind11;

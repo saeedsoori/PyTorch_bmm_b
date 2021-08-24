@@ -74,8 +74,8 @@ int bmm_cuda_forward(
   magma_int_t* d_n;
   magma_int_t* d_k;
 
-  double  alpha = 1.0;
-  double  beta = 0.0;
+  float  alpha = 1.0;
+  float  beta = 0.0;
   magma_int_t* d_lddb;
   magma_int_t* d_ldda;
   magma_int_t* d_lddc;
@@ -141,7 +141,7 @@ int bmm_cuda_forward(
   // TESTING_CHECK( magma_malloc((void**)&d_n, (batchCount+1)*sizeof(magma_int_t)) );
   // TESTING_CHECK( magma_malloc((void**)&d_k, (batchCount+1)*sizeof(magma_int_t)) );
 
-  magmablas_dgemm_vbatched(transA,transB, n,
+  magmablas_sgemm_vbatched(transA,transB, n,
       /* magma_int_t * */         m,
       /* magma_int_t * */         k,
       /* double */                alpha,

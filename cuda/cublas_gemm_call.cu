@@ -19,16 +19,16 @@
 // #include <magma_v2.h>
 
 // Pulled from magma test code
-#define TESTING_CHECK( err )                                                 \
-    do {                                                                     \
-        magma_int_t err_ = (err);                                            \
-        if ( err_ != 0 ) {                                                   \
-            fprintf( stderr, "Error: %s\nfailed at %s:%d: error %lld: %s\n", \
-                     #err, __FILE__, __LINE__,                               \
-                     (long long) err_, magma_strerror(err_) );               \
-            exit(1);                                                         \
-        }                                                                    \
-    } while( 0 )
+// #define TESTING_CHECK( err )                                                 \
+//     do {                                                                     \
+//         magma_int_t err_ = (err);                                            \
+//         if ( err_ != 0 ) {                                                   \
+//             fprintf( stderr, "Error: %s\nfailed at %s:%d: error %lld: %s\n", \
+//                      #err, __FILE__, __LINE__,                               \
+//                      (long long) err_, magma_strerror(err_) );               \
+//             exit(1);                                                         \
+//         }                                                                    \
+//     } while( 0 )
 
 namespace {
 
@@ -111,13 +111,6 @@ int cublas_gemm_call(
   TESTING_CHECK( magma_malloc_cpu( (void**)&hB_array, sizeof(double*)*batchCount ) );
   TESTING_CHECK( magma_malloc_cpu( (void**)&hC_array, sizeof(double*)*batchCount ) );
 
-  // TESTING_CHECK( magma_malloc((void**)&d_m, (batchCount+1)*sizeof(magma_int_t)) );
-  // TESTING_CHECK( magma_malloc((void**)&d_n, (batchCount+1)*sizeof(magma_int_t)) );
-  // TESTING_CHECK( magma_malloc((void**)&d_k, (batchCount+1)*sizeof(magma_int_t)) );
-
-  // TESTING_CHECK( magma_malloc((void**)&d_ldda, (batchCount+1)*sizeof(magma_int_t) ) );
-  // TESTING_CHECK( magma_malloc((void**)&d_lddb, (batchCount+1)*sizeof(magma_int_t) ) );
-  // TESTING_CHECK( magma_malloc((void**)&d_lddc, (batchCount+1)*sizeof(magma_int_t) ) );
 
   for (int i = 0; i < batchCount; ++i)
   {
@@ -167,7 +160,7 @@ int cublas_gemm_call(
   // TESTING_CHECK( magma_malloc((void**)&d_n, (batchCount+1)*sizeof(magma_int_t)) );
   // TESTING_CHECK( magma_malloc((void**)&d_k, (batchCount+1)*sizeof(magma_int_t)) );
 
-  magmablas_dgemm_vbatched(transA,transB, n,
+  magmablas_sgemm_vbatched(transA,transB, n,
       /* magma_int_t * */         m,
       /* magma_int_t * */         k,
       /* double */                alpha,

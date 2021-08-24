@@ -108,20 +108,27 @@ int bmm_cublass_forward(
     std::vector<int> offset_C) {
   
   cublasStatus_t status;
-
+  std::cout<<"H1\n";
 
   cudaStream_t *streams = (cudaStream_t *) malloc(batch_count*sizeof(cudaStream_t));
+  std::cout<<"H2\n";
 
   for(int i=0; i<batch_count; i++)
     cudaStreamCreate(&streams[i]);
 
+  std::cout<<"H3\n";
+
   cublasHandle_t handle;
   status = cublasCreate(&handle);
+
+  std::cout<<"H4\n";
 
   if (status != CUBLAS_STATUS_SUCCESS) {
     fprintf(stderr, "!!!! CUBLAS initialization error\n");
     return EXIT_FAILURE;
   }
+
+  std::cout<<"H5\n";
 
 
 
@@ -132,11 +139,14 @@ int bmm_cublass_forward(
 for(int i=0; i<batch_count; i++){
     // Set CUDA stream
     cublasSetStream(handle, streams[i]);
+    std::cout<<"H6\n";
 
     // DGEMM: C = alpha*A*B + beta*C
     /* Performs operation using cublas */
   status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, n[i], m[i], k[i], &alpha, dB_array[i],
                        n[i], dA_array[i], k[i], &beta, dC_array[i], n[i]);
+  std::cout<<"H7\n";
+
 }
 
 

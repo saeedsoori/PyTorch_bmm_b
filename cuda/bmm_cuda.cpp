@@ -201,13 +201,13 @@ public:
     fprintf(stderr, "!!!! device access error (write A)\n");
   }
 
-  status = cublasSetVector(batchCount, sizeof(float*), dB_array, 1, dB_array, 1);
+  status = cublasSetVector(batchCount, sizeof(float*), B_array, 1, dB_array, 1);
 
   if (status != CUBLAS_STATUS_SUCCESS) {
     fprintf(stderr, "!!!! device access error (write B)\n");
   }
 
-  status = cublasSetVector(batchCount, sizeof(float*), dC_array, 1, dC_array, 1);
+  status = cublasSetVector(batchCount, sizeof(float*), C_array, 1, dC_array, 1);
 
   if (status != CUBLAS_STATUS_SUCCESS) {
     fprintf(stderr, "!!!! device access error (write C)\n");

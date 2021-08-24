@@ -12,6 +12,8 @@
 // includes, project
 #include "magma_v2.h"
 #include "magma_lapack.h"
+#include <cublas_v2.h>
+
 // #include "testings.h"
 
 #include <string.h> //for memcpy
@@ -89,6 +91,60 @@ int bmm_cuda_forward(
       /* magma_int_t */           batchCount,
       /* magma_queue_t */         queue);
 
+  return 2;
+}
+
+
+int bmm_cublass_forward(
+    float const* * dA_array,
+    float const* * dB_array,
+    float **dC_array,
+    int* m,
+    int* n,
+    int* k,
+    int batch_count,
+    std::vector<int> offset_A,
+    std::vector<int> offset_B,
+    std::vector<int> offset_C) {
+  
+  cublasStatus_t status;
+
+
+  cudaStream_t *streams = (cudaStream_t *) malloc(batch_count*sizeof(cudaStream_t));
+
+  for(int i=0; i<batch_count; i++)
+    cudaStreamCreate(&streams[i]);
+
+  cublasHandle_t handle;
+  status = cublasCreate(&handle);
+
+  if (status != CUBLAS_STATUS_SUCCESS) {
+    fprintf(stderr, "!!!! CUBLAS initialization error\n");
+    return EXIT_FAILURE;
+  }
+
+
+
+  float  alpha = 1.0;
+  float  beta = 0.0;
+
+  // Launch each DGEMM operation in own CUDA stream
+for(int i=0; i<batch_count; i++){
+    // Set CUDA stream
+    cublasSetStream(handle, streams[i]);
+
+    // DGEMM: C = alpha*A*B + beta*C
+    /* Performs operation using cublas */
+  status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, n[i], m[i], k[i], &alpha, dB_array[i],
+                       n[i], dA_array[i], k[i], &beta, dC_array[i], n[i]);
+}
+
+
+
+  if (status != CUBLAS_STATUS_SUCCESS) {
+    fprintf(stderr, "!!!! kernel execution error.\n");
+    return EXIT_FAILURE;
+  }
   return 2;
 }
 

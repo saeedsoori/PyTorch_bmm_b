@@ -182,17 +182,14 @@ public:
   	if (cudaMalloc(reinterpret_cast<void **>(&dA_array), batchCount * sizeof(float*)) !=
       cudaSuccess) {
     	fprintf(stderr, "!!!! device memory allocation error (allocate A)\n");
-    	return EXIT_FAILURE;
   	}
   	if (cudaMalloc(reinterpret_cast<void **>(&dB_array), batchCount * sizeof(float*)) !=
       cudaSuccess) {
     	fprintf(stderr, "!!!! device memory allocation error (allocate B)\n");
-    	return EXIT_FAILURE;
   	}
   	if (cudaMalloc(reinterpret_cast<void **>(&dC_array), batchCount * sizeof(float*)) !=
       cudaSuccess) {
     	fprintf(stderr, "!!!! device memory allocation error (allocate C)\n");
-    	return EXIT_FAILURE;
   	}
 
   	/* Initialize the device matrices with the host matrices */
@@ -200,21 +197,18 @@ public:
 
   if (status != CUBLAS_STATUS_SUCCESS) {
     fprintf(stderr, "!!!! device access error (write A)\n");
-    return EXIT_FAILURE;
   }
 
   status = cublasSetVector(batchCount, sizeof(B_array[0]), B_array, 1, dB_array, 1);
 
   if (status != CUBLAS_STATUS_SUCCESS) {
     fprintf(stderr, "!!!! device access error (write B)\n");
-    return EXIT_FAILURE;
   }
 
   status = cublasSetVector(batchCount, sizeof(C_array[0]), C_array, 1, dC_array, 1);
 
   if (status != CUBLAS_STATUS_SUCCESS) {
     fprintf(stderr, "!!!! device access error (write C)\n");
-    return EXIT_FAILURE;
   }
 
 	// dA_array = (float **) cuda_malloc(batchCount*sizeof(float*));

@@ -195,19 +195,19 @@ public:
   	}
 
   	/* Initialize the device matrices with the host matrices */
-  status = cublasSetVector(batchCount, sizeof(A_array[0]), A_array, 1, dA_array, 1);
+  status = cublasSetVector(batchCount, sizeof(float*), A_array, 1, dA_array, 1);
 
   if (status != CUBLAS_STATUS_SUCCESS) {
     fprintf(stderr, "!!!! device access error (write A)\n");
   }
 
-  status = cublasSetVector(batchCount, sizeof(B_array[0]), B_array, 1, dB_array, 1);
+  status = cublasSetVector(batchCount, sizeof(float*), dB_array, 1, dB_array, 1);
 
   if (status != CUBLAS_STATUS_SUCCESS) {
     fprintf(stderr, "!!!! device access error (write B)\n");
   }
 
-  status = cublasSetVector(batchCount, sizeof(C_array[0]), C_array, 1, dC_array, 1);
+  status = cublasSetVector(batchCount, sizeof(float*), dC_array, 1, dC_array, 1);
 
   if (status != CUBLAS_STATUS_SUCCESS) {
     fprintf(stderr, "!!!! device access error (write C)\n");

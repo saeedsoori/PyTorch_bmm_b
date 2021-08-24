@@ -168,8 +168,8 @@ float *h_A;
   
   
 
-status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, 32, 32, 32, &alpha, d_B,
-                       32, d_A, 32, &beta, d_C, 32);
+status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, 32, 32, 32, &alpha, dB_array[0],
+                       32, dA_array[0], 32, &beta, dC_array[0], 32);
 
 std::cout<<"hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh\n";
 

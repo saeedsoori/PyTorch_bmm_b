@@ -77,19 +77,16 @@ public:
   //   std::vector<int> offset_B,
   //   std::vector<int> offset_C);
 
-  void setKey(int i);
+  void setKey(int i){
+  	x = i;
+  };
 
-  int getKey();
+  int getKey(){
+  	return x;
+  };
 
 };
 
-void Foo::setKey(int i){
-	x = i;
-}
-
-void Foo::getKey(){
-	return x;
-}
 
 int bmm_forward(
     torch::Tensor A,

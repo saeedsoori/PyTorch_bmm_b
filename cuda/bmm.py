@@ -25,7 +25,8 @@ class BMM():
         # print('converting finshed....')
         # return bmm_cuda.forward(A, B, m_arr, n_arr, k_arr)
 
-        return bmm_cuda.forward(A, B, C, m, n, k, batch_size, offset_A, offset_B, offset_C)
+        # return bmm_cuda.forward(A, B, C, m, n, k, batch_size, offset_A, offset_B, offset_C)
+        return foo.forward(A, B, C, m, n, k, batch_size, offset_A, offset_B, offset_C)
 
     # def cublas_forward(A, B, C, m , n, k, batch_size, offset_A, offset_B, offset_C):
         # print('running single mode....')

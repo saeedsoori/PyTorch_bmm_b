@@ -179,6 +179,8 @@ public:
     	A_array[i] = (float *) A.data_ptr() + offset_A[i];
     	B_array[i] = (float *) B.data_ptr() + offset_B[i];
     	C_array[i] = (float *) C.data_ptr() + offset_C[i];
+
+    	std::cout<<" host memory initialized...\n";
   	}
 
   	if (cudaMalloc(reinterpret_cast<void **>(&dA_array), batchCount * sizeof(float*)) !=
@@ -208,6 +210,10 @@ public:
   }
 
   status = cublasSetVector(batchCount, sizeof(float*), C_array, 1, dC_array, 1);
+
+
+   std::cout<<" device memory initialized...\n";
+
 
   if (status != CUBLAS_STATUS_SUCCESS) {
     fprintf(stderr, "!!!! device access error (write C)\n");

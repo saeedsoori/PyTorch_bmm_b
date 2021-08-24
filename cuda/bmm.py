@@ -12,7 +12,7 @@ torch.manual_seed(42)
 class BMM():
     def __init__(self, A, B, C, batch_size, offset_A, offset_B, offset_C):
 
-    	foo = bmm_cuda.Foo()
+        foo = bmm_cuda.Foo()
         foo.set_pointers(A, B, C, batch_size, offset_A, offset_B, offset_C)
         # print(foo.getKey())
         self.x = 1

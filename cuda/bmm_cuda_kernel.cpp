@@ -31,28 +31,15 @@
     } while( 0 )
 
 
-// class Foo {
 
-// public:
-//   float ** A_array;
-//   float ** B_array;
-//   float ** C_array;
 
-//   void setKey(torch::Tensor A, torch::Tensor B, torch::Tensor C,
-//    std::vector<int> offset_A,
-//     std::vector<int> offset_B,
-//     std::vector<int> offset_C);
- 
-//   // std::string toString() const {
-//   //   return "< Foo, key: " + std::to_string(key_) + " > ";
-//   // };
-// };
+
 
 
 int bmm_cuda_forward(
-    torch::Tensor A,
-    torch::Tensor B,
-    torch::Tensor C,
+    float ** hA_array,
+    float ** hB_array,
+    float ** hC_array,
     int* m,
     int* n,
     int* k,
@@ -62,9 +49,9 @@ int bmm_cuda_forward(
     std::vector<int> offset_C) {
   
 
-  float ** hA_array;
-  float ** hB_array;
-  float ** hC_array;
+  // float ** hA_array;
+  // float ** hB_array;
+  // float ** hC_array;
 
   float const* * dA_array;
   float const* * dB_array;
@@ -95,19 +82,19 @@ int bmm_cuda_forward(
 
 
 
-  TESTING_CHECK( magma_malloc_cpu( (void**)&hA_array, sizeof(float*)*batchCount ) );
-  TESTING_CHECK( magma_malloc_cpu( (void**)&hB_array, sizeof(float*)*batchCount ) );
-  TESTING_CHECK( magma_malloc_cpu( (void**)&hC_array, sizeof(float*)*batchCount ) );
+  // TESTING_CHECK( magma_malloc_cpu( (void**)&hA_array, sizeof(float*)*batchCount ) );
+  // TESTING_CHECK( magma_malloc_cpu( (void**)&hB_array, sizeof(float*)*batchCount ) );
+  // TESTING_CHECK( magma_malloc_cpu( (void**)&hC_array, sizeof(float*)*batchCount ) );
 
 
-  for (int i = 0; i < batchCount; ++i)
-  {
-    // std::cout<<"processing input tensor:"<< i<< " \n";
+  // for (int i = 0; i < batchCount; ++i)
+  // {
+  //   // std::cout<<"processing input tensor:"<< i<< " \n";
 
-    hA_array[i] = (float *) A.data_ptr() + offset_A[i];
-    hB_array[i] = (float *) B.data_ptr() + offset_B[i];
-    hC_array[i] = (float *) C.data_ptr() + offset_C[i];
-  }
+  //   hA_array[i] = (float *) A.data_ptr() + offset_A[i];
+  //   hB_array[i] = (float *) B.data_ptr() + offset_B[i];
+  //   hC_array[i] = (float *) C.data_ptr() + offset_C[i];
+  // }
 
 
 

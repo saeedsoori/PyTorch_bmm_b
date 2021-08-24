@@ -225,6 +225,6 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
       .def("set_pointers", &Foo::set_pointers)
       .def("fooforward", &Foo::fooforward)
       .def("getKey", &Foo::getKey);
-  m.def("forward", &bmm_forward, "BMM forward (CUDA)");
+  // m.def("forward", &bmm_forward, "BMM forward (CUDA)");
   // m.def("cublas_gemm_call", &cublas_forward, "BMM cublas_gemm_call (CUDA)");
 }

@@ -152,6 +152,84 @@ public:
 
   };
 
+  void set_pointers_cublas(torch::Tensor A,
+    torch::Tensor B,
+    torch::Tensor C,
+    int batchCount,
+    std::vector<int> offset_A,
+    std::vector<int> offset_B,
+    std::vector<int> offset_C){
+
+
+  	A_array = (float **) malloc(batchCount*sizeof(float*));
+  	B_array = (float **) malloc(batchCount*sizeof(float*));
+  	C_array = (float **) malloc(batchCount*sizeof(float*));
+
+  	if (A_array==0 || B_array ==0 || C_array ==0)
+  	{
+  		fprintf(stderr, "!!!! host memory allocation error \n");
+  	}
+
+  	for (int i = 0; i < batchCount; ++i)
+  	{
+    // std::cout<<"processing input tensor:"<< i<< " \n";
+
+    	A_array[i] = (float *) A.data_ptr() + offset_A[i];
+    	B_array[i] = (float *) B.data_ptr() + offset_B[i];
+    	C_array[i] = (float *) C.data_ptr() + offset_C[i];
+  	}
+
+  	if (cudaMalloc(reinterpret_cast<void **>(&dA_array), batchCount * sizeof(float*)) !=
+      cudaSuccess) {
+    	fprintf(stderr, "!!!! device memory allocation error (allocate A)\n");
+    	return EXIT_FAILURE;
+  	}
+  	if (cudaMalloc(reinterpret_cast<void **>(&dB_array), batchCount * sizeof(float*)) !=
+      cudaSuccess) {
+    	fprintf(stderr, "!!!! device memory allocation error (allocate B)\n");
+    	return EXIT_FAILURE;
+  	}
+  	if (cudaMalloc(reinterpret_cast<void **>(&dC_array), batchCount * sizeof(float*)) !=
+      cudaSuccess) {
+    	fprintf(stderr, "!!!! device memory allocation error (allocate C)\n");
+    	return EXIT_FAILURE;
+  	}
+
+  	/* Initialize the device matrices with the host matrices */
+  status = cublasSetVector(batchCount, sizeof(A_array[0]), A_array, 1, dA_array, 1);
+
+  if (status != CUBLAS_STATUS_SUCCESS) {
+    fprintf(stderr, "!!!! device access error (write A)\n");
+    return EXIT_FAILURE;
+  }
+
+  status = cublasSetVector(batchCount, sizeof(B_array[0]), B_array, 1, dB_array, 1);
+
+  if (status != CUBLAS_STATUS_SUCCESS) {
+    fprintf(stderr, "!!!! device access error (write B)\n");
+    return EXIT_FAILURE;
+  }
+
+  status = cublasSetVector(batchCount, sizeof(C_array[0]), C_array, 1, dC_array, 1);
+
+  if (status != CUBLAS_STATUS_SUCCESS) {
+    fprintf(stderr, "!!!! device access error (write C)\n");
+    return EXIT_FAILURE;
+  }
+
+	// dA_array = (float **) cuda_malloc(batchCount*sizeof(float*));
+ //  	dB_array = (float **) cuda_malloc(batchCount*sizeof(float*));
+  	// dC_array = (float **) cuda_malloc(batchCount*sizeof(float*));
+
+
+   //  TESTING_CHECK( magma_malloc( (void**)&dA_array, sizeof(float*)*batchCount ) );
+  	// TESTING_CHECK( magma_malloc( (void**)&dB_array, sizeof(float*)*batchCount ) );
+  	// TESTING_CHECK( magma_malloc( (void**)&dC_array, sizeof(float*)*batchCount ) );
+
+  	
+
+  };
+
   int fooforward(
     torch::Tensor A,
     torch::Tensor B,
@@ -269,6 +347,7 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
       .def(py::init<>())
       .def("setKey", &Foo::setKey)
       .def("set_pointers", &Foo::set_pointers)
+      .def("set_pointers_cublas", &Foo::set_pointers_cublas)
       .def("fooforward", &Foo::fooforward)
       .def("fooCublasforward", &Foo::fooCublasforward)
       .def("getKey", &Foo::getKey);

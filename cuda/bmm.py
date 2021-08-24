@@ -13,7 +13,8 @@ class BMM():
     def __init__(self, A, B, C, batch_size, offset_A, offset_B, offset_C):
 
         self.foo = bmm_cuda.Foo()
-        self.foo.set_pointers(A, B, C, batch_size, offset_A, offset_B, offset_C)
+        # self.foo.set_pointers(A, B, C, batch_size, offset_A, offset_B, offset_C)
+        self.foo.set_pointers_cublas(A, B, C, batch_size, offset_A, offset_B, offset_C)
         # print(foo.getKey())
         self.x = 1
 

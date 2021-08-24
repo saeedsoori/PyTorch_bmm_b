@@ -142,6 +142,7 @@ int bmm_cublass_forward(
   float  beta = 0.0;
 
   for(int i=0; i<batch_count; i++){
+  float *x = (float *) malloc(batch_count*sizeof(float *));
     
     std::cout<< sizeof(n[i])<<"\n";
     std::cout<< sizeof(m[i])<<"\n";
@@ -149,6 +150,8 @@ int bmm_cublass_forward(
     std::cout<< sizeof(dB_array)<<"\n";
     std::cout<< sizeof(dA_array)<<"\n";
     std::cout<< sizeof(dC_array)<<"\n";
+    std::cout<< "x:"<<sizeof(x)<<"\n";
+
     // DGEMM: C = alpha*A*B + beta*C
     /* Performs operation using cublas */
   // status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, n[i], m[i], k[i], &alpha, dB_array[i],

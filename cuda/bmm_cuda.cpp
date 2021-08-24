@@ -2,6 +2,10 @@
 
 #include <vector>
 #include <pybind11/pybind11.h>
+// includes, project
+#include "magma_v2.h"
+#include "magma_lapack.h"
+
 
 // CUDA forward declarations
 namespace py = pybind11;
@@ -19,7 +23,7 @@ namespace py = pybind11;
     } while( 0 )
 
 
-    
+
 
 int bmm_cuda_forward(
     torch::Tensor A,

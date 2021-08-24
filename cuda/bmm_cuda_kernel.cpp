@@ -166,74 +166,79 @@ float *h_A;
   }
 
   /* Allocate device memory for the matrices */
-  if (cudaMalloc(reinterpret_cast<void **>(&d_A), n2 * sizeof(d_A[0])) !=
-      cudaSuccess) {
-    fprintf(stderr, "!!!! device memory allocation error (allocate A)\n");
-    return EXIT_FAILURE;
-  }
+  // if (cudaMalloc(reinterpret_cast<void **>(&d_A), n2 * sizeof(d_A[0])) !=
+  //     cudaSuccess) {
+  //   fprintf(stderr, "!!!! device memory allocation error (allocate A)\n");
+  //   return EXIT_FAILURE;
+  // }
 
-  if (cudaMalloc(reinterpret_cast<void **>(&d_B), n2 * sizeof(d_B[0])) !=
-      cudaSuccess) {
-    fprintf(stderr, "!!!! device memory allocation error (allocate B)\n");
-    return EXIT_FAILURE;
-  }
+  // if (cudaMalloc(reinterpret_cast<void **>(&d_B), n2 * sizeof(d_B[0])) !=
+  //     cudaSuccess) {
+  //   fprintf(stderr, "!!!! device memory allocation error (allocate B)\n");
+  //   return EXIT_FAILURE;
+  // }
 
-  if (cudaMalloc(reinterpret_cast<void **>(&d_C), n2 * sizeof(d_C[0])) !=
-      cudaSuccess) {
-    fprintf(stderr, "!!!! device memory allocation error (allocate C)\n");
-    return EXIT_FAILURE;
-  }
+  // if (cudaMalloc(reinterpret_cast<void **>(&d_C), n2 * sizeof(d_C[0])) !=
+  //     cudaSuccess) {
+  //   fprintf(stderr, "!!!! device memory allocation error (allocate C)\n");
+  //   return EXIT_FAILURE;
+  // }
 
   /* Initialize the device matrices with the host matrices */
-  status = cublasSetVector(n2, sizeof(h_A[0]), h_A, 1, d_A, 1);
+  // status = cublasSetVector(n2, sizeof(h_A[0]), h_A, 1, d_A, 1);
 
-  if (status != CUBLAS_STATUS_SUCCESS) {
-    fprintf(stderr, "!!!! device access error (write A)\n");
-    return EXIT_FAILURE;
-  }
+  // if (status != CUBLAS_STATUS_SUCCESS) {
+  //   fprintf(stderr, "!!!! device access error (write A)\n");
+  //   return EXIT_FAILURE;
+  // }
 
-  status = cublasSetVector(n2, sizeof(h_B[0]), h_B, 1, d_B, 1);
+  // status = cublasSetVector(n2, sizeof(h_B[0]), h_B, 1, d_B, 1);
 
-  if (status != CUBLAS_STATUS_SUCCESS) {
-    fprintf(stderr, "!!!! device access error (write B)\n");
-    return EXIT_FAILURE;
-  }
+  // if (status != CUBLAS_STATUS_SUCCESS) {
+  //   fprintf(stderr, "!!!! device access error (write B)\n");
+  //   return EXIT_FAILURE;
+  // }
 
-  status = cublasSetVector(n2, sizeof(h_C[0]), h_C, 1, d_C, 1);
+  // status = cublasSetVector(n2, sizeof(h_C[0]), h_C, 1, d_C, 1);
 
-  if (status != CUBLAS_STATUS_SUCCESS) {
-    fprintf(stderr, "!!!! device access error (write C)\n");
-    return EXIT_FAILURE;
-  }
+  // if (status != CUBLAS_STATUS_SUCCESS) {
+  //   fprintf(stderr, "!!!! device access error (write C)\n");
+  //   return EXIT_FAILURE;
+  // }
 
   // /* Performs operation using plain C code */
   // simple_sgemm(N, alpha, h_A, h_B, beta, h_C);
   // h_C_ref = h_C;
 
+  
+
+
+
+
   /* Performs operation using cublas */
   status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, N, N, N, &alpha, d_A,
                        N, d_B, N, &beta, d_C, N);
 
-  if (status != CUBLAS_STATUS_SUCCESS) {
-    fprintf(stderr, "!!!! kernel execution error.\n");
-    return EXIT_FAILURE;
-  }
+  // if (status != CUBLAS_STATUS_SUCCESS) {
+  //   fprintf(stderr, "!!!! kernel execution error.\n");
+  //   return EXIT_FAILURE;
+  // }
 
-  /* Allocate host memory for reading back the result from device memory */
-  h_C = reinterpret_cast<float *>(malloc(n2 * sizeof(h_C[0])));
+  // /* Allocate host memory for reading back the result from device memory */
+  // h_C = reinterpret_cast<float *>(malloc(n2 * sizeof(h_C[0])));
 
-  if (h_C == 0) {
-    fprintf(stderr, "!!!! host memory allocation error (C)\n");
-    return EXIT_FAILURE;
-  }
+  // if (h_C == 0) {
+  //   fprintf(stderr, "!!!! host memory allocation error (C)\n");
+  //   return EXIT_FAILURE;
+  // }
 
-  /* Read the result back */
-  status = cublasGetVector(n2, sizeof(h_C[0]), d_C, 1, h_C, 1);
+  // /* Read the result back */
+  // status = cublasGetVector(n2, sizeof(h_C[0]), d_C, 1, h_C, 1);
 
-  if (status != CUBLAS_STATUS_SUCCESS) {
-    fprintf(stderr, "!!!! device access error (read C)\n");
-    return EXIT_FAILURE;
-  }
+  // if (status != CUBLAS_STATUS_SUCCESS) {
+  //   fprintf(stderr, "!!!! device access error (read C)\n");
+  //   return EXIT_FAILURE;
+  // }
 
   /* Check result against reference */
   // error_norm = 0;

@@ -50,7 +50,6 @@ pytorch_time = 0
 magma_min = math.inf
 magma_time = 0
 
-Mul = BMM()
 sum_size_A = 0
 sum_size_B = 0
 sum_size_C = 0
@@ -112,15 +111,9 @@ m_arr = torch.cuda.IntTensor(mshapes)
 n_arr = torch.cuda.IntTensor(nshapes)
 k_arr = torch.cuda.IntTensor(kshapes)
 
-# Force CUDA initialization
-# Force CUDA initialization
-# print(m_arr.dtype)
-# print(n_arr.dtype)
-# print(k_arr.dtype)
-# # Force CUDA initialization
-# Force CUDA initialization
-# Force CUDA initialization
-# Force CUDA initialization
+
+Mul = BMM(A_con, B_con, C_con, options.n, all_offset_A, all_offset_B, all_offset_C)
+
 # result = BMM.forward(A, B, C, m_arr, n_arr, k_arr, options.n)
 result = BMM.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
 

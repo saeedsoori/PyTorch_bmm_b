@@ -27,7 +27,7 @@ from cuda.bmm import BMM
 
 options.cuda = True
 device = torch.device("cuda") if options.cuda else torch.device("cpu")
-dtype = torch.float64
+dtype = torch.float32
 
 kwargs = {'dtype': dtype,
           'device': device,
@@ -60,6 +60,9 @@ for i in range(options.n):
     B_s = torch.randn(r_size[index[i]], r_size[index[i]] + 32, **kwargs)
     C_s = torch.zeros(options.batch_size, r_size[index[i]] + 32, **kwargs)
 
+    print(A_s.dtype)
+    print(B_s.dtype)
+    print(C_s.dtype)
     # Force CUDA initialization
     C_s_true = torch.matmul(A_s, B_s)
 
@@ -109,6 +112,14 @@ m_arr = torch.cuda.IntTensor(mshapes)
 n_arr = torch.cuda.IntTensor(nshapes)
 k_arr = torch.cuda.IntTensor(kshapes)
 
+# Force CUDA initialization
+# Force CUDA initialization
+print(m_arr.dtype)
+print(n_arr.dtype)
+print(k_arr.dtype)
+# Force CUDA initialization
+# Force CUDA initialization
+# Force CUDA initialization
 # Force CUDA initialization
 # result = BMM.forward(A, B, C, m_arr, n_arr, k_arr, options.n)
 result = BMM.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)

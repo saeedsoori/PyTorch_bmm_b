@@ -17,7 +17,7 @@ class BMM():
         # print(foo.getKey())
         self.x = 1
 
-    def forward(A, B, C, m , n, k, batch_size, offset_A, offset_B, offset_C):
+    def forward(self, A, B, C, m , n, k, batch_size, offset_A, offset_B, offset_C):
         # print('running....')
         # m_arr = (ctypes.c_int * len(m))(*m)
         # n_arr = (ctypes.c_int * len(n))(*n)

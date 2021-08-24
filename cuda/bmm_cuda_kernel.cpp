@@ -111,6 +111,12 @@ int bmm_cublass_forward(
   std::cout<<"H1\n";
 
   cudaStream_t *streams = (cudaStream_t *) malloc(batch_count*sizeof(cudaStream_t));
+
+  if (cudaStream_t == 0)
+  {
+      fprintf(stderr, "!!!! stream error\n");
+    
+  }
   std::cout<<"H2\n";
 
   for(int i=0; i<batch_count; i++)
@@ -135,17 +141,28 @@ int bmm_cublass_forward(
   float  alpha = 1.0;
   float  beta = 0.0;
 
+  for(int i=0; i<batch_count; i++){
+    
+    fprintf(sizeof(n[i]) );
+    // DGEMM: C = alpha*A*B + beta*C
+    /* Performs operation using cublas */
+  // status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, n[i], m[i], k[i], &alpha, dB_array[i],
+                       // n[i], dA_array[i], k[i], &beta, dC_array[i], n[i]);
+  std::cout<<"H6\n";
+
+}
+
   // Launch each DGEMM operation in own CUDA stream
 for(int i=0; i<batch_count; i++){
     // Set CUDA stream
     cublasSetStream(handle, streams[i]);
-    std::cout<<"H6\n";
+    std::cout<<"H7\n";
 
     // DGEMM: C = alpha*A*B + beta*C
     /* Performs operation using cublas */
   status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, n[i], m[i], k[i], &alpha, dB_array[i],
                        n[i], dA_array[i], k[i], &beta, dC_array[i], n[i]);
-  std::cout<<"H7\n";
+  std::cout<<"H8\n";
 
 }
 

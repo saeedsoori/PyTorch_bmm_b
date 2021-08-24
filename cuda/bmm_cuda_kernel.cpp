@@ -123,7 +123,8 @@ float *h_A;
   float diff;
   cublasHandle_t handle;
 
-  
+    status = cublasCreate(&handle);
+
 
   /* Initialize CUBLAS */
   printf("simpleCUBLAS test running..\n");

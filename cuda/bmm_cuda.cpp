@@ -26,9 +26,9 @@ namespace py = pybind11;
 
 
 int bmm_cuda_forward(
-    torch::Tensor A,
-    torch::Tensor B,
-    torch::Tensor C,
+    float ** A,
+    float ** B,
+    float ** C,
     int* m,
     int* n,
     int* k,
@@ -143,7 +143,7 @@ public:
 
     
     
-  return bmm_cuda_forward(A, B, C, m_arr ,n_arr , k_arr, batch_size, offset_A, offset_B, offset_C);
+  return bmm_cuda_forward(A_array, B_array, C_array, m_arr ,n_arr , k_arr, batch_size, offset_A, offset_B, offset_C);
 };
 
 

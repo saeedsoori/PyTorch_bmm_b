@@ -115,7 +115,7 @@ k_arr = torch.cuda.IntTensor(kshapes)
 Mul = BMM(A_con, B_con, C_con, options.n, all_offset_A, all_offset_B, all_offset_C)
 
 # result = BMM.forward(A, B, C, m_arr, n_arr, k_arr, options.n)
-result = BMM.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
+result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
 
 for j in range(options.runs):
     C_true = []

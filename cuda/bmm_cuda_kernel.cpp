@@ -254,33 +254,33 @@ float *h_A;
   // }
 
   /* Memory clean up */
-  free(h_A);
-  free(h_B);
-  free(h_C);
-  free(h_C_ref);
+  // free(h_A);
+  // free(h_B);
+  // free(h_C);
+  // free(h_C_ref);
 
-  if (cudaFree(d_A) != cudaSuccess) {
-    fprintf(stderr, "!!!! memory free error (A)\n");
-    return EXIT_FAILURE;
-  }
+  // if (cudaFree(d_A) != cudaSuccess) {
+  //   fprintf(stderr, "!!!! memory free error (A)\n");
+  //   return EXIT_FAILURE;
+  // }
 
-  if (cudaFree(d_B) != cudaSuccess) {
-    fprintf(stderr, "!!!! memory free error (B)\n");
-    return EXIT_FAILURE;
-  }
+  // if (cudaFree(d_B) != cudaSuccess) {
+  //   fprintf(stderr, "!!!! memory free error (B)\n");
+  //   return EXIT_FAILURE;
+  // }
 
-  if (cudaFree(d_C) != cudaSuccess) {
-    fprintf(stderr, "!!!! memory free error (C)\n");
-    return EXIT_FAILURE;
-  }
+  // if (cudaFree(d_C) != cudaSuccess) {
+  //   fprintf(stderr, "!!!! memory free error (C)\n");
+  //   return EXIT_FAILURE;
+  // }
 
-  /* Shutdown */
-  status = cublasDestroy(handle);
+  // /* Shutdown */
+  // status = cublasDestroy(handle);
 
-  if (status != CUBLAS_STATUS_SUCCESS) {
-    fprintf(stderr, "!!!! shutdown error (A)\n");
-    return EXIT_FAILURE;
-  }
+  // if (status != CUBLAS_STATUS_SUCCESS) {
+  //   fprintf(stderr, "!!!! shutdown error (A)\n");
+  //   return EXIT_FAILURE;
+  // }
 
   // if (error_norm / ref_norm < 1e-6f) {
   //   printf("simpleCUBLAS test passed.\n");

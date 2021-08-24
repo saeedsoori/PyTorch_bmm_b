@@ -34,6 +34,7 @@ int bmm_cublass_forward(
     std::vector<int> offset_B,
     std::vector<int> offset_C) {
   
+  cublasStatus_t status;
 
 
   cudaStream_t *streams = (cudaStream_t *) malloc(batch_count*sizeof(cudaStream_t));

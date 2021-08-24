@@ -3,6 +3,7 @@
 #include <vector>
 
 // CUDA forward declarations
+namespace py = pybind11;
 
 int bmm_cuda_forward(
     torch::Tensor A,
@@ -61,6 +62,33 @@ int cublas_gemm_call(
     
 //   return bmm_cuda_forward(A, B, C, m_arr ,n_arr , k_arr, batch_size);
 // }
+
+class Foo {
+
+public:
+  float ** A_array;
+  float ** B_array;
+  float ** C_array;
+  int x;
+
+  // void setKey(torch::Tensor A, torch::Tensor B, torch::Tensor C,
+  //  std::vector<int> offset_A,
+  //   std::vector<int> offset_B,
+  //   std::vector<int> offset_C);
+
+  void setKey(int i);
+
+  int getKey();
+
+};
+
+void Foo::setKey(int i){
+	x = i;
+}
+
+void Foo::getKey(){
+	return x;
+}
 
 int bmm_forward(
     torch::Tensor A,
@@ -129,6 +157,10 @@ int bmm_forward(
 
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
+	py::class_<Foo>(m, name.c_str())
+      .def(py::init<>())
+      .def("setKey", &Foo::setKey)
+      .def("getKey", &Foo::getKey)
   m.def("forward", &bmm_forward, "BMM forward (CUDA)");
   // m.def("cublas_gemm_call", &cublas_forward, "BMM cublas_gemm_call (CUDA)");
 }

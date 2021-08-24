@@ -20,6 +20,9 @@ class BMM():
         # k_arr = (ctypes.c_int * len(k))(*k)
         # print('converting finshed....')
         # return bmm_cuda.forward(A, B, m_arr, n_arr, k_arr)
+        foo = bmm_cuda.Foo()
+        foo.setKey(37)
+        print(foo.getKey())
         return bmm_cuda.forward(A, B, C, m, n, k, batch_size, offset_A, offset_B, offset_C)
 
     # def cublas_forward(A, B, C, m , n, k, batch_size, offset_A, offset_B, offset_C):

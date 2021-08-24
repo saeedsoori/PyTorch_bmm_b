@@ -11,7 +11,7 @@
 
 /* Includes, cuda */
 #include <cublas_v2.h>
-#include <helper_cuda.h>
+// #include <helper_cuda.h>
 
 #include <string.h> //for memcpy
 

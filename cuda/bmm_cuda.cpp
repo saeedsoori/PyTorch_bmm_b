@@ -118,6 +118,13 @@ public:
     std::vector<int> offset_B,
     std::vector<int> offset_C){
 
+  	magma_queue_t queue;
+  	magma_device_t device;
+  	// std::cout<<"initialization finsihed..."<<"\n";
+
+  	magma_getdevice( &device );
+  	magma_queue_create( device, &queue );
+
   	TESTING_CHECK( magma_malloc_cpu( (void**)&A_array, sizeof(float*)*batchCount ) );
   	TESTING_CHECK( magma_malloc_cpu( (void**)&B_array, sizeof(float*)*batchCount ) );
   	TESTING_CHECK( magma_malloc_cpu( (void**)&C_array, sizeof(float*)*batchCount ) );

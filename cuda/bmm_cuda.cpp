@@ -124,7 +124,7 @@ int cublas_forward(
   // CHECK_INPUT(B);
 
 
-  return cublas_gemm_call(A, B, C, m ,n , k, offset_A, offset_B, offset_C);
+  return cublas_gemm_call(A, B, C, m ,n , k, batch_size, offset_A, offset_B, offset_C);
 }
 
 

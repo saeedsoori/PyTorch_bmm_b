@@ -150,24 +150,24 @@ public:
 };
 
 
-int bmm_forward(
-    torch::Tensor A,
-    torch::Tensor B,
-    torch::Tensor C,
-    torch::Tensor m, torch::Tensor n, torch::Tensor k, int batch_size,
-    std::vector<int> offset_A,
-    std::vector<int> offset_B,
-    std::vector<int> offset_C
-    ) {
+// int bmm_forward(
+//     torch::Tensor A,
+//     torch::Tensor B,
+//     torch::Tensor C,
+//     torch::Tensor m, torch::Tensor n, torch::Tensor k, int batch_size,
+//     std::vector<int> offset_A,
+//     std::vector<int> offset_B,
+//     std::vector<int> offset_C
+//     ) {
     
-    int* m_arr = (int*) m.data_ptr();
-    int* n_arr = (int*) n.data_ptr();
-    int* k_arr = (int*) k.data_ptr();
+//     int* m_arr = (int*) m.data_ptr();
+//     int* n_arr = (int*) n.data_ptr();
+//     int* k_arr = (int*) k.data_ptr();
 
     
     
-  return bmm_cuda_forward(A, B, C, m_arr ,n_arr , k_arr, batch_size, offset_A, offset_B, offset_C);
-}
+//   return bmm_cuda_forward(A, B, C, m_arr ,n_arr , k_arr, batch_size, offset_A, offset_B, offset_C);
+// }
 
 // int cublas_forward(
 

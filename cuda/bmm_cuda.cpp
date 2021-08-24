@@ -6,7 +6,8 @@
 #include "magma_v2.h"
 #include "magma_lapack.h"
 
-
+#include <cuda.h>
+#include <cuda_runtime.h>
 // CUDA forward declarations
 namespace py = pybind11;
 

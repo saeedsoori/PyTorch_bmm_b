@@ -105,6 +105,7 @@ int bmm_cublass_forward(
     std::vector<int> offset_A,
     std::vector<int> offset_B,
     std::vector<int> offset_C) {
+  cublasStatus_t status;
 
 float *h_A;
   float *h_B;
@@ -123,7 +124,6 @@ float *h_A;
   float diff;
   cublasHandle_t handle;
 
-    status = cublasCreate(&handle);
 
 
   /* Initialize CUBLAS */

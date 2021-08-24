@@ -49,13 +49,6 @@ int bmm_cuda_forward(
     std::vector<int> offset_C) {
   
 
-  // float ** hA_array;
-  // float ** hB_array;
-  // float ** hC_array;
-
-  // float const* * dA_array;
-  // float const* * dB_array;
-  // float **dC_array;
 
   magma_int_t* d_m;
   magma_int_t* d_n;
@@ -81,52 +74,6 @@ int bmm_cuda_forward(
   magma_queue_create( device, &queue );
 
 
-
-  // TESTING_CHECK( magma_malloc_cpu( (void**)&hA_array, sizeof(float*)*batchCount ) );
-  // TESTING_CHECK( magma_malloc_cpu( (void**)&hB_array, sizeof(float*)*batchCount ) );
-  // TESTING_CHECK( magma_malloc_cpu( (void**)&hC_array, sizeof(float*)*batchCount ) );
-
-
-  // for (int i = 0; i < batchCount; ++i)
-  // {
-  //   // std::cout<<"processing input tensor:"<< i<< " \n";
-
-  //   hA_array[i] = (float *) A.data_ptr() + offset_A[i];
-  //   hB_array[i] = (float *) B.data_ptr() + offset_B[i];
-  //   hC_array[i] = (float *) C.data_ptr() + offset_C[i];
-  // }
-
-
-
-  // TESTING_CHECK( magma_malloc( (void**)&dA_array, sizeof(float*)*batchCount ) );
-  // TESTING_CHECK( magma_malloc( (void**)&dB_array, sizeof(float*)*batchCount ) );
-  // TESTING_CHECK( magma_malloc( (void**)&dC_array, sizeof(float*)*batchCount ) );
-
-  // magma_setvector(batchCount, sizeof(float*), hA_array, 1, dA_array, 1, queue);
-  // magma_setvector(batchCount, sizeof(float*), hB_array, 1, dB_array, 1, queue);
-  // magma_setvector(batchCount, sizeof(float*), hC_array, 1, dC_array, 1, queue);
-
-  // std::cout<<"moving host array to device finsihed..."<<"\n";
-  // magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_m, 1, queue);
-  // magma_setvector(batchCount, sizeof(magma_int_t), m_dst, 1, d_n, 1, queue);
-  // magma_setvector(batchCount, sizeof(magma_int_t), k_dst, 1, d_k, 1, queue);
-  // magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_lddb, 1, queue);
-  // magma_setvector(batchCount, sizeof(magma_int_t), k_dst, 1, d_ldda, 1, queue);
-  // magma_setvector(batchCount, sizeof(magma_int_t), n_dst, 1, d_lddc, 1, queue);
-
-  // magma_setvector(batchCount, sizeof(magma_int_t), n, 1, d_m, 1, queue);
-  // magma_setvector(batchCount, sizeof(magma_int_t), m, 1, d_n, 1, queue);
-  // magma_setvector(batchCount, sizeof(magma_int_t), k, 1, d_k, 1, queue);
-  // magma_setvector(batchCount, sizeof(magma_int_t), n, 1, d_lddb, 1, queue);
-  // magma_setvector(batchCount, sizeof(magma_int_t), k, 1, d_ldda, 1, queue);
-  // magma_setvector(batchCount, sizeof(magma_int_t), n, 1, d_lddc, 1, queue);
-  
-  // std::cout<<"maga set_vector of d vars finsihed..."<<"\n";
-
-
-  // TESTING_CHECK( magma_malloc((void**)&d_m, (batchCount+1)*sizeof(magma_int_t)) );
-  // TESTING_CHECK( magma_malloc((void**)&d_n, (batchCount+1)*sizeof(magma_int_t)) );
-  // TESTING_CHECK( magma_malloc((void**)&d_k, (batchCount+1)*sizeof(magma_int_t)) );
 
   magmablas_sgemm_vbatched(transA,transB, n,
       /* magma_int_t * */         m,

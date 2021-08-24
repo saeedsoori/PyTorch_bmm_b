@@ -48,10 +48,10 @@ int bmm_cuda_forward(
     // int batch_size);
 
 
-int cublas_gemm_call(
-    torch::Tensor A,
-    torch::Tensor B,
-    torch::Tensor C,
+int bmm_cublass_forward(
+    float const* * dA_array,
+    float const* * dB_array,
+    float ** dC_array,
     int* m,
     int* n,
     int* k,
@@ -172,6 +172,26 @@ public:
   return bmm_cuda_forward(dA_array, dB_array, dC_array, m_arr ,n_arr , k_arr, batchCount, offset_A, offset_B, offset_C);
 };
 
+  int fooCublasforward(
+    torch::Tensor A,
+    torch::Tensor B,
+    torch::Tensor C,
+    torch::Tensor m, torch::Tensor n, torch::Tensor k, int batchCount,
+    std::vector<int> offset_A,
+    std::vector<int> offset_B,
+    std::vector<int> offset_C
+    ) {
+    
+    int* m_arr = (int*) m.data_ptr();
+    int* n_arr = (int*) n.data_ptr();
+    int* k_arr = (int*) k.data_ptr();
+	
+
+    
+    
+  return bmm_cublass_forward(dA_array, dB_array, dC_array, m_arr ,n_arr , k_arr, batchCount, offset_A, offset_B, offset_C);
+};
+
 
 };
 
@@ -250,6 +270,7 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
       .def("setKey", &Foo::setKey)
       .def("set_pointers", &Foo::set_pointers)
       .def("fooforward", &Foo::fooforward)
+      .def("fooCublasforward", &Foo::fooCublasforward)
       .def("getKey", &Foo::getKey);
   // m.def("forward", &bmm_forward, "BMM forward (CUDA)");
   // m.def("cublas_gemm_call", &cublas_forward, "BMM cublas_gemm_call (CUDA)");

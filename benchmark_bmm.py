@@ -115,7 +115,8 @@ k_arr = torch.cuda.IntTensor(kshapes)
 Mul = BMM(A_con, B_con, C_con, options.n, all_offset_A, all_offset_B, all_offset_C)
 
 # result = BMM.forward(A, B, C, m_arr, n_arr, k_arr, options.n)
-result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
+# result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
+result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
 
 for j in range(options.runs):
     C_true = []
@@ -130,7 +131,8 @@ for j in range(options.runs):
     # calling magma
     # print('start calling mamgma')
     start = time.time()
-    result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
+    # result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
+    result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
     elapsed = time.time() - start
     magma_min = min(magma_min, elapsed)
     magma_time += elapsed

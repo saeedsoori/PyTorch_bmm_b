@@ -143,8 +143,8 @@ for(int i=0; i<batch_count; i++){
 
     // DGEMM: C = alpha*A*B + beta*C
     /* Performs operation using cublas */
-  status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, n[i], m[i], k[i], &alpha, dB_array[i],
-                       n[i], dA_array[i], k[i], &beta, dC_array[i], n[i]);
+  status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, n[i], m[i], k[i], alpha, dB_array[i],
+                       n[i], dA_array[i], k[i], beta, dC_array[i], n[i]);
   std::cout<<"H7\n";
 
 }

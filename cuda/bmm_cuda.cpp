@@ -81,7 +81,7 @@ int bmm_forward(
   return bmm_cuda_forward(A, B, C, m_arr ,n_arr , k_arr, batch_size, offset_A, offset_B, offset_C);
 }
 
-int cublas_gemm_call(
+int cublas_forward(
 
     torch::Tensor A,
     torch::Tensor B,
@@ -124,11 +124,11 @@ int cublas_gemm_call(
   // CHECK_INPUT(B);
 
 
-  return cublas_gemm_call(A, B, C, m ,n , k);
+  return cublas_gemm_call(A, B, C, m ,n , k, offset_A, offset_B, offset_C);
 }
 
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
   m.def("forward", &bmm_forward, "BMM forward (CUDA)");
-  m.def("cublas_gemm_call", &cublas_gemm_call, "BMM cublas_gemm_call (CUDA)");
+  m.def("cublas_gemm_call", &cublas_forward, "BMM cublas_gemm_call (CUDA)");
 }

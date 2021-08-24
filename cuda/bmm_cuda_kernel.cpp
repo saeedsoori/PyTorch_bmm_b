@@ -31,6 +31,24 @@
     } while( 0 )
 
 
+// class Foo {
+
+// public:
+//   float ** A_array;
+//   float ** B_array;
+//   float ** C_array;
+
+//   void setKey(torch::Tensor A, torch::Tensor B, torch::Tensor C,
+//    std::vector<int> offset_A,
+//     std::vector<int> offset_B,
+//     std::vector<int> offset_C);
+ 
+//   // std::string toString() const {
+//   //   return "< Foo, key: " + std::to_string(key_) + " > ";
+//   // };
+// };
+
+
 int bmm_cuda_forward(
     torch::Tensor A,
     torch::Tensor B,

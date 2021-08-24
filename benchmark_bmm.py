@@ -130,7 +130,7 @@ for j in range(options.runs):
     # calling magma
     # print('start calling mamgma')
     start = time.time()
-    result = BMM.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
+    result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
     elapsed = time.time() - start
     magma_min = min(magma_min, elapsed)
     magma_time += elapsed

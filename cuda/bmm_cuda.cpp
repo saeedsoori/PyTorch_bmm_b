@@ -26,9 +26,9 @@ namespace py = pybind11;
 
 
 int bmm_cuda_forward(
-    float ** A,
-    float ** B,
-    float ** C,
+    float const* * dA_array,
+    float const* * dB_array,
+    float ** dC_array,
     int* m,
     int* n,
     int* k,
@@ -89,6 +89,12 @@ public:
   float ** A_array;
   float ** B_array;
   float ** C_array;
+
+  float const* * dA_array;
+  float const* * dB_array;
+  float **dC_array;
+
+
   int x;
 
   // void setKey(torch::Tensor A, torch::Tensor B, torch::Tensor C,
@@ -125,13 +131,25 @@ public:
     	B_array[i] = (float *) B.data_ptr() + offset_B[i];
     	C_array[i] = (float *) C.data_ptr() + offset_C[i];
   	}
+
+
+
+
+    TESTING_CHECK( magma_malloc( (void**)&dA_array, sizeof(float*)*batchCount ) );
+  	TESTING_CHECK( magma_malloc( (void**)&dB_array, sizeof(float*)*batchCount ) );
+  	TESTING_CHECK( magma_malloc( (void**)&dC_array, sizeof(float*)*batchCount ) );
+
+  	magma_setvector(batchCount, sizeof(float*), A_array, 1, dA_array, 1, queue);
+  	magma_setvector(batchCount, sizeof(float*), B_array, 1, dB_array, 1, queue);
+  	magma_setvector(batchCount, sizeof(float*), C_array, 1, dC_array, 1, queue);
+
   };
 
   int fooforward(
     torch::Tensor A,
     torch::Tensor B,
     torch::Tensor C,
-    torch::Tensor m, torch::Tensor n, torch::Tensor k, int batch_size,
+    torch::Tensor m, torch::Tensor n, torch::Tensor k, int batchCount,
     std::vector<int> offset_A,
     std::vector<int> offset_B,
     std::vector<int> offset_C
@@ -140,10 +158,11 @@ public:
     int* m_arr = (int*) m.data_ptr();
     int* n_arr = (int*) n.data_ptr();
     int* k_arr = (int*) k.data_ptr();
+	
 
     
     
-  return bmm_cuda_forward(A_array, B_array, C_array, m_arr ,n_arr , k_arr, batch_size, offset_A, offset_B, offset_C);
+  return bmm_cuda_forward(dA_array, dB_array, dC_array, m_arr ,n_arr , k_arr, batchCount, offset_A, offset_B, offset_C);
 };
 
 

@@ -37,9 +37,9 @@
 
 
 int bmm_cuda_forward(
-    float ** hA_array,
-    float ** hB_array,
-    float ** hC_array,
+    float const* * dA_array,
+    float const* * dB_array,
+    float **dC_array,
     int* m,
     int* n,
     int* k,
@@ -53,9 +53,9 @@ int bmm_cuda_forward(
   // float ** hB_array;
   // float ** hC_array;
 
-  float const* * dA_array;
-  float const* * dB_array;
-  float **dC_array;
+  // float const* * dA_array;
+  // float const* * dB_array;
+  // float **dC_array;
 
   magma_int_t* d_m;
   magma_int_t* d_n;

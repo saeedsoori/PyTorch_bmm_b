@@ -34,8 +34,8 @@ kwargs = {'dtype': dtype,
           'requires_grad': False}
 
 # generate "n" random matrix with different #columns
-# r_size = [16, 24, 32, 64, 72, 128]
-r_size = [2,4,8,16]
+r_size = [16, 24, 32, 64, 72, 128]
+# r_size = [2,4,8,16]
 A = []
 B = []
 C = []
@@ -60,9 +60,9 @@ for i in range(options.n):
     B_s = torch.randn(r_size[index[i]], r_size[index[i]] + 32, **kwargs)
     C_s = torch.zeros(options.batch_size, r_size[index[i]] + 32, **kwargs)
 
-    print(A_s.dtype)
-    print(B_s.dtype)
-    print(C_s.dtype)
+    # print(A_s.dtype)
+    # print(B_s.dtype)
+    # print(C_s.dtype)
     # Force CUDA initialization
     C_s_true = torch.matmul(A_s, B_s)
 
@@ -114,10 +114,10 @@ k_arr = torch.cuda.IntTensor(kshapes)
 
 # Force CUDA initialization
 # Force CUDA initialization
-print(m_arr.dtype)
-print(n_arr.dtype)
-print(k_arr.dtype)
-# Force CUDA initialization
+# print(m_arr.dtype)
+# print(n_arr.dtype)
+# print(k_arr.dtype)
+# # Force CUDA initialization
 # Force CUDA initialization
 # Force CUDA initialization
 # Force CUDA initialization

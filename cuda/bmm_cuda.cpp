@@ -158,6 +158,8 @@ int bmm_forward(
 
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
+	std::string name = std::string("Foo");
+
 	py::class_<Foo>(m, name.c_str())
       .def(py::init<>())
       .def("setKey", &Foo::setKey)

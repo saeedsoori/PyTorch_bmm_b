@@ -112,9 +112,9 @@ public:
     std::vector<int> offset_B,
     std::vector<int> offset_C){
 
-  	TESTING_CHECK( magma_malloc_cpu( (void**)&hA_array, sizeof(float*)*batchCount ) );
-  	TESTING_CHECK( magma_malloc_cpu( (void**)&hB_array, sizeof(float*)*batchCount ) );
-  	TESTING_CHECK( magma_malloc_cpu( (void**)&hC_array, sizeof(float*)*batchCount ) );
+  	TESTING_CHECK( magma_malloc_cpu( (void**)&A_array, sizeof(float*)*batchCount ) );
+  	TESTING_CHECK( magma_malloc_cpu( (void**)&B_array, sizeof(float*)*batchCount ) );
+  	TESTING_CHECK( magma_malloc_cpu( (void**)&C_array, sizeof(float*)*batchCount ) );
 
 
   	for (int i = 0; i < batchCount; ++i)

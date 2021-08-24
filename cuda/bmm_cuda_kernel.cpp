@@ -112,7 +112,7 @@ int bmm_cublass_forward(
 
   cudaStream_t *streams = (cudaStream_t *) malloc(batch_count*sizeof(cudaStream_t));
 
-  if (cudaStream_t == 0)
+  if (streams == 0)
   {
       fprintf(stderr, "!!!! stream error\n");
     

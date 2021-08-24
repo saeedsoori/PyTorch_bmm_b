@@ -6,6 +6,21 @@
 // CUDA forward declarations
 namespace py = pybind11;
 
+// Pulled from magma test code
+#define TESTING_CHECK( err )                                                 \
+    do {                                                                     \
+        magma_int_t err_ = (err);                                            \
+        if ( err_ != 0 ) {                                                   \
+            fprintf( stderr, "Error: %s\nfailed at %s:%d: error %lld: %s\n", \
+                     #err, __FILE__, __LINE__,                               \
+                     (long long) err_, magma_strerror(err_) );               \
+            exit(1);                                                         \
+        }                                                                    \
+    } while( 0 )
+
+
+    
+
 int bmm_cuda_forward(
     torch::Tensor A,
     torch::Tensor B,
@@ -92,6 +107,12 @@ public:
     std::vector<int> offset_A,
     std::vector<int> offset_B,
     std::vector<int> offset_C){
+
+  	TESTING_CHECK( magma_malloc_cpu( (void**)&hA_array, sizeof(float*)*batchCount ) );
+  	TESTING_CHECK( magma_malloc_cpu( (void**)&hB_array, sizeof(float*)*batchCount ) );
+  	TESTING_CHECK( magma_malloc_cpu( (void**)&hC_array, sizeof(float*)*batchCount ) );
+
+
   	for (int i = 0; i < batchCount; ++i)
   	{
     // std::cout<<"processing input tensor:"<< i<< " \n";

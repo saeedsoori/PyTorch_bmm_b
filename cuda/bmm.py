@@ -22,11 +22,11 @@ class BMM():
         # return bmm_cuda.forward(A, B, m_arr, n_arr, k_arr)
         return bmm_cuda.forward(A, B, C, m, n, k, batch_size, offset_A, offset_B, offset_C)
 
-    def cublas_gemm_call(A, B, C, m , n, k, batch_size, offset_A, offset_B, offset_C):
+    # def cublas_forward(A, B, C, m , n, k, batch_size, offset_A, offset_B, offset_C):
         # print('running single mode....')
         # m_arr = (ctypes.c_int * len(m))(*m)
         # n_arr = (ctypes.c_int * len(n))(*n)
         # k_arr = (ctypes.c_int * len(k))(*k)
         # print('converting finshed....')
         # return bmm_cuda.forward(A, B, m_arr, n_arr, k_arr)
-        return bmm_cuda.cublas_gemm_call(A, B, C, m , n, k, batch_size, offset_A, offset_B, offset_C)
+        # return bmm_cuda.cublas_gemm_call(A, B, C, m , n, k, batch_size, offset_A, offset_B, offset_C)

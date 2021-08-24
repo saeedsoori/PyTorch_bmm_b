@@ -85,6 +85,43 @@ public:
   	return x;
   };
 
+  void set_pointers(torch::Tensor A,
+    torch::Tensor B,
+    torch::Tensor C,
+    int batchCount,
+    std::vector<int> offset_A,
+    std::vector<int> offset_B,
+    std::vector<int> offset_C){
+  	for (int i = 0; i < batchCount; ++i)
+  	{
+    // std::cout<<"processing input tensor:"<< i<< " \n";
+
+    	A_array[i] = (float *) A.data_ptr() + offset_A[i];
+    	B_array[i] = (float *) B.data_ptr() + offset_B[i];
+    	C_array[i] = (float *) C.data_ptr() + offset_C[i];
+  	}
+  };
+
+//   int foo_call(
+//     torch::Tensor A,
+//     torch::Tensor B,
+//     torch::Tensor C,
+//     torch::Tensor m, torch::Tensor n, torch::Tensor k, int batch_size,
+//     std::vector<int> offset_A,
+//     std::vector<int> offset_B,
+//     std::vector<int> offset_C
+//     ) {
+    
+//     int* m_arr = (int*) m.data_ptr();
+//     int* n_arr = (int*) n.data_ptr();
+//     int* k_arr = (int*) k.data_ptr();
+
+    
+    
+//   return bmm_cuda_forward(A, B, C, m_arr ,n_arr , k_arr, batch_size, offset_A, offset_B, offset_C);
+// }
+
+
 };
 
 
@@ -160,6 +197,7 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
 	py::class_<Foo>(m, name.c_str())
       .def(py::init<>())
       .def("setKey", &Foo::setKey)
+      .def("set_pointers", &Foo::set_pointers)
       .def("getKey", &Foo::getKey);
   m.def("forward", &bmm_forward, "BMM forward (CUDA)");
   // m.def("cublas_gemm_call", &cublas_forward, "BMM cublas_gemm_call (CUDA)");

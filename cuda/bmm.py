@@ -10,7 +10,11 @@ torch.manual_seed(42)
 
 
 class BMM():
-    def __init__(self):
+    def __init__(self, A, B, C, batch_size, offset_A, offset_B, offset_C):
+
+    	foo = bmm_cuda.Foo()
+        foo.set_pointers(A, B, C, batch_size, offset_A, offset_B, offset_C)
+        # print(foo.getKey())
         self.x = 1
 
     def forward(A, B, C, m , n, k, batch_size, offset_A, offset_B, offset_C):
@@ -20,9 +24,7 @@ class BMM():
         # k_arr = (ctypes.c_int * len(k))(*k)
         # print('converting finshed....')
         # return bmm_cuda.forward(A, B, m_arr, n_arr, k_arr)
-        foo = bmm_cuda.Foo()
-        foo.setKey(37)
-        print(foo.getKey())
+
         return bmm_cuda.forward(A, B, C, m, n, k, batch_size, offset_A, offset_B, offset_C)
 
     # def cublas_forward(A, B, C, m , n, k, batch_size, offset_A, offset_B, offset_C):

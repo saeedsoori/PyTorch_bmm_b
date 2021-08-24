@@ -160,6 +160,9 @@ int bmm_cublass_forward(
 
 }
 
+status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, n[0], m[0], k[0], &alpha, dB_array[0],
+                       n[0], dA_array[0], k[0], &beta, dC_array[0], n[0]);
+
   // Launch each DGEMM operation in own CUDA stream
 for(int i=0; i<batch_count; i++){
     // Set CUDA stream

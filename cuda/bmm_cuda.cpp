@@ -107,7 +107,7 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
       .def(py::init<>())
       // .def("setKey", &Foo::setKey)
       // .def("set_pointers_cublas", &Foo::set_pointers_cublas)
-      .def("Cublasforward", &Foo::fooCublasforward)
+      .def("Cublasforward", &cublas_class::Cublasforward)
       // .def("getKey", &Foo::getKey);
   // m.def("forward", &bmm_forward, "BMM forward (CUDA)");
   // m.def("cublas_gemm_call", &cublas_forward, "BMM cublas_gemm_call (CUDA)");

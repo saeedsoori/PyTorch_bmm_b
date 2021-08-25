@@ -49,7 +49,7 @@ index = torch.randint(0, len(r_size), (options.n,))
 pytorch_min = math.inf
 pytorch_time = 0
 magma_min = math.inf
-magma_time = 0
+cublas_time = 0
 
 sum_size_A = 0
 sum_size_B = 0
@@ -154,7 +154,7 @@ for j in range(options.runs):
     result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
     torch.cuda.synchronize()
     elapsed = time.time() - start
-    magma_time += elapsed
+    cublas_time += elapsed
 #   
 
 print('checking that the error is near zero')
@@ -169,10 +169,10 @@ print('#'*20)
  
 scale = TIME_SCALES[options.scale]
 pytorch_average = pytorch_time / options.runs * scale
-magma_average = magma_time / options.runs * scale
+cublas_average = cublas_time / options.runs * scale
 
-print('PyTorch: {0:.3f} {2} | Magma {1:.3f} {2}'.format(
-     pytorch_average,  magma_average,
+print('PyTorch: {0:.3f} {2} | cublas {1:.3f} {2}'.format(
+     pytorch_average,  cublas_average,
     options.scale))
 
 

@@ -78,8 +78,8 @@ public:
 for(int i=0; i<batchCount; i++){
     // Set CUDA stream
     cublasSetStream(handle, streams[i]);
-   status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, n[i], m[i], k[i], &alpha, reinterpret_cast<float *> (B.data_ptr() )+ offset_B[i],
-                       n[i], reinterpret_cast<float *> (A.data_ptr() )+ offset_A[i], k[i], &beta, reinterpret_cast<float *> (C.data_ptr() )+ offset_C[i], n[i]);
+   status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, n[i], m[i], k[i], &alpha, (float *) (B.data_ptr() )+ offset_B[i],
+                       n[i], (float *) (A.data_ptr() )+ offset_A[i], k[i], &beta, (float *) (C.data_ptr() )+ offset_C[i], n[i]);
 
 }
 

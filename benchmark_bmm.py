@@ -34,9 +34,9 @@ kwargs = {'dtype': dtype,
           'requires_grad': False}
 
 # generate "n" random matrix with different #columns
-# r_size = [16, 24, 32, 64, 72, 128]
+r_size = [16, 24, 32, 64, 72, 128]
 # r_size = [2,4,8,16]
-r_size = [3]
+# r_size = [3]
 A = []
 B = []
 C = []
@@ -114,11 +114,11 @@ k_arr = torch.cuda.IntTensor(kshapes)
 
 
 Mul = BMM(A_con, B_con, C_con, options.n, all_offset_A, all_offset_B, all_offset_C)
-
+C_con = torch.zeros(sum_size_C, **kwargs)
 # result = BMM.forward(A, B, C, m_arr, n_arr, k_arr, options.n)
 # result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
 result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
-
+# C_con = 
 for j in range(options.runs):
     C_true = []
     for i in range(options.n):
@@ -137,7 +137,7 @@ for j in range(options.runs):
     elapsed = time.time() - start
     magma_min = min(magma_min, elapsed)
     magma_time += elapsed
-
+    C_con = torch.zeros(sum_size_C, **kwargs)
 
     for k in range(options.n):
         C[k] = C_con[0 + all_offset_C[k]: C_true[k].numel() + all_offset_C[k]]

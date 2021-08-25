@@ -280,7 +280,7 @@ int bmm_cublass_forward(
     std::vector<int> offset_C) {
   
   cublasStatus_t status;
-  std::cout<<"H1\n";
+  // std::cout<<"H1\n";
 
   // status = cublasCreate(&handle);
 
@@ -296,26 +296,26 @@ int bmm_cublass_forward(
       fprintf(stderr, "!!!! stream error\n");
     
   }
-  std::cout<<"H2\n";
+  // std::cout<<"H2\n";
 
   for(int i=0; i<batch_count; i++)
     cudaStreamCreate(&streams[i]);
 
-  std::cout<<"H3\n";
+  // std::cout<<"H3\n";
 
   cublasHandle_t handle;
   status = cublasCreate(&handle);
 
 
 
-  std::cout<<"H4\n";
+  // std::cout<<"H4\n";
 
   if (status != CUBLAS_STATUS_SUCCESS) {
     fprintf(stderr, "!!!! CUBLAS initialization error\n");
     return EXIT_FAILURE;
   }
 
-  std::cout<<"H5\n";
+  // std::cout<<"H5\n";
 
 
 
@@ -348,7 +348,7 @@ int bmm_cublass_forward(
 for(int i=0; i<batch_count; i++){
     // Set CUDA stream
     cublasSetStream(handle, streams[i]);
-    std::cout<<"H7\n";
+    // std::cout<<"H7\n";
 
     // DGEMM: C = alpha*A*B + beta*C
     /* Performs operation using cublas */
@@ -361,8 +361,8 @@ for(int i=0; i<batch_count; i++){
 status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, 32, 32, 32, &alpha, reinterpret_cast<float *> (B.data_ptr() + offset_B[i]),
                        32, reinterpret_cast<float *>(A.data_ptr() + offset_A[i]), 32, &beta,  reinterpret_cast<float *> (C.data_ptr() + offset_C[i]), 32);
 
-  std::cout<<"H8\n";
-
+  // std::cout<<"H8\n";
+// 
 }
 
 

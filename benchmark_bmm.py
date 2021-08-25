@@ -197,7 +197,8 @@ for k in range(options.n):
       print(C_.view_as(C_s_true_all[k])-C_s_true_all[k])
 print('#'*20)
         
-print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=10))
+if options.debug == 'true':
+    print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=10))
 
  
 scale = TIME_SCALES[options.scale]

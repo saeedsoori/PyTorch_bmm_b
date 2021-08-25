@@ -124,14 +124,8 @@ k_arr = kshapes
 
 Mul = BMM(A_con, B_con, C_con, options.n, all_offset_A, all_offset_B, all_offset_C)
 C_con = torch.zeros(sum_size_C, **kwargs)
-result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
-for j in range(options.runs):
-    # C_con
-    # result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
-    result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
 
-
-
+C_s_true_all=[]
 for j in range(options.runs):
     for i in range(options.n):
         torch.cuda.synchronize()
@@ -140,6 +134,7 @@ for j in range(options.runs):
         torch.cuda.synchronize()
         elapsed = time.time() - start
         pytorch_time += elapsed
+        C_s_true_all.append(C_s_true)
 
         
 
@@ -158,10 +153,11 @@ for j in range(options.runs):
     magma_time += elapsed
 #   
 
+print('checking that the error is near zero')
 for k in range(options.n):
-    C[k] = C_con[0 + all_offset_C[k]: C_s_true[k].numel() + all_offset_C[k]]
-    if not torch.allclose(C[k].view_as(C_s_true[k]), C_s_true[k]):
-      print(C[k].view_as(C_s_true[k])-C_s_true[k])
+    C_[k] = C_con[0 + all_offset_C[k]: C_s_true[k].numel() + all_offset_C[k]]
+    if not torch.allclose(C[k].view_as(C_s_true_all[k]), C_s_true_all[k]):
+      print(C_[k].view_as(C_s_true_all[k])-C_s_true_all[k])
 print('#'*20)
         
     

@@ -119,31 +119,39 @@ C_con = torch.zeros(sum_size_C, **kwargs)
 # result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
 result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
 # C_con = 
-for j in range(options.runs):
-    C_true = []
-    for i in range(options.n):
-        start = time.time()
-        C_s_true = torch.matmul(A[i], B[i])
-        elapsed = time.time() - start
-        pytorch_min = min(pytorch_min, elapsed)
-        pytorch_time += elapsed
-        C_true.append(C_s_true)
 
-    # calling magma
-    # print('start calling mamgma')
-    start = time.time()
+torch.cuda.synchronize()
+start = time.time()
+
+for j in range(options.runs):
+    # C_true = []
+    for i in range(options.n):
+        C_s_true = torch.matmul(A[i], B[i])
+        
+        # C_true.append(C_s_true)
+torch.cuda.synchronize()
+elapsed = time.time() - start
+pytorch_min = min(pytorch_min, elapsed)
+pytorch_time += elapsed
+
+
+torch.cuda.synchronize()
+start = time.time()
+for j in range(options.runs):
+    # C_con
     # result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
     result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
-    elapsed = time.time() - start
-    magma_min = min(magma_min, elapsed)
-    magma_time += elapsed
-    C_con = torch.zeros(sum_size_C, **kwargs)
+torch.cuda.synchronize()
+elapsed = time.time() - start
+magma_min = min(magma_min, elapsed)
+magma_time += elapsed
+# C_con = torch.zeros(sum_size_C, **kwargs)   
 
-    # for k in range(options.n):
-    #     C[k] = C_con[0 + all_offset_C[k]: C_true[k].numel() + all_offset_C[k]]
-    #     if not torch.allclose(C[k].view_as(C_true[k]), C_true[k]):
-    #         print(C[k].view_as(C_true[k])-C_true[k])
-            # print('#'*20)
+# for k in range(options.n):
+#     C[k] = C_con[0 + all_offset_C[k]: C_true[k].numel() + all_offset_C[k]]
+#     if not torch.allclose(C[k].view_as(C_true[k]), C_true[k]):
+#       print(C[k].view_as(C_true[k])-C_true[k])
+# print('#'*20)
         
     
 

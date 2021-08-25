@@ -127,65 +127,65 @@ C_con = torch.zeros(sum_size_C, **kwargs)
 C_s_true_all=[]
 
 pytorch_time = 0
-# if options.debug == 'true':
-#     with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=True) as prof:
-#         with record_function("pytorch matmul"):
-#             for j in range(options.runs):
-#                 for i in range(options.n):
-#                     torch.cuda.synchronize()
-#                     start = time.time()
-#                     C_s_true = torch.matmul(A[i], B[i])
-#                     torch.cuda.synchronize()
-#                     elapsed = time.time() - start
-#                     pytorch_time += elapsed
-#                     C_s_true_all.append(C_s_true)
+if options.debug == 'true':
+    with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=True) as prof:
+        with record_function("pytorch matmul"):
+            for j in range(options.runs):
+                for i in range(options.n):
+                    torch.cuda.synchronize()
+                    start = time.time()
+                    C_s_true = torch.matmul(A[i], B[i])
+                    torch.cuda.synchronize()
+                    elapsed = time.time() - start
+                    pytorch_time += elapsed
+                    C_s_true_all.append(C_s_true)
 
-# else:
-for j in range(options.runs):
-    for i in range(options.n):
-        torch.cuda.synchronize()
-        start = time.time()
-        C_s_true = torch.matmul(A[i], B[i])
-        torch.cuda.synchronize()
-        elapsed = time.time() - start
-        pytorch_time += elapsed
-        C_s_true_all.append(C_s_true)
+else:
+    for j in range(options.runs):
+        for i in range(options.n):
+            torch.cuda.synchronize()
+            start = time.time()
+            C_s_true = torch.matmul(A[i], B[i])
+            torch.cuda.synchronize()
+            elapsed = time.time() - start
+            pytorch_time += elapsed
+            C_s_true_all.append(C_s_true)
     
 
 
 cublas_time = 0
-# if options.debug == 'true':
-#     with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=True) as prof:
-#         with record_function("cublas matmul"):
-#             for j in range(options.runs):
-#                 # C_con
-#                 C_con = torch.zeros(sum_size_C, **kwargs) 
-#                 # result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
-#                 A_con.contiguous()
-#                 B_con.contiguous()
-#                 C_con.contiguous()
+if options.debug == 'true':
+    with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=True) as prof:
+        with record_function("cublas matmul"):
+            for j in range(options.runs):
+                # C_con
+                C_con = torch.zeros(sum_size_C, **kwargs) 
+                # result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
+                A_con.contiguous()
+                B_con.contiguous()
+                C_con.contiguous()
 
-#                 torch.cuda.synchronize()
-#                 start = time.time()
-#                 result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
-#                 torch.cuda.synchronize()
-#                 elapsed = time.time() - start
-#             cublas_time += elapsed
-# else:
-for j in range(options.runs):
-    # C_con
-    C_con = torch.zeros(sum_size_C, **kwargs) 
-    # result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
-    A_con.contiguous()
-    B_con.contiguous()
-    C_con.contiguous()
+                torch.cuda.synchronize()
+                start = time.time()
+                result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
+                torch.cuda.synchronize()
+                elapsed = time.time() - start
+                cublas_time += elapsed
+else:
+    for j in range(options.runs):
+        # C_con
+        C_con = torch.zeros(sum_size_C, **kwargs) 
+        # result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
+        A_con.contiguous()
+        B_con.contiguous()
+        C_con.contiguous()
 
-    torch.cuda.synchronize()
-    start = time.time()
-    result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
-    torch.cuda.synchronize()
-    elapsed = time.time() - start
-    cublas_time += elapsed
+        torch.cuda.synchronize()
+        start = time.time()
+        result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
+        torch.cuda.synchronize()
+        elapsed = time.time() - start
+        cublas_time += elapsed
 #   
 
 print('checking that the error is near zero')

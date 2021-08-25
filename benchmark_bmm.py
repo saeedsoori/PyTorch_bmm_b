@@ -6,6 +6,8 @@ import math
 import time
 
 import torch
+from torch.profiler import profile, record_function, ProfilerActivity
+
 
 TIME_SCALES = {'s': 1, 'ms': 1000, 'us': 1000000}
 
@@ -17,6 +19,7 @@ parser.add_argument('--scale', choices=['s', 'ms', 'us'], default='us')
 parser.add_argument('-c', '--cuda', action='store_true')
 parser.add_argument('-d', '--double', action='store_true')
 parser.add_argument('-n', '--n', type=int, default=1)
+parser.add_argument('-v', '--debug', type=str, default='false')
 
 options = parser.parse_args()
 
@@ -49,7 +52,6 @@ index = torch.randint(0, len(r_size), (options.n,))
 pytorch_min = math.inf
 pytorch_time = 0
 magma_min = math.inf
-cublas_time = 0
 
 sum_size_A = 0
 sum_size_B = 0
@@ -126,34 +128,65 @@ Mul = BMM(A_con, B_con, C_con, options.n, all_offset_A, all_offset_B, all_offset
 C_con = torch.zeros(sum_size_C, **kwargs)
 
 C_s_true_all=[]
-for j in range(options.runs):
-    for i in range(options.n):
-        torch.cuda.synchronize()
-        start = time.time()
-        C_s_true = torch.matmul(A[i], B[i])
-        torch.cuda.synchronize()
-        elapsed = time.time() - start
-        pytorch_time += elapsed
-        C_s_true_all.append(C_s_true)
 
+if options.debug == 'true':
+    with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=True) as prof:
+        with record_function("pytorch matmul"):
+            for j in range(options.runs):
+                for i in range(options.n):
+                    torch.cuda.synchronize()
+                    start = time.time()
+                    C_s_true = torch.matmul(A[i], B[i])
+                    torch.cuda.synchronize()
+                    elapsed = time.time() - start
+                    pytorch_time += elapsed
+                    C_s_true_all.append(C_s_true)
+
+else:
+    for j in range(options.runs):
+        for i in range(options.n):
+            torch.cuda.synchronize()
+            start = time.time()
+            C_s_true = torch.matmul(A[i], B[i])
+            torch.cuda.synchronize()
+            elapsed = time.time() - start
+            pytorch_time += elapsed
+            C_s_true_all.append(C_s_true)
         
 
 
+cublas_time = 0
+if options.debug == 'true':
+    with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=True) as prof:
+        with record_function("cublas matmul"):
+            for j in range(options.runs):
+                # C_con
+                C_con = torch.zeros(sum_size_C, **kwargs) 
+                # result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
+                A_con.contiguous()
+                B_con.contiguous()
+                C_con.contiguous()
 
+                torch.cuda.synchronize()
+                start = time.time()
+                result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
+                torch.cuda.synchronize()
+                elapsed = time.time() - start
+            cublas_time += elapsed
+else:
+    for j in range(options.runs):
+        # C_con
+        C_con = torch.zeros(sum_size_C, **kwargs) 
+        # result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
+        A_con.contiguous()
+        B_con.contiguous()
+        C_con.contiguous()
 
-for j in range(options.runs):
-    # C_con
-    C_con = torch.zeros(sum_size_C, **kwargs) 
-    # result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
-    A_con.contiguous()
-    B_con.contiguous()
-    C_con.contiguous()
-
-    torch.cuda.synchronize()
-    start = time.time()
-    result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
-    torch.cuda.synchronize()
-    elapsed = time.time() - start
+        torch.cuda.synchronize()
+        start = time.time()
+        result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
+        torch.cuda.synchronize()
+        elapsed = time.time() - start
     cublas_time += elapsed
 #   
 
@@ -164,7 +197,7 @@ for k in range(options.n):
       print(C_.view_as(C_s_true_all[k])-C_s_true_all[k])
 print('#'*20)
         
-    
+print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=10))
 
  
 scale = TIME_SCALES[options.scale]

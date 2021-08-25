@@ -117,6 +117,10 @@ k_arr = torch.cuda.IntTensor(kshapes)
 Mul = BMM(A_con, B_con, C_con, options.n, all_offset_A, all_offset_B, all_offset_C)
 C_con = torch.zeros(sum_size_C, **kwargs)
 result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
+for j in range(options.runs):
+    # C_con
+    # result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
+    result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
 
 torch.cuda.synchronize()
 start = time.time()

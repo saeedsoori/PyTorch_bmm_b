@@ -109,9 +109,9 @@ for i in range(options.n):
 
 
 
-m_arr = torch.cuda.IntTensor(mshapes).to(device)
-n_arr = torch.cuda.IntTensor(nshapes).to(device)
-k_arr = torch.cuda.IntTensor(kshapes).to(device)
+m_arr = torch.cuda.IntTensor(mshapes).to('cpu')
+n_arr = torch.cuda.IntTensor(nshapes).to('cpu')
+k_arr = torch.cuda.IntTensor(kshapes).to('cpu')
 
 
 Mul = BMM(A_con, B_con, C_con, options.n, all_offset_A, all_offset_B, all_offset_C)

@@ -174,7 +174,7 @@ public:
     cublasStatus_t status;
   
 
-  cudaStream_t *streams = (cudaStream_t *) malloc(batch_count*sizeof(cudaStream_t));
+  cudaStream_t *streams = (cudaStream_t *) malloc(batchCount*sizeof(cudaStream_t));
 
   if (streams == 0)
   {
@@ -183,7 +183,7 @@ public:
   }
   // std::cout<<"H2\n";
 
-  for(int i=0; i<batch_count; i++)
+  for(int i=0; i<batchCount; i++)
     cudaStreamCreate(&streams[i]);
 
   // std::cout<<"H3\n";
@@ -213,7 +213,7 @@ public:
 //                        n[0], dA_array[0], k[0], &beta, dC_array[0], n[0]);
 
   // Launch each DGEMM operation in own CUDA stream
-for(int i=0; i<batch_count; i++){
+for(int i=0; i<batchCount; i++){
     // Set CUDA stream
     cublasSetStream(handle, streams[i]);
     // std::cout<<"H7\n";

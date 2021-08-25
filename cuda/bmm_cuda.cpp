@@ -13,17 +13,17 @@ namespace py = pybind11;
 
 
 
-int bmm_cublass_forward(
-    torch::Tensor A,
-    torch::Tensor B,
-    torch::Tensor C,
-    std::vector<int> m,
-    std::vector<int> n,
-    std::vector<int> k,
-    int batch_size,
-    std::vector<int> offset_A,
-    std::vector<int> offset_B,
-    std::vector<int> offset_C);
+// int bmm_cublass_forward(
+//     torch::Tensor A,
+//     torch::Tensor B,
+//     torch::Tensor C,
+//     std::vector<int> m,
+//     std::vector<int> n,
+//     std::vector<int> k,
+//     int batch_size,
+//     std::vector<int> offset_A,
+//     std::vector<int> offset_B,
+//     std::vector<int> offset_C);
 
 
 
@@ -34,129 +34,11 @@ int bmm_cublass_forward(
 #define CHECK_CONTIGUOUS(x) AT_ASSERTM(x.is_contiguous(), #x " must be contiguous")
 #define CHECK_INPUT(x) CHECK_CUDA(x); CHECK_CONTIGUOUS(x)
 
-// int bmm_forward(
-//     std::vector<torch::Tensor> A,
-//     std::vector<torch::Tensor> B,
-//     std::vector<torch::Tensor> C,
-//     torch::Tensor m, torch::Tensor n, torch::Tensor k, int batch_size) {
-    
-//     int* m_arr = (int*) m.data_ptr();
-//     int* n_arr = (int*) n.data_ptr();
-//     int* k_arr = (int*) k.data_ptr();
 
 
-    
-//   return bmm_cuda_forward(A, B, C, m_arr ,n_arr , k_arr, batch_size);
-// }
+class cublas_class {
 
-class Foo {
-
-public:
-  float ** A_array;
-  float ** B_array;
-  float ** C_array;
-
-  float const* * dA_array;
-  float const* * dB_array;
-  float **dC_array;
-
-
-  int x;
-
-  // void setKey(torch::Tensor A, torch::Tensor B, torch::Tensor C,
-  //  std::vector<int> offset_A,
-  //   std::vector<int> offset_B,
-  //   std::vector<int> offset_C);
-
-  void setKey(int i){
-  	x = i;
-  };
-
-  int getKey(){
-  	return x;
-  };
-
-  
-  void set_pointers_cublas(torch::Tensor A,
-    torch::Tensor B,
-    torch::Tensor C,
-    int batchCount,
-    std::vector<int> offset_A,
-    std::vector<int> offset_B,
-    std::vector<int> offset_C){
-
-  cublasStatus_t status;
-
-  	A_array = (float **) malloc(batchCount*sizeof(float*));
-  	B_array = (float **) malloc(batchCount*sizeof(float*));
-  	C_array = (float **) malloc(batchCount*sizeof(float*));
-
-  	if (A_array==0 || B_array ==0 || C_array ==0)
-  	{
-  		fprintf(stderr, "!!!! host memory allocation error \n");
-  	}
-
-    	std::cout<<" host memory initialization...\n";
-
-  	for (int i = 0; i < batchCount; ++i)
-  	{
-    // std::cout<<"processing input tensor:"<< i<< " \n";
-
-    	A_array[i] = (float *) A.data_ptr() + offset_A[i];
-    	B_array[i] = (float *) B.data_ptr() + offset_B[i];
-    	C_array[i] = (float *) C.data_ptr() + offset_C[i];
-
-    	std::cout<< A_array[i] << " " << B_array[i] <<" "<<C_array[i]<<"\n";
-  	}
-    	std::cout<<" host memory initialized...\n";
-
-
-  	if (cudaMalloc(reinterpret_cast<void **>(&dA_array), batchCount * sizeof(float*)) !=
-      cudaSuccess) {
-    	fprintf(stderr, "!!!! device memory allocation error (allocate A)\n");
-  	}
-  	if (cudaMalloc(reinterpret_cast<void **>(&dB_array), batchCount * sizeof(float*)) !=
-      cudaSuccess) {
-    	fprintf(stderr, "!!!! device memory allocation error (allocate B)\n");
-  	}
-  	if (cudaMalloc(reinterpret_cast<void **>(&dC_array), batchCount * sizeof(float*)) !=
-      cudaSuccess) {
-    	fprintf(stderr, "!!!! device memory allocation error (allocate C)\n");
-  	}
-
-  	/* Initialize the device matrices with the host matrices */
-  status = cublasSetVector(batchCount, sizeof(float*), A_array, 1, dA_array, 1);
-
-  if (status != CUBLAS_STATUS_SUCCESS) {
-    fprintf(stderr, "!!!! device access error (write A)\n");
-  }
-
-  status = cublasSetVector(batchCount, sizeof(float*), B_array, 1, dB_array, 1);
-
-  if (status != CUBLAS_STATUS_SUCCESS) {
-    fprintf(stderr, "!!!! device access error (write B)\n");
-  }
-
-  status = cublasSetVector(batchCount, sizeof(float*), C_array, 1, dC_array, 1);
-
-
-
-
-  std::cout<<" device memory initialized...\n";
-
-
-  if (status != CUBLAS_STATUS_SUCCESS) {
-    fprintf(stderr, "!!!! device access error (write C)\n");
-  }
-
-
-  	
-
-  };
-
-  
-
-  int fooCublasforward(
+  int Cublasforward(
     torch::Tensor A,
     torch::Tensor B,
     torch::Tensor C,
@@ -188,20 +70,10 @@ public:
 
 
 
-  // std::cout<<"H4\n";
-
-  // if (status != CUBLAS_STATUS_SUCCESS) {
-  //   fprintf(stderr, "!!!! CUBLAS initialization error\n");
-  //   return EXIT_FAILURE;
-  // }
-
   float  alpha = 1.0f;
   float  beta = 0.0f;
 
-
-
-// status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, n[0], m[0], k[0], &alpha, dB_array[0],
-//                        n[0], dA_array[0], k[0], &beta, dC_array[0], n[0]);
+                   n[0], dA_array[0], k[0], &beta, dC_array[0], n[0]);
 
   // Launch each DGEMM operation in own CUDA stream
 for(int i=0; i<batchCount; i++){
@@ -229,14 +101,14 @@ for(int i=0; i<batchCount; i++){
 
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
-	std::string name = std::string("Foo");
+	std::string name = std::string("cublas_class");
 
 	py::class_<Foo>(m, name.c_str())
       .def(py::init<>())
-      .def("setKey", &Foo::setKey)
-      .def("set_pointers_cublas", &Foo::set_pointers_cublas)
-      .def("fooCublasforward", &Foo::fooCublasforward)
-      .def("getKey", &Foo::getKey);
+      // .def("setKey", &Foo::setKey)
+      // .def("set_pointers_cublas", &Foo::set_pointers_cublas)
+      .def("Cublasforward", &Foo::fooCublasforward)
+      // .def("getKey", &Foo::getKey);
   // m.def("forward", &bmm_forward, "BMM forward (CUDA)");
   // m.def("cublas_gemm_call", &cublas_forward, "BMM cublas_gemm_call (CUDA)");
 }

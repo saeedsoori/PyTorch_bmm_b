@@ -114,9 +114,13 @@ for i in range(options.n):
 # k_arr = torch.cuda.IntTensor(kshapes).to('cpu')
 
 
-m_arr = torch.IntTensor(mshapes)
-n_arr = torch.IntTensor(nshapes)
-k_arr = torch.IntTensor(kshapes)
+# m_arr = torch.IntTensor(mshapes)
+# n_arr = torch.IntTensor(nshapes)
+# k_arr = torch.IntTensor(kshapes)
+
+m_arr = mshapes
+n_arr = nshapes
+k_arr = kshapes
 
 Mul = BMM(A_con, B_con, C_con, options.n, all_offset_A, all_offset_B, all_offset_C)
 C_con = torch.zeros(sum_size_C, **kwargs)

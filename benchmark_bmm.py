@@ -60,10 +60,10 @@ for i in range(options.n):
     B_s = torch.randn(r_size[index[i]], r_size[index[i]] , **kwargs)
     C_s = torch.zeros(options.batch_size, r_size[index[i]] , **kwargs)
 
-    print(A_s)
-    print(B_s)
-    print(C_s)
-    print('ABC printed')
+    # print(A_s)
+    # print(B_s)
+    # print(C_s)
+    # print('ABC printed')
     # Force CUDA initialization
     C_s_true.append(torch.matmul(A_s, B_s))
 

@@ -154,7 +154,7 @@ scale = TIME_SCALES[options.scale]
 pytorch_average = pytorch_time / options.runs * scale
 magma_average = magma_time / options.runs * scale
 
-print('PyTorch: {1:.3f} {4} | Magma {3:.3f} {4}'.format(
+print('PyTorch: {0:.3f} {2} | Magma {1:.3f} {2}'.format(
      pytorch_average,  magma_average,
     options.scale))
 

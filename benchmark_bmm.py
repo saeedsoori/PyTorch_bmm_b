@@ -122,27 +122,31 @@ for j in range(options.runs):
     # result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
     result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
 
-torch.cuda.synchronize()
-start = time.time()
+
 
 for j in range(options.runs):
     for i in range(options.n):
+        torch.cuda.synchronize()
+        start = time.time()
         C_s_true = torch.matmul(A[i], B[i])
+        torch.cuda.synchronize()
+        elapsed = time.time() - start
+        pytorch_time += elapsed
+
         
-torch.cuda.synchronize()
-elapsed = time.time() - start
-pytorch_time += elapsed
 
 
-torch.cuda.synchronize()
-start = time.time()
+
+
 for j in range(options.runs):
     # C_con
     # result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
+    torch.cuda.synchronize()
+    start = time.time()
     result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
-torch.cuda.synchronize()
-elapsed = time.time() - start
-magma_time += elapsed
+    torch.cuda.synchronize()
+    elapsed = time.time() - start
+    magma_time += elapsed
 # C_con = torch.zeros(sum_size_C, **kwargs)   
 
 for k in range(options.n):

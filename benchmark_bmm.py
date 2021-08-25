@@ -54,7 +54,7 @@ magma_time = 0
 sum_size_A = 0
 sum_size_B = 0
 sum_size_C = 0
-
+C_s_true=[]
 for i in range(options.n):
     A_s = torch.randn(options.batch_size, r_size[index[i]], **kwargs)
     B_s = torch.randn(r_size[index[i]], r_size[index[i]] + 3, **kwargs)
@@ -64,7 +64,7 @@ for i in range(options.n):
     print(B_s)
     print(C_s)
     # Force CUDA initialization
-    C_s_true = torch.matmul(A_s, B_s)
+    C_s_true.appned(torch.matmul(A_s, B_s))
 
     A.append(A_s)
     B.append(B_s)
@@ -115,20 +115,15 @@ k_arr = torch.cuda.IntTensor(kshapes)
 
 Mul = BMM(A_con, B_con, C_con, options.n, all_offset_A, all_offset_B, all_offset_C)
 C_con = torch.zeros(sum_size_C, **kwargs)
-# result = BMM.forward(A, B, C, m_arr, n_arr, k_arr, options.n)
-# result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
 result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
-# C_con = 
 
 torch.cuda.synchronize()
 start = time.time()
 
 for j in range(options.runs):
-    # C_true = []
     for i in range(options.n):
         C_s_true = torch.matmul(A[i], B[i])
         
-        # C_true.append(C_s_true)
 torch.cuda.synchronize()
 elapsed = time.time() - start
 pytorch_min = min(pytorch_min, elapsed)
@@ -147,11 +142,11 @@ magma_min = min(magma_min, elapsed)
 magma_time += elapsed
 # C_con = torch.zeros(sum_size_C, **kwargs)   
 
-# for k in range(options.n):
-#     C[k] = C_con[0 + all_offset_C[k]: C_true[k].numel() + all_offset_C[k]]
-#     if not torch.allclose(C[k].view_as(C_true[k]), C_true[k]):
-#       print(C[k].view_as(C_true[k])-C_true[k])
-# print('#'*20)
+for k in range(options.n):
+    C[k] = C_con[0 + all_offset_C[k]: C_true[k].numel() + all_offset_C[k]]
+    if not torch.allclose(C[k].view_as(C_true[k]), C_s_true[k]):
+      print(C[k].view_as(C_true[k])-C_true[k])
+print('#'*20)
         
     
 

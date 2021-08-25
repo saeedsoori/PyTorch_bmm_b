@@ -36,7 +36,7 @@ kwargs = {'dtype': dtype,
 # generate "n" random matrix with different #columns
 # r_size = [16, 24, 32, 64, 72, 128]
 # r_size = [2,4,8,16]
-r_size = [32]
+r_size = [3]
 A = []
 B = []
 C = []
@@ -57,12 +57,12 @@ sum_size_C = 0
 
 for i in range(options.n):
     A_s = torch.randn(options.batch_size, r_size[index[i]], **kwargs)
-    B_s = torch.randn(r_size[index[i]], r_size[index[i]] + 32, **kwargs)
-    C_s = torch.zeros(options.batch_size, r_size[index[i]] + 32, **kwargs)
+    B_s = torch.randn(r_size[index[i]], r_size[index[i]] + 3, **kwargs)
+    C_s = torch.zeros(options.batch_size, r_size[index[i]] + 3, **kwargs)
 
-    # print(A_s.dtype)
-    # print(B_s.dtype)
-    # print(C_s.dtype)
+    print(A_s)
+    print(B_s)
+    print(C_s)
     # Force CUDA initialization
     C_s_true = torch.matmul(A_s, B_s)
 

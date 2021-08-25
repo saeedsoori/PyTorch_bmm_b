@@ -49,9 +49,6 @@ nshapes = []
 kshapes = []
 index = torch.randint(0, len(r_size), (options.n,))
 
-pytorch_min = math.inf
-pytorch_time = 0
-magma_min = math.inf
 
 sum_size_A = 0
 sum_size_B = 0
@@ -129,6 +126,7 @@ C_con = torch.zeros(sum_size_C, **kwargs)
 
 C_s_true_all=[]
 
+pytorch_time = 0
 if options.debug == 'true':
     with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=True) as prof:
         with record_function("pytorch matmul"):

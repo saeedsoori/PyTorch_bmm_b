@@ -10,9 +10,9 @@ import torch
 TIME_SCALES = {'s': 1, 'ms': 1000, 'us': 1000000}
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-b', '--batch-size', type=int, default=32)
-parser.add_argument('-f', '--features', type=int, default=32)
-parser.add_argument('-r', '--runs', type=int, default=10)
+parser.add_argument('-b', '--batch-size', type=int, default=2)
+parser.add_argument('-f', '--features', type=int, default=2)
+parser.add_argument('-r', '--runs', type=int, default=100)
 parser.add_argument('--scale', choices=['s', 'ms', 'us'], default='us')
 parser.add_argument('-c', '--cuda', action='store_true')
 parser.add_argument('-d', '--double', action='store_true')
@@ -36,7 +36,7 @@ kwargs = {'dtype': dtype,
 # generate "n" random matrix with different #columns
 # r_size = [16, 24, 32, 64, 72, 128]
 # r_size = [2,4,8,16]
-r_size = [32]
+r_size = [2]
 A = []
 B = []
 C = []

@@ -63,8 +63,9 @@ for i in range(options.n):
     print(A_s)
     print(B_s)
     print(C_s)
+    print('ABC printed')
     # Force CUDA initialization
-    C_s_true.appned(torch.matmul(A_s, B_s))
+    C_s_true.append(torch.matmul(A_s, B_s))
 
     A.append(A_s)
     B.append(B_s)

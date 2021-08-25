@@ -37,7 +37,7 @@ namespace py = pybind11;
 
 
 class cublas_class {
-
+public:
   int Cublasforward(
     torch::Tensor A,
     torch::Tensor B,

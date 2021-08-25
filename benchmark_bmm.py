@@ -10,7 +10,7 @@ import torch
 TIME_SCALES = {'s': 1, 'ms': 1000, 'us': 1000000}
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-b', '--batch-size', type=int, default=2)
+parser.add_argument('-b', '--batch-size', type=int, default=8)
 parser.add_argument('-f', '--features', type=int, default=2)
 parser.add_argument('-r', '--runs', type=int, default=100)
 parser.add_argument('--scale', choices=['s', 'ms', 'us'], default='us')
@@ -36,7 +36,7 @@ kwargs = {'dtype': dtype,
 # generate "n" random matrix with different #columns
 # r_size = [16, 24, 32, 64, 72, 128]
 # r_size = [2,4,8,16]
-r_size = [2]
+r_size = [8]
 A = []
 B = []
 C = []
@@ -57,8 +57,8 @@ sum_size_C = 0
 C_s_true=[]
 for i in range(options.n):
     A_s = torch.randn(options.batch_size, r_size[index[i]], **kwargs)
-    B_s = torch.randn(r_size[index[i]], r_size[index[i]] + 3, **kwargs)
-    C_s = torch.zeros(options.batch_size, r_size[index[i]] + 3, **kwargs)
+    B_s = torch.randn(r_size[index[i]], r_size[index[i]] , **kwargs)
+    C_s = torch.zeros(options.batch_size, r_size[index[i]] , **kwargs)
 
     print(A_s)
     print(B_s)

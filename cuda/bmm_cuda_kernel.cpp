@@ -358,8 +358,8 @@ for(int i=0; i<batch_count; i++){
 // status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, 32, 32, 32, &alpha, (float *) B.data_ptr() + offset_B[i],
 //                        32, (float *) A.data_ptr() + offset_A[i], 32, &beta, (float *) C.data_ptr() + offset_C[i], 32);
   
-status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, 32, 32, 32, &alpha, reinterpret_cast<float *> (B.data_ptr() )+ offset_B[i],
-                       32, reinterpret_cast<float *>(A.data_ptr()) + offset_A[i], 32, &beta,  reinterpret_cast<float *> (C.data_ptr() )+ offset_C[i], 32);
+status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, 8, 8, 8, &alpha, reinterpret_cast<float *> (B.data_ptr() )+ offset_B[i],
+                       8, reinterpret_cast<float *>(A.data_ptr()) + offset_A[i], 8, &beta,  reinterpret_cast<float *> (C.data_ptr() )+ offset_C[i], 8);
 
   // std::cout<<"H8\n";
 // 

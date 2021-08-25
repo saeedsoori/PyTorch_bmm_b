@@ -12,13 +12,13 @@ from torch.profiler import profile, record_function, ProfilerActivity
 TIME_SCALES = {'s': 1, 'ms': 1000, 'us': 1000000}
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-b', '--batch-size', type=int, default=8)
+parser.add_argument('-b', '--batch-size', type=int, default=128)
 parser.add_argument('-f', '--features', type=int, default=2)
 parser.add_argument('-r', '--runs', type=int, default=100)
 parser.add_argument('--scale', choices=['s', 'ms', 'us'], default='us')
 parser.add_argument('-c', '--cuda', action='store_true')
 parser.add_argument('-d', '--double', action='store_true')
-parser.add_argument('-n', '--n', type=int, default=1)
+parser.add_argument('-n', '--n', type=int, default=20)
 parser.add_argument('-v', '--debug', type=str, default='false')
 
 options = parser.parse_args()
@@ -37,9 +37,9 @@ kwargs = {'dtype': dtype,
           'requires_grad': False}
 
 # generate "n" random matrix with different #columns
-# r_size = [16, 24, 32, 64, 72, 128]
+r_size = [32, 64, 72, 128]
 # r_size = [2,4,8,16]
-r_size = [8]
+# r_size = [8]
 A = []
 B = []
 C = []
@@ -185,7 +185,7 @@ else:
         result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
         torch.cuda.synchronize()
         elapsed = time.time() - start
-        A_con = A_con * 1.2 + 1
+        # A_con = A_con * 1.2 + 1
     cublas_time += elapsed
 #   
 

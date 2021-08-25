@@ -127,7 +127,6 @@ for j in range(options.runs):
         
 torch.cuda.synchronize()
 elapsed = time.time() - start
-pytorch_min = min(pytorch_min, elapsed)
 pytorch_time += elapsed
 
 
@@ -139,7 +138,6 @@ for j in range(options.runs):
     result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
 torch.cuda.synchronize()
 elapsed = time.time() - start
-magma_min = min(magma_min, elapsed)
 magma_time += elapsed
 # C_con = torch.zeros(sum_size_C, **kwargs)   
 
@@ -153,13 +151,11 @@ print('#'*20)
 
  
 scale = TIME_SCALES[options.scale]
-pytorch_min *= scale
-magma_min *= scale
 pytorch_average = pytorch_time / options.runs * scale
 magma_average = magma_time / options.runs * scale
 
-print('PyTorch: {0:.3f}/{1:.3f} {4} | Magma {2:.3f}/{3:.3f} {4}'.format(
-    pytorch_min, pytorch_average, magma_min, magma_average,
+print('PyTorch: {1:.3f} {4} | Magma {3:.3f} {4}'.format(
+     pytorch_average,  magma_average,
     options.scale))
 
 

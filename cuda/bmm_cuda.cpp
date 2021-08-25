@@ -73,7 +73,6 @@ class cublas_class {
   float  alpha = 1.0f;
   float  beta = 0.0f;
 
-                   n[0], dA_array[0], k[0], &beta, dC_array[0], n[0]);
 
   // Launch each DGEMM operation in own CUDA stream
 for(int i=0; i<batchCount; i++){

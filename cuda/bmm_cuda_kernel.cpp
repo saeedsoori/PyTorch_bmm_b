@@ -319,8 +319,8 @@ int bmm_cublass_forward(
 
 
 
-  float  alpha = 1.0;
-  float  beta = 0.0;
+  float  alpha = 1.0f;
+  float  beta = 0.0f;
 
 //   for(int i=0; i<batch_count; i++){
 //   float *x = (float *) malloc(batch_count*sizeof(float *));
@@ -355,9 +355,12 @@ for(int i=0; i<batch_count; i++){
   // status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, n[i], m[i], k[i], &alpha, (float *) B.data_ptr() + offset_B[i],
   //                      n[i], (float *) A.data_ptr() + offset_A[i], k[i], &beta, (float *) C.data_ptr() + offset_C[i], n[i]);
   
-status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, 32, 32, 32, &alpha, (float *) B.data_ptr() + offset_B[i],
-                       32, (float *) A.data_ptr() + offset_A[i], 32, &beta, (float *) C.data_ptr() + offset_C[i], 32);
+// status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, 32, 32, 32, &alpha, (float *) B.data_ptr() + offset_B[i],
+//                        32, (float *) A.data_ptr() + offset_A[i], 32, &beta, (float *) C.data_ptr() + offset_C[i], 32);
   
+status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, 32, 32, 32, &alpha, (float *) A.data_ptr() + offset_A[i],
+                       32, (float *) B.data_ptr() + offset_B[i], 32, &beta, (float *) C.data_ptr() + offset_C[i], 32);
+
   std::cout<<"H8\n";
 
 }

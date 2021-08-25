@@ -135,7 +135,7 @@ float *h_A;
     fprintf(stderr, "!!!! CUBLAS initialization error\n");
     return EXIT_FAILURE;
   }
-
+  std::cout<<"\n";
   /* Allocate host memory for the matrices */
   h_A = reinterpret_cast<float *>(malloc(32 * sizeof(float*));
 

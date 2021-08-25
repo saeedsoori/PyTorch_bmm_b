@@ -144,9 +144,9 @@ magma_time += elapsed
 # C_con = torch.zeros(sum_size_C, **kwargs)   
 
 for k in range(options.n):
-    C[k] = C_con[0 + all_offset_C[k]: C_true[k].numel() + all_offset_C[k]]
-    if not torch.allclose(C[k].view_as(C_true[k]), C_s_true[k]):
-      print(C[k].view_as(C_true[k])-C_true[k])
+    C[k] = C_con[0 + all_offset_C[k]: C_s_true[k].numel() + all_offset_C[k]]
+    if not torch.allclose(C[k].view_as(C_s_true[k]), C_s_true[k]):
+      print(C[k].view_as(C_s_true[k])-C_s_true[k])
 print('#'*20)
         
     

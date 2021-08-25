@@ -38,6 +38,18 @@ int bmm_cuda_forward(
     std::vector<int> offset_B,
     std::vector<int> offset_C);
 
+int bmm_cublass_forward(
+    torch::Tensor A,
+    torch::Tensor B,
+    torch::Tensor C,
+    int* m,
+    int* n,
+    int* k,
+    int batch_size,
+    std::vector<int> offset_A,
+    std::vector<int> offset_B,
+    std::vector<int> offset_C);
+
 
 // int bmm_cuda_forward(
     // std::vector<torch::Tensor> A,
@@ -49,17 +61,17 @@ int bmm_cuda_forward(
     // int batch_size);
 
 
-int bmm_cublass_forward(
-    float const* * dA_array,
-    float const* * dB_array,
-    float ** dC_array,
-    int* m,
-    int* n,
-    int* k,
-    int batch_size,
-    std::vector<int> offset_A,
-    std::vector<int> offset_B,
-    std::vector<int> offset_C);
+// int bmm_cublass_forward(
+//     float const* * dA_array,
+//     float const* * dB_array,
+//     float ** dC_array,
+//     int* m,
+//     int* n,
+//     int* k,
+//     int batch_size,
+//     std::vector<int> offset_A,
+//     std::vector<int> offset_B,
+//     std::vector<int> offset_C);
 
 
 // C++ interface
@@ -172,6 +184,8 @@ public:
   		fprintf(stderr, "!!!! host memory allocation error \n");
   	}
 
+    	std::cout<<" host memory initialization...\n";
+
   	for (int i = 0; i < batchCount; ++i)
   	{
     // std::cout<<"processing input tensor:"<< i<< " \n";
@@ -180,8 +194,10 @@ public:
     	B_array[i] = (float *) B.data_ptr() + offset_B[i];
     	C_array[i] = (float *) C.data_ptr() + offset_C[i];
 
-    	std::cout<<" host memory initialized...\n";
+    	std::cout<< A_array[i] << " " << B_array[i] <<" "<<C_array[i]<<"\n";
   	}
+    	std::cout<<" host memory initialized...\n";
+
 
   	if (cudaMalloc(reinterpret_cast<void **>(&dA_array), batchCount * sizeof(float*)) !=
       cudaSuccess) {
@@ -212,7 +228,9 @@ public:
   status = cublasSetVector(batchCount, sizeof(float*), C_array, 1, dC_array, 1);
 
 
-   std::cout<<" device memory initialized...\n";
+
+
+  std::cout<<" device memory initialized...\n";
 
 
   if (status != CUBLAS_STATUS_SUCCESS) {
@@ -269,7 +287,8 @@ public:
 
     
     
-  return bmm_cublass_forward(dA_array, dB_array, dC_array, m_arr ,n_arr , k_arr, batchCount, offset_A, offset_B, offset_C);
+  // return bmm_cublass_forward(dA_array, dB_array, dC_array, m_arr ,n_arr , k_arr, batchCount, offset_A, offset_B, offset_C);
+  return bmm_cublass_forward(A, B, C, m_arr ,n_arr , k_arr, batchCount, offset_A, offset_B, offset_C);
 };
 
 

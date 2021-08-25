@@ -95,9 +95,9 @@ int bmm_cuda_forward(
 }
 
 int bmm_cublass_forward(
-    float const* * dA_array,
-    float const* * dB_array,
-    float **dC_array,
+    torch::Tensor A,
+    torch::Tensor B,
+    torch::Tensor C,
     int* m,
     int* n,
     int* k,
@@ -137,21 +137,21 @@ float *h_A;
   }
 
   /* Allocate host memory for the matrices */
-  h_A = reinterpret_cast<float *>(malloc(n2 * sizeof(h_A[0])));
+  h_A = reinterpret_cast<float *>(malloc(32 * sizeof(float*));
 
   if (h_A == 0) {
     fprintf(stderr, "!!!! host memory allocation error (A)\n");
     return EXIT_FAILURE;
   }
 
-  h_B = reinterpret_cast<float *>(malloc(n2 * sizeof(h_B[0])));
+  h_B = reinterpret_cast<float *>(malloc(32 * sizeof(float*)));
 
   if (h_B == 0) {
     fprintf(stderr, "!!!! host memory allocation error (B)\n");
     return EXIT_FAILURE;
   }
 
-  h_C = reinterpret_cast<float *>(malloc(n2 * sizeof(h_C[0])));
+  h_C = reinterpret_cast<float *>(malloc(32 * sizeof(float*)));
 
   if (h_C == 0) {
     fprintf(stderr, "!!!! host memory allocation error (C)\n");
@@ -168,15 +168,18 @@ float *h_A;
   
   
 
-status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, 32, 32, 32, &alpha, dB_array[0],
-                       32, dA_array[0], 32, &beta, dC_array[0], 32);
+// status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, 32, 32, 32, &alpha, dB_array[0],
+//                        32, dA_array[0], 32, &beta, dC_array[0], 32);
+
+  status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, 32, 32, 32, &alpha, (float *) B.data_ptr() + offset_B[0],
+                       32, (float *) A.data_ptr() + offset_A[0], 32, &beta, (float *) C.data_ptr() + offset_C[0], 32);
 
 std::cout<<"hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh\n";
 
 
   /* Performs operation using cublas */
-  status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, N, N, N, &alpha, d_A,
-                       N, d_B, N, &beta, d_C, N);
+  // status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, N, N, N, &alpha, d_A,
+                       // N, d_B, N, &beta, d_C, N);
 
   // if (status != CUBLAS_STATUS_SUCCESS) {
   //   fprintf(stderr, "!!!! kernel execution error.\n");

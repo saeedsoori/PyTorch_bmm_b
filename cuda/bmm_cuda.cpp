@@ -103,7 +103,7 @@ for(int i=0; i<batchCount; i++){
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
 	std::string name = std::string("cublas_class");
 
-	py::class_<Foo>(m, name.c_str())
+	py::class_<cublas_class>(m, name.c_str())
       .def(py::init<>())
       // .def("setKey", &Foo::setKey)
       // .def("set_pointers_cublas", &Foo::set_pointers_cublas)

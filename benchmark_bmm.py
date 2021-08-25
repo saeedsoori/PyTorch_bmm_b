@@ -185,6 +185,7 @@ else:
         result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
         torch.cuda.synchronize()
         elapsed = time.time() - start
+        A_con = A_con * 1.2 + 1
     cublas_time += elapsed
 #   
 

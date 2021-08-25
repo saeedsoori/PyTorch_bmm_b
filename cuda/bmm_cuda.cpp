@@ -2,41 +2,16 @@
 
 #include <vector>
 #include <pybind11/pybind11.h>
-// includes, project
-#include "magma_v2.h"
-#include "magma_lapack.h"
+
 
 #include <cuda.h>
 #include <cuda_runtime.h>
+#include <cublas_v2.h>
 // CUDA forward declarations
 namespace py = pybind11;
 
-// Pulled from magma test code
-#define TESTING_CHECK( err )                                                 \
-    do {                                                                     \
-        magma_int_t err_ = (err);                                            \
-        if ( err_ != 0 ) {                                                   \
-            fprintf( stderr, "Error: %s\nfailed at %s:%d: error %lld: %s\n", \
-                     #err, __FILE__, __LINE__,                               \
-                     (long long) err_, magma_strerror(err_) );               \
-            exit(1);                                                         \
-        }                                                                    \
-    } while( 0 )
 
 
-
-
-int bmm_cuda_forward(
-    float const* * dA_array,
-    float const* * dB_array,
-    float ** dC_array,
-    int* m,
-    int* n,
-    int* k,
-    int batch_size,
-    std::vector<int> offset_A,
-    std::vector<int> offset_B,
-    std::vector<int> offset_C);
 
 int bmm_cublass_forward(
     torch::Tensor A,
@@ -50,28 +25,6 @@ int bmm_cublass_forward(
     std::vector<int> offset_B,
     std::vector<int> offset_C);
 
-
-// int bmm_cuda_forward(
-    // std::vector<torch::Tensor> A,
-    // std::vector<torch::Tensor> B,
-    // std::vector<torch::Tensor> C,
-    // int* m,
-    // int* n,
-    // int* k,
-    // int batch_size);
-
-
-// int bmm_cublass_forward(
-//     float const* * dA_array,
-//     float const* * dB_array,
-//     float ** dC_array,
-//     int* m,
-//     int* n,
-//     int* k,
-//     int batch_size,
-//     std::vector<int> offset_A,
-//     std::vector<int> offset_B,
-//     std::vector<int> offset_C);
 
 
 // C++ interface
@@ -123,48 +76,7 @@ public:
   	return x;
   };
 
-  void set_pointers(torch::Tensor A,
-    torch::Tensor B,
-    torch::Tensor C,
-    int batchCount,
-    std::vector<int> offset_A,
-    std::vector<int> offset_B,
-    std::vector<int> offset_C){
-
-  	magma_queue_t queue;
-  	magma_device_t device;
-  	// std::cout<<"initialization finsihed..."<<"\n";
-
-  	magma_getdevice( &device );
-  	magma_queue_create( device, &queue );
-
-  	TESTING_CHECK( magma_malloc_cpu( (void**)&A_array, sizeof(float*)*batchCount ) );
-  	TESTING_CHECK( magma_malloc_cpu( (void**)&B_array, sizeof(float*)*batchCount ) );
-  	TESTING_CHECK( magma_malloc_cpu( (void**)&C_array, sizeof(float*)*batchCount ) );
-
-
-  	for (int i = 0; i < batchCount; ++i)
-  	{
-    // std::cout<<"processing input tensor:"<< i<< " \n";
-
-    	A_array[i] = (float *) A.data_ptr() + offset_A[i];
-    	B_array[i] = (float *) B.data_ptr() + offset_B[i];
-    	C_array[i] = (float *) C.data_ptr() + offset_C[i];
-  	}
-
-
-
-
-    TESTING_CHECK( magma_malloc( (void**)&dA_array, sizeof(float*)*batchCount ) );
-  	TESTING_CHECK( magma_malloc( (void**)&dB_array, sizeof(float*)*batchCount ) );
-  	TESTING_CHECK( magma_malloc( (void**)&dC_array, sizeof(float*)*batchCount ) );
-
-  	magma_setvector(batchCount, sizeof(float*), A_array, 1, dA_array, 1, queue);
-  	magma_setvector(batchCount, sizeof(float*), B_array, 1, dB_array, 1, queue);
-  	magma_setvector(batchCount, sizeof(float*), C_array, 1, dC_array, 1, queue);
-
-  };
-
+  
   void set_pointers_cublas(torch::Tensor A,
     torch::Tensor B,
     torch::Tensor C,
@@ -237,38 +149,12 @@ public:
     fprintf(stderr, "!!!! device access error (write C)\n");
   }
 
-	// dA_array = (float **) cuda_malloc(batchCount*sizeof(float*));
- //  	dB_array = (float **) cuda_malloc(batchCount*sizeof(float*));
-  	// dC_array = (float **) cuda_malloc(batchCount*sizeof(float*));
-
-
-   //  TESTING_CHECK( magma_malloc( (void**)&dA_array, sizeof(float*)*batchCount ) );
-  	// TESTING_CHECK( magma_malloc( (void**)&dB_array, sizeof(float*)*batchCount ) );
-  	// TESTING_CHECK( magma_malloc( (void**)&dC_array, sizeof(float*)*batchCount ) );
 
   	
 
   };
 
-  int fooforward(
-    torch::Tensor A,
-    torch::Tensor B,
-    torch::Tensor C,
-    torch::Tensor m, torch::Tensor n, torch::Tensor k, int batchCount,
-    std::vector<int> offset_A,
-    std::vector<int> offset_B,
-    std::vector<int> offset_C
-    ) {
-    
-    int* m_arr = (int*) m.data_ptr();
-    int* n_arr = (int*) n.data_ptr();
-    int* k_arr = (int*) k.data_ptr();
-	
-
-    
-    
-  return bmm_cuda_forward(dA_array, dB_array, dC_array, m_arr ,n_arr , k_arr, batchCount, offset_A, offset_B, offset_C);
-};
+  
 
   int fooCublasforward(
     torch::Tensor A,
@@ -285,80 +171,84 @@ public:
     int* k_arr = (int*) k.data_ptr();
 	
 
+    cublasStatus_t status;
+  
+
+  cudaStream_t *streams = (cudaStream_t *) malloc(batch_count*sizeof(cudaStream_t));
+
+  if (streams == 0)
+  {
+      fprintf(stderr, "!!!! stream error\n");
     
+  }
+  // std::cout<<"H2\n";
+
+  for(int i=0; i<batch_count; i++)
+    cudaStreamCreate(&streams[i]);
+
+  // std::cout<<"H3\n";
+
+  cublasHandle_t handle;
+  status = cublasCreate(&handle);
+
+
+
+  // std::cout<<"H4\n";
+
+  if (status != CUBLAS_STATUS_SUCCESS) {
+    fprintf(stderr, "!!!! CUBLAS initialization error\n");
+    return EXIT_FAILURE;
+  }
+
+  // std::cout<<"H5\n";
+
+
+
+  float  alpha = 1.0f;
+  float  beta = 0.0f;
+
+
+
+// status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, n[0], m[0], k[0], &alpha, dB_array[0],
+//                        n[0], dA_array[0], k[0], &beta, dC_array[0], n[0]);
+
+  // Launch each DGEMM operation in own CUDA stream
+for(int i=0; i<batch_count; i++){
+    // Set CUDA stream
+    cublasSetStream(handle, streams[i]);
+    // std::cout<<"H7\n";
+
+    // DGEMM: C = alpha*A*B + beta*C
+    /* Performs operation using cublas */
+  // status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, n[i], m[i], k[i], &alpha, reinterpret_cast<float *> (B.data_ptr() )+ offset_B[i],
+  //                      n[i], reinterpret_cast<float *> (A.data_ptr() )+ offset_A[i], k[i], &beta, reinterpret_cast<float *> (C.data_ptr() )+ offset_C[i], n[i]);
+  
+  status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, 8, 8, 8, &alpha, reinterpret_cast<float *> (B.data_ptr() )+ offset_B[i],
+                       8, reinterpret_cast<float *> (A.data_ptr() )+ offset_A[i], 8, &beta, reinterpret_cast<float *> (C.data_ptr() )+ offset_C[i], 8);
+// status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, 32, 32, 32, &alpha, (float *) B.data_ptr() + offset_B[i],
+//                        32, (float *) A.data_ptr() + offset_A[i], 32, &beta, (float *) C.data_ptr() + offset_C[i], 32);
+  
+// status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, 8, 8, 8, &alpha, reinterpret_cast<float *> (B.data_ptr() )+ offset_B[i],
+                       // 8, reinterpret_cast<float *>(A.data_ptr()) + offset_A[i], 8, &beta,  reinterpret_cast<float *> (C.data_ptr() )+ offset_C[i], 8);
+
+  // std::cout<<"H8\n";
+// 
+}
+
+
+
+  if (status != CUBLAS_STATUS_SUCCESS) {
+    fprintf(stderr, "!!!! kernel execution error.\n");
+    return EXIT_FAILURE;
+  }
     
-  // return bmm_cublass_forward(dA_array, dB_array, dC_array, m_arr ,n_arr , k_arr, batchCount, offset_A, offset_B, offset_C);
-  return bmm_cublass_forward(A, B, C, m_arr ,n_arr , k_arr, batchCount, offset_A, offset_B, offset_C);
 };
 
 
 };
 
 
-// int bmm_forward(
-//     torch::Tensor A,
-//     torch::Tensor B,
-//     torch::Tensor C,
-//     torch::Tensor m, torch::Tensor n, torch::Tensor k, int batch_size,
-//     std::vector<int> offset_A,
-//     std::vector<int> offset_B,
-//     std::vector<int> offset_C
-//     ) {
-    
-//     int* m_arr = (int*) m.data_ptr();
-//     int* n_arr = (int*) n.data_ptr();
-//     int* k_arr = (int*) k.data_ptr();
 
-    
-    
-//   return bmm_cuda_forward(A, B, C, m_arr ,n_arr , k_arr, batch_size, offset_A, offset_B, offset_C);
-// }
-
-// int cublas_forward(
-
-//     torch::Tensor A,
-//     torch::Tensor B,
-//     torch::Tensor C,
-//     int* m,
-//     int* n,
-//     int* k,
-//     int batch_size,
-//     std::vector<int> offset_A,
-//     std::vector<int> offset_B,
-//     std::vector<int> offset_C) {
-// 	// CHECK_CONTIGUOUS(A);
-// 	// CHECK_CONTIGUOUS(B);
-// 	// CHECK_CONTIGUOUS(C);
-
-//     // double *pA = (double *) A[0].data_ptr();
-//     // double *pB = (double *) B[0].data_ptr();
-
-//     // std::cout<<"elements in A: "<<A.size()<<"\n";
-//     // std::cout<<"elements in B: "<<B.size()<<"\n";
-
-//     // int* m_arr = (int*) malloc (2*sizeof(int));
-//     // int* n_arr = (int*) malloc (2*sizeof(int));
-//     // int* k_arr = (int*) malloc (2*sizeof(int));
-
-    
-
-//     // for (int i = 0; i < A.size(); ++i)
-//     // {
-    	
-//     // }
-
-//     // int* m_arr = (int*) m.data_ptr();
-//     // int* n_arr = (int*) n.data_ptr();
-//     // int* k_arr = (int*) k.data_ptr();
-//     // std::cout<<"here\n";
-//     // std::cout<<m_arr[0]<<" "<<n_arr[0]<<" "<<k_arr[0]<<"\n";
-
-//   // CHECK_INPUT(A);
-//   // CHECK_INPUT(B);
-
-
-//   return cublas_gemm_call(A, B, C, m ,n , k, batch_size, offset_A, offset_B, offset_C);
-// }
 
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
@@ -367,9 +257,7 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
 	py::class_<Foo>(m, name.c_str())
       .def(py::init<>())
       .def("setKey", &Foo::setKey)
-      .def("set_pointers", &Foo::set_pointers)
       .def("set_pointers_cublas", &Foo::set_pointers_cublas)
-      .def("fooforward", &Foo::fooforward)
       .def("fooCublasforward", &Foo::fooCublasforward)
       .def("getKey", &Foo::getKey);
   // m.def("forward", &bmm_forward, "BMM forward (CUDA)");

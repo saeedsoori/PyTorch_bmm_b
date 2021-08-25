@@ -148,6 +148,7 @@ for j in range(options.runs):
 
 for j in range(options.runs):
     # C_con
+    C_con = torch.zeros(sum_size_C, **kwargs) 
     # result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
     torch.cuda.synchronize()
     start = time.time()
@@ -155,7 +156,7 @@ for j in range(options.runs):
     torch.cuda.synchronize()
     elapsed = time.time() - start
     magma_time += elapsed
-# C_con = torch.zeros(sum_size_C, **kwargs)   
+#   
 
 for k in range(options.n):
     C[k] = C_con[0 + all_offset_C[k]: C_s_true[k].numel() + all_offset_C[k]]

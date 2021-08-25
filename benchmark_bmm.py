@@ -155,9 +155,9 @@ for j in range(options.runs):
 
 print('checking that the error is near zero')
 for k in range(options.n):
-    C_ = C_con[0 + all_offset_C[k]: C_s_true[k].numel() + all_offset_C[k]]
+    C_ = C_con[0 + all_offset_C[k]: C_s_true_all[k].numel() + all_offset_C[k]]
     if not torch.allclose(C_.view_as(C_s_true_all[k]), C_s_true_all[k]):
-      print(C__.view_as(C_s_true_all[k])-C_s_true_all[k])
+      print(C_.view_as(C_s_true_all[k])-C_s_true_all[k])
 print('#'*20)
         
     

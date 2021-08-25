@@ -145,6 +145,10 @@ for j in range(options.runs):
     # C_con
     C_con = torch.zeros(sum_size_C, **kwargs) 
     # result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
+    A_con.contiguous()
+    B_con.contiguous()
+    C_con.contiguous()
+
     torch.cuda.synchronize()
     start = time.time()
     result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)

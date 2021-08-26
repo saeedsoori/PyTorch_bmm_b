@@ -105,9 +105,9 @@ for i in range(options.n):
 # k_arr = torch.cuda.IntTensor(kshapes).to('cpu')
 
 
-m_magma = torch.IntTensor(mshapes)
-n_magma = torch.IntTensor(nshapes)
-k_magma = torch.IntTensor(kshapes)
+m_magma = torch.cuda.IntTensor(mshapes)
+n_magma = torch.cuda.IntTensor(nshapes)
+k_magma = torch.cuda.IntTensor(kshapes)
 
 m_arr = mshapes
 n_arr = nshapes

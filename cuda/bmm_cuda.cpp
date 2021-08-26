@@ -15,7 +15,17 @@
 namespace py = pybind11;
 
 
-
+// Pulled from magma test code
+#define TESTING_CHECK( err )                                                 \
+    do {                                                                     \
+        magma_int_t err_ = (err);                                            \
+        if ( err_ != 0 ) {                                                   \
+            fprintf( stderr, "Error: %s\nfailed at %s:%d: error %lld: %s\n", \
+                     #err, __FILE__, __LINE__,                               \
+                     (long long) err_, magma_strerror(err_) );               \
+            exit(1);                                                         \
+        }                                                                    \
+    } while( 0 )
 
 // C++ interface
 
@@ -138,16 +148,10 @@ for(int i=0; i<batchCount; i++){
 
 
 int MagmaForward(
-    float const* * dA_array,
-    float const* * dB_array,
-    float **dC_array,
     int* m,
     int* n,
     int* k,
-    int batch_size,
-    std::vector<int> offset_A,
-    std::vector<int> offset_B,
-    std::vector<int> offset_C) {
+    int batch_size) {
   
 
 

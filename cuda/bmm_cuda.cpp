@@ -53,7 +53,7 @@ public:
     // int* k_arr = (int*) k.data_ptr();
 	
 
-    cublasStatus_t status;
+  cublasStatus_t status;
   cudaStream_t *streams = (cudaStream_t *) malloc(batchCount*sizeof(cudaStream_t));
 
   if (streams == 0)

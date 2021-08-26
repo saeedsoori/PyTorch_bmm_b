@@ -168,7 +168,7 @@ for k in range(options.n):
     C_ = C_con[0 + all_offset_C[k]: C_true[k].numel() + all_offset_C[k]]
     if not torch.allclose(C_.view_as(C_true[k]), C_true[k]):
         print('The results are not correct.')
-        if options.debug == true:
+        if options.debug == 'true':
             print(C_.view_as(C_true[k])-C_true[k])
 print('#'*20)
         

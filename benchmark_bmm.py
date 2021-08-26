@@ -17,6 +17,7 @@ parser.add_argument('-r', '--runs', type=int, default=100)
 parser.add_argument('--scale', choices=['s', 'ms', 'us'], default='us')
 parser.add_argument('-n', '--n', type=int, default=20)
 parser.add_argument('-m', '--mode', type=str, default='all')
+parser.add_argument('-p', '--pytorch', type=str, default='true')
 
 options = parser.parse_args()
 
@@ -35,7 +36,7 @@ kwargs = {'dtype': dtype,
 
 # generate "n" random matrix with different #columns
 r_size = [32, 64, 72, 128]
-# r_size = [2,4,8,16]
+# r_size = [100 400]
 # r_size = [8]
 A = []
 B = []
@@ -122,7 +123,7 @@ Mul = BMM(A_con, B_con, C_con, options.n, all_offset_A, all_offset_B, all_offset
 
 pytorch_time = 0
 
-# if options.mode == 'pytorch' or options.mode == 'all':
+if options.pytorch == 'true':
 for j in range(options.runs):
     for i in range(options.n):
         torch.cuda.synchronize()

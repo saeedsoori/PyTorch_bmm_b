@@ -18,6 +18,7 @@ parser.add_argument('--scale', choices=['s', 'ms', 'us'], default='us')
 parser.add_argument('-n', '--n', type=int, default=20)
 parser.add_argument('-m', '--mode', type=str, default='all')
 parser.add_argument('-p', '--pytorch', type=str, default='true')
+parser.add_argument('-v', '--debug', type=str, default='false')
 
 options = parser.parse_args()
 
@@ -139,6 +140,7 @@ torch.cuda.synchronize()
 
 cublas_time = 0
 if options.mode == 'cublas' or options.mode == 'all':
+    print('performing cublas operations...')
     for j in range(options.runs):
         torch.cuda.synchronize()
         start = time.time()
@@ -149,6 +151,7 @@ if options.mode == 'cublas' or options.mode == 'all':
 #   
 magma_time = 0
 if options.mode == 'magma' or options.mode == 'all':
+    print('performing magma operations...')
     for j in range(options.runs):
         torch.cuda.synchronize()
         start = time.time()
@@ -165,7 +168,8 @@ for k in range(options.n):
     C_ = C_con[0 + all_offset_C[k]: C_true[k].numel() + all_offset_C[k]]
     if not torch.allclose(C_.view_as(C_true[k]), C_true[k]):
         print('The results are not correct.')
-          # print(C_.view_as(C_true[k])-C_true[k])
+        if options.debug == true:
+            print(C_.view_as(C_true[k])-C_true[k])
 print('#'*20)
         
 

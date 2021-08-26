@@ -79,6 +79,7 @@ kshapes.append(0)
 A_con = torch.zeros(sum_size_A, **kwargs)
 B_con = torch.zeros(sum_size_B, **kwargs)
 C_con = torch.zeros(sum_size_C, **kwargs)
+# C_con_magma = torch.zeros(sum_size_C, **kwargs)
 
 # print('tensors created with size:', sum_size_A)
 offset_A = 0
@@ -91,6 +92,7 @@ for i in range(options.n):
     A_con[0 + offset_A:A[i].numel() + offset_A] = torch.reshape(A[i], [1,-1])
     B_con[0 + offset_B:B[i].numel() + offset_B] = torch.reshape(B[i], [1,-1])
     C_con[0 + offset_C:C[i].numel() + offset_C] = torch.reshape(C[i], [1,-1])
+    # C_con_magma[0 + offset_C:C[i].numel() + offset_C] = torch.reshape(C[i], [1,-1])
     offset_A = offset_A + A[i].numel()
     offset_B = offset_B + B[i].numel()
     offset_C = offset_C + C[i].numel()
@@ -120,16 +122,16 @@ Mul = BMM(A_con, B_con, C_con, options.n, all_offset_A, all_offset_B, all_offset
 
 pytorch_time = 0
 
-if options.mode == 'pytorch' or options.mode == 'all':
-    for j in range(options.runs):
-        for i in range(options.n):
-            torch.cuda.synchronize()
-            start = time.time()
-            C_s_true = torch.matmul(A[i], B[i])
-            torch.cuda.synchronize()
-            elapsed = time.time() - start
-            pytorch_time += elapsed
-            # C_s_true_all.append(C_s_true)
+# if options.mode == 'pytorch' or options.mode == 'all':
+for j in range(options.runs):
+    for i in range(options.n):
+        torch.cuda.synchronize()
+        start = time.time()
+        C_s_true = torch.matmul(A[i], B[i])
+        torch.cuda.synchronize()
+        elapsed = time.time() - start
+        pytorch_time += elapsed
+        # C_s_true_all.append(C_s_true)
     
 torch.cuda.synchronize()
 
@@ -157,11 +159,11 @@ if options.mode == 'magma' or options.mode == 'all':
 
 
 print('checking that the error is near zero')
-if options.mode == 'all':
-    for k in range(options.n):
-        C_ = C_con[0 + all_offset_C[k]: C_true[k].numel() + all_offset_C[k]]
-        if not torch.allclose(C_.view_as(C_true[k]), C_true[k]):
-            print('The results are not correct.')
+# if options.mode == 'all':
+for k in range(options.n):
+    C_ = C_con[0 + all_offset_C[k]: C_true[k].numel() + all_offset_C[k]]
+    if not torch.allclose(C_.view_as(C_true[k]), C_true[k]):
+        print('The results are not correct.')
           # print(C_.view_as(C_true[k])-C_true[k])
 print('#'*20)
         

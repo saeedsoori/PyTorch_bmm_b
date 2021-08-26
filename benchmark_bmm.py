@@ -149,7 +149,7 @@ if options.mode == 'magma' or options.mode == 'all':
     for j in range(options.runs):
         torch.cuda.synchronize()
         start = time.time()
-        result = Mul.MagmaForward(A_con, B_con, C_con, m_magma, n_mamgma, k_magma, options.n)
+        result = Mul.MagmaForward(A_con, B_con, C_con, m_magma, n_magma, k_magma, options.n)
         torch.cuda.synchronize()
         elapsed = time.time() - start
         magma_time += elapsed

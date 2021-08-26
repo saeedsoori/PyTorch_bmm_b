@@ -14,6 +14,7 @@ class BMM():
 
         self.mul_op = bmm_cuda.BatchMatmul()
         self.mul_op.set_pointers(A, B, C, batch_size, offset_A, offset_B, offset_C)
+        self.mul_op.make_streams(batch_size)
 
     def MagmaForward(self, A, B, C, m , n, k, batch_size):
         return self.mul_op.MagmaForward(m, n, k, batch_size)

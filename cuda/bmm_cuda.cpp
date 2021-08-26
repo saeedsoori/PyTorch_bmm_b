@@ -40,6 +40,9 @@ class BatchMatmul{
 
 public:
 
+	cudaStream_t *streams;
+    cublasHandle_t *handles;
+
 	float ** A_array;
   	float ** B_array;
   	float ** C_array;
@@ -97,6 +100,28 @@ public:
 
   };
 
+  void make_streams(int batchCount){
+   streams = (cudaStream_t *) malloc(batchCount*sizeof(cudaStream_t));
+   handles = (cublasHandle_t *) malloc(batchCount*sizeof(cublasHandle_t));
+   for(int i=0; i<batchCount; i++){
+        cudaStreamCreate(&streams[i]);
+
+   //cudaStreamCreate(&stream);
+   cublasCreate(&handles[i]);
+  //cublasSetStream(handles[i],streams[i]);
+  }
+  };
+
+  void launch_kernel(int n, int m, int k, float* B, float* A, float* C, cudaStream_t stream, cublasHandle_t handle)
+{
+
+  cublasSetStream(handle,stream);
+  float alpha=1.0f;
+  float beta=0.0f;
+  cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, n, m, k, &alpha, B, n, A, k, &beta, C, n);
+
+};
+
 
 
 
@@ -109,41 +134,13 @@ public:
     std::vector<int> offset_B,
     std::vector<int> offset_C
     ) {
-    
-    // int* m_arr = (int*) m.data_ptr();
-    // int* n_arr = (int*) n.data_ptr();
-    // int* k_arr = (int*) k.data_ptr();
-	
-
-  cublasStatus_t status;
-  cudaStream_t *streams = (cudaStream_t *) malloc(batchCount*sizeof(cudaStream_t));
-
-  if (streams == 0)
-  {
-      fprintf(stderr, "!!!! stream error\n");
-    
-  }
-
-  for(int i=0; i<batchCount; i++)
-    cudaStreamCreate(&streams[i]);
-
-  cublasHandle_t handle;
-  status = cublasCreate(&handle);
 
 
-
-  float  alpha = 1.0f;
-  float  beta = 0.0f;
-
-
-  // Launch each DGEMM operation in own CUDA stream
 #pragma omp parallel
 #pragma omp for
 for(int i=0; i<batchCount; i++){
-    // Set CUDA stream
-    cublasSetStream(handle, streams[i]);
-   status = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, n[i], m[i], k[i], &alpha, (float *) (B.data_ptr() )+ offset_B[i],
-                       n[i], (float *) (A.data_ptr() )+ offset_A[i], k[i], &beta, (float *) (C.data_ptr() )+ offset_C[i], n[i]);
+
+   launch_kernel(n[i], m[i], k[i],  (float *) (B.data_ptr() )+ offset_B[i], (float *) (A.data_ptr() )+ offset_A[i], (float *) (C.data_ptr() )+ offset_C[i], streams[i], handles[i]);
 
 }
 
@@ -220,6 +217,7 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
       // .def("setKey", &Foo::setKey)
       .def("set_pointers", &BatchMatmul::set_pointers)
       .def("CublasForward", &BatchMatmul::CublasForward)
+      .def("make_streams", &BatchMatmul::make_streams)
       .def("MagmaForward", &BatchMatmul::MagmaForward);
       // .def("getKey", &Foo::getKey);
   // m.def("forward", &bmm_forward, "BMM forward (CUDA)");

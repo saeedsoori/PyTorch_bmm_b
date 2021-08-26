@@ -20,6 +20,7 @@ parser.add_argument('-c', '--cuda', action='store_true')
 parser.add_argument('-d', '--double', action='store_true')
 parser.add_argument('-n', '--n', type=int, default=20)
 parser.add_argument('-v', '--debug', type=str, default='false')
+parser.add_argument('-m', '--mode', type=str, default='cu')
 
 options = parser.parse_args()
 
@@ -141,15 +142,16 @@ if options.debug == 'true':
                     C_s_true_all.append(C_s_true)
 
 else:
-    for j in range(options.runs):
-        for i in range(options.n):
-            torch.cuda.synchronize()
-            start = time.time()
-            C_s_true = torch.matmul(A[i], B[i])
-            torch.cuda.synchronize()
-            elapsed = time.time() - start
-            pytorch_time += elapsed
-            C_s_true_all.append(C_s_true)
+    if not options.mode == 'cu':
+        for j in range(options.runs):
+            for i in range(options.n):
+                torch.cuda.synchronize()
+                start = time.time()
+                C_s_true = torch.matmul(A[i], B[i])
+                torch.cuda.synchronize()
+                elapsed = time.time() - start
+                pytorch_time += elapsed
+                C_s_true_all.append(C_s_true)
     
 
 

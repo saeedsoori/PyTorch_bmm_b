@@ -205,7 +205,7 @@ int MagmaForward(
 
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
-	std::string name = std::string("batch_matmul");
+	std::string name = std::string("BatchMatmul");
 
 	py::class_<BatchMatmul>(m, name.c_str())
       .def(py::init<>())

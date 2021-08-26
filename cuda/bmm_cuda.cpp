@@ -48,6 +48,10 @@ public:
   	float const* * dB_array;
   	float **dC_array;
 
+  	// int* m_magma;
+  	// int* n_magma;
+  	// int* k_magma;
+
 	void set_pointers(
 		torch::Tensor A,
     	torch::Tensor B,
@@ -88,6 +92,8 @@ public:
   	magma_setvector(batchCount, sizeof(float*), A_array, 1, dA_array, 1, queue);
   	magma_setvector(batchCount, sizeof(float*), B_array, 1, dB_array, 1, queue);
   	magma_setvector(batchCount, sizeof(float*), C_array, 1, dC_array, 1, queue);
+
+  	
 
   };
 
@@ -148,9 +154,9 @@ for(int i=0; i<batchCount; i++){
 
 
 int MagmaForward(
-    int* m,
-    int* n,
-    int* k,
+    torch::Tensor m_,
+    torch::Tensor n_,
+    torch::Tensor k_,
     int batch_size) {
   
 
@@ -161,9 +167,9 @@ int MagmaForward(
 
   float  alpha = 1.0;
   float  beta = 0.0;
-  magma_int_t* d_lddb;
-  magma_int_t* d_ldda;
-  magma_int_t* d_lddc;
+  // magma_int_t* d_lddb;
+  // magma_int_t* d_ldda;
+  // magma_int_t* d_lddc;
 
 
 
@@ -178,7 +184,9 @@ int MagmaForward(
   magma_getdevice( &device );
   magma_queue_create( device, &queue );
 
-
+  int* m = (int*) m_.data_ptr();
+  int* n = (int*) n_.data_ptr();
+  int* k = (int*) k_.data_ptr();
 
   magmablas_sgemm_vbatched(transA,transB, n,
       /* magma_int_t * */         m,

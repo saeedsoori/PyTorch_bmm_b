@@ -142,7 +142,7 @@ if options.debug == 'true':
                     C_s_true_all.append(C_s_true)
 
 else:
-    if not options.mode == 'cu':
+    if options.mode == 'normal' or options.mode == 'dual':
         for j in range(options.runs):
             for i in range(options.n):
                 torch.cuda.synchronize()
@@ -174,24 +174,25 @@ if options.debug == 'true':
                 elapsed = time.time() - start
                 cublas_time += elapsed
 else:
-    for j in range(options.runs):
-        # C_con
-        C_con = torch.zeros(sum_size_C, **kwargs) 
-        # result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
-        A_con.contiguous()
-        B_con.contiguous()
-        C_con.contiguous()
+    if options.mode == 'cu' or options.mode == 'dual':
+        for j in range(options.runs):
+            # C_con
+            C_con = torch.zeros(sum_size_C, **kwargs) 
+            # result = Mul.forward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
+            A_con.contiguous()
+            B_con.contiguous()
+            C_con.contiguous()
 
-        torch.cuda.synchronize()
-        start = time.time()
-        result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
-        torch.cuda.synchronize()
-        elapsed = time.time() - start
-        cublas_time += elapsed
+            torch.cuda.synchronize()
+            start = time.time()
+            result = Mul.Cublasforward(A_con, B_con, C_con, m_arr, n_arr, k_arr, options.n, all_offset_A, all_offset_B, all_offset_C)
+            torch.cuda.synchronize()
+            elapsed = time.time() - start
+            cublas_time += elapsed
 #   
 
 print('checking that the error is near zero')
-if not options.mode == 'cu':
+if options.mode == 'dual':
     for k in range(options.n):
         C_ = C_con[0 + all_offset_C[k]: C_s_true_all[k].numel() + all_offset_C[k]]
         if not torch.allclose(C_.view_as(C_s_true_all[k]), C_s_true_all[k]):

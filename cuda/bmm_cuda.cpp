@@ -7,6 +7,8 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <cublas_v2.h>
+#include <omp.h>
+
 // CUDA forward declarations
 namespace py = pybind11;
 
@@ -75,6 +77,8 @@ public:
 
 
   // Launch each DGEMM operation in own CUDA stream
+#pragma omp parallel
+#pragma omp for
 for(int i=0; i<batchCount; i++){
     // Set CUDA stream
     cublasSetStream(handle, streams[i]);

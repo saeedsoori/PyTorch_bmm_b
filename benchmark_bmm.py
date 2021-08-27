@@ -170,8 +170,8 @@ for k in range(options.n):
     if not torch.allclose(C_, C_true[k]) or options.debug == 'true':
         print('A:', A[k])
         print('B:', B[k])
-        print("C True: L2 and Fro norms are: %s and %s" % (torch.linalg.norm(C_), torch.linalg.norm(C_, ord='fro')))
-        print('C Comp: L2 and Fro norms are: %s and %s' % (torch.linalg.norm(C_true[k]), torch.linalg.norm(C_true[k], ord='fro')))
+        print("C True: L2 and Fro norms are: %s and %s" % (torch.linalg.norm(C_, ord=2), torch.linalg.norm(C_, ord='fro')))
+        print('C Comp: L2 and Fro norms are: %s and %s' % (torch.linalg.norm(C_true[k], ord=2), torch.linalg.norm(C_true[k], ord='fro')))
         print('matmul error w.r.t pytorch:', C_-C_true[k])
 print('#'*20)
         

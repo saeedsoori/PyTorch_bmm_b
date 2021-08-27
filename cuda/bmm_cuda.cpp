@@ -183,7 +183,7 @@ int MagmaForward(
 
   magmablas_sgemm_vbatched(transA,transB, magma_n,
       /* magma_int_t * */         magma_m,
-      /* magma_int_t * */         magma_,
+      /* magma_int_t * */         magma_k,
       /* double */                alpha,
       /* double const *const * */ dB_array,
       /* magma_int_t */           magma_n,

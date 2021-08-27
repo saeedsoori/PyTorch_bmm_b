@@ -117,17 +117,6 @@ public:
         
     };
 
-  void make_streams(int batchCount){
-   streams = (cudaStream_t *) malloc(batchCount*sizeof(cudaStream_t));
-   handles = (cublasHandle_t *) malloc(batchCount*sizeof(cublasHandle_t));
-   for(int i=0; i<batchCount; i++){
-        cudaStreamCreate(&streams[i]);
-
-   //cudaStreamCreate(&stream);
-   cublasCreate(&handles[i]);
-  //cublasSetStream(handles[i],streams[i]);
-  }
-  };
 
   void make_streams(int batchCount){
    streams = (cudaStream_t *) malloc(batchCount*sizeof(cudaStream_t));

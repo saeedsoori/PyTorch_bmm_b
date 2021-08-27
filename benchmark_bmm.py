@@ -166,12 +166,13 @@ print('checking that the error is near zero')
 # if options.mode == 'all':
 for k in range(options.n):
     C_ = C_con[0 + all_offset_C[k]: C_true[k].numel() + all_offset_C[k]]
-    if not torch.allclose(C_.view_as(C_true[k]), C_true[k]):
-        print('The results are not correct.')
-        if options.debug == 'true':
-            print('A:', A[k])
-            print('B:', B[k])
-            print('matmul error w.r.t pytorch:', C_.view_as(C_true[k])-C_true[k])
+    C_ = C_.view_as(C_true[k])
+    if not torch.allclose(C_, C_true[k]) or options.debug == 'true':
+        print('A:', A[k])
+        print('B:', B[k])
+        print("C True: L2 and Fro norms are: %s and %s" % (torch.linalg.norm(C_), torch.linalg.norm(C_, ord='fro')))
+        print('C Comp: L2 and Fro norms are: %s and %s' % (torch.linalg.norm(C_true[k]), torch.linalg.norm(C_true[k], ord='fro')))
+        print('matmul error w.r.t pytorch:', C_-C_true[k])
 print('#'*20)
         
 

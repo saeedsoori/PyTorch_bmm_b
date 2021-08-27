@@ -19,7 +19,7 @@ parser.add_argument('-n', '--n', type=int, default=20)
 parser.add_argument('-m', '--mode', type=str, default='all')
 parser.add_argument('-p', '--pytorch', type=str, default='true')
 parser.add_argument('-v', '--debug', type=str, default='false')
-
+parser.add_argument('-l','--colm', nargs='+', default= [32, 64, 128, 256, 512])
 options = parser.parse_args()
 
 # change this line
@@ -36,7 +36,7 @@ kwargs = {'dtype': dtype,
           'requires_grad': False}
 
 # generate "n" random matrix with different #columns
-r_size = [32, 64, 72, 128]
+r_size = [int(i) for i in options.colm]
 # r_size = [100 400]
 # r_size = [8]
 A = []
@@ -117,7 +117,7 @@ m_arr = mshapes
 n_arr = nshapes
 k_arr = kshapes
 
-Mul = BMM(A_con, B_con, C_con, options.n, all_offset_A, all_offset_B, all_offset_C)
+Mul = BMM(A_con, B_con, C_con, options.n, all_offset_A, all_offset_B, all_offset_C, m_magma, n_magma, k_magma)
 # C_con = torch.zeros(sum_size_C, **kwargs)
 
 # C_s_true_all=[]
@@ -167,7 +167,7 @@ print('checking that the error is near zero')
 for k in range(options.n):
     C_ = C_con[0 + all_offset_C[k]: C_true[k].numel() + all_offset_C[k]]
     C_ = C_.view_as(C_true[k])
-    if not torch.allclose(C_, C_true[k]) or options.debug == 'true':
+    if not torch.allclose(C_, C_true[k]) and options.debug == 'true':
         print('A:', A[k])
         print('B:', B[k])
         print("C True: L2 and Fro norms are: %s and %s" % (torch.linalg.norm(C_, ord=2), torch.linalg.norm(C_, ord='fro')))

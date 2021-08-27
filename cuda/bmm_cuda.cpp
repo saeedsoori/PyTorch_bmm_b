@@ -43,6 +43,13 @@ public:
 	cudaStream_t *streams;
     cublasHandle_t *handles;
 
+    magma_queue_t queue;
+  	magma_device_t device;
+
+    int* magma_m;
+    int* magma_n;
+    int* magma_k;
+
 	float ** A_array;
   	float ** B_array;
   	float ** C_array;
@@ -50,10 +57,6 @@ public:
   	float const* * dA_array;
   	float const* * dB_array;
   	float **dC_array;
-
-  	// int* m_magma;
-  	// int* n_magma;
-  	// int* k_magma;
 
 	void set_pointers(
 		torch::Tensor A,
@@ -100,6 +103,32 @@ public:
 
   };
 
+  void magma_initialize(
+  	torch::Tensor m_,
+    torch::Tensor n_,
+    torch::Tensor k_){
+
+  	magma_getdevice( &device );
+  	magma_queue_create( device, &queue );
+
+  	magma_m  = (int*) m_.data_ptr();
+  	magma_n = (int*) n_.data_ptr();
+  	magma_k = (int*) k_.data_ptr();
+        
+    };
+
+  void make_streams(int batchCount){
+   streams = (cudaStream_t *) malloc(batchCount*sizeof(cudaStream_t));
+   handles = (cublasHandle_t *) malloc(batchCount*sizeof(cublasHandle_t));
+   for(int i=0; i<batchCount; i++){
+        cudaStreamCreate(&streams[i]);
+
+   //cudaStreamCreate(&stream);
+   cublasCreate(&handles[i]);
+  //cublasSetStream(handles[i],streams[i]);
+  }
+  };
+
   void make_streams(int batchCount){
    streams = (cudaStream_t *) malloc(batchCount*sizeof(cudaStream_t));
    handles = (cublasHandle_t *) malloc(batchCount*sizeof(cublasHandle_t));
@@ -143,9 +172,6 @@ for(int i=0; i<batchCount; i++){
    launch_kernel(n[i], m[i], k[i],  (float *) (B.data_ptr() )+ offset_B[i], (float *) (A.data_ptr() )+ offset_A[i], (float *) (C.data_ptr() )+ offset_C[i], streams[i], handles[i]);
 
 }
-
-
-    
 };
 
 
@@ -156,34 +182,15 @@ int MagmaForward(
     torch::Tensor k_,
     int batch_size) {
   
-
-
-  magma_int_t* d_m;
-  magma_int_t* d_n;
-  magma_int_t* d_k;
-
   float  alpha = 1.0;
   float  beta = 0.0;
-  // magma_int_t* d_lddb;
-  // magma_int_t* d_ldda;
-  // magma_int_t* d_lddc;
-
 
 
   magma_trans_t transA = MagmaNoTrans;
   magma_trans_t transB = MagmaNoTrans;
 
   magma_int_t batchCount = batch_size;
-  magma_queue_t queue;
-  magma_device_t device;
-  // std::cout<<"initialization finsihed..."<<"\n";
-
-  magma_getdevice( &device );
-  magma_queue_create( device, &queue );
-
-  int* m = (int*) m_.data_ptr();
-  int* n = (int*) n_.data_ptr();
-  int* k = (int*) k_.data_ptr();
+  
 
   magmablas_sgemm_vbatched(transA,transB, n,
       /* magma_int_t * */         m,
@@ -218,6 +225,7 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
       .def("set_pointers", &BatchMatmul::set_pointers)
       .def("CublasForward", &BatchMatmul::CublasForward)
       .def("make_streams", &BatchMatmul::make_streams)
+      .def("magma_initialize", &BatchMatmul::magma_initialize)
       .def("MagmaForward", &BatchMatmul::MagmaForward);
       // .def("getKey", &Foo::getKey);
   // m.def("forward", &bmm_forward, "BMM forward (CUDA)");

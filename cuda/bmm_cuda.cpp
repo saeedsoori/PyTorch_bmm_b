@@ -192,17 +192,17 @@ int MagmaForward(
   magma_int_t batchCount = batch_size;
   
 
-  magmablas_sgemm_vbatched(transA,transB, n,
-      /* magma_int_t * */         m,
-      /* magma_int_t * */         k,
+  magmablas_sgemm_vbatched(transA,transB, magma_n,
+      /* magma_int_t * */         magma_m,
+      /* magma_int_t * */         magma_,
       /* double */                alpha,
       /* double const *const * */ dB_array,
-      /* magma_int_t */           n,
+      /* magma_int_t */           magma_n,
       /* double const *const * */ dA_array,
-      /* magma_int_t * */         k,
+      /* magma_int_t * */         magma_k,
       /* double */                beta,
       /* double ** */             dC_array,
-      /* magma_int_t * */         n,
+      /* magma_int_t * */         magma_n,
       /* magma_int_t */           batchCount,
       /* magma_queue_t */         queue);
 

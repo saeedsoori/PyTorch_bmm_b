@@ -169,7 +169,9 @@ for k in range(options.n):
     if not torch.allclose(C_.view_as(C_true[k]), C_true[k]):
         print('The results are not correct.')
         if options.debug == 'true':
-            print(C_.view_as(C_true[k])-C_true[k])
+            print('A:', A[k])
+            print('B:', B[k])
+            print('matmul error w.r.t pytorch:', C_.view_as(C_true[k])-C_true[k])
 print('#'*20)
         
 

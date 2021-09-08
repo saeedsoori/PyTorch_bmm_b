@@ -40,80 +40,80 @@ class BatchMatmul{
 
 public:
 
-	cudaStream_t *streams;
+  cudaStream_t *streams;
     cublasHandle_t *handles;
 
     magma_queue_t queue;
-  	magma_device_t device;
+    magma_device_t device;
 
     int* magma_m;
     int* magma_n;
     int* magma_k;
 
-	float ** A_array;
-  	float ** B_array;
-  	float ** C_array;
+  float ** A_array;
+    float ** B_array;
+    float ** C_array;
 
-  	float const* * dA_array;
-  	float const* * dB_array;
-  	float **dC_array;
+    float const* * dA_array;
+    float const* * dB_array;
+    float **dC_array;
 
-	void set_pointers(
-		torch::Tensor A,
-    	torch::Tensor B,
-    	torch::Tensor C,
-    	int batchCount,
-    	std::vector<int> offset_A,
-    	std::vector<int> offset_B,
-    	std::vector<int> offset_C){
+  void set_pointers(
+    torch::Tensor A,
+      torch::Tensor B,
+      torch::Tensor C,
+      int batchCount,
+      std::vector<int> offset_A,
+      std::vector<int> offset_B,
+      std::vector<int> offset_C){
 
-  	magma_queue_t queue;
-  	magma_device_t device;
-  	// std::cout<<"initialization finsihed..."<<"\n";
+    magma_queue_t queue;
+    magma_device_t device;
+    // std::cout<<"initialization finsihed..."<<"\n";
 
-  	magma_getdevice( &device );
-  	magma_queue_create( device, &queue );
+    magma_getdevice( &device );
+    magma_queue_create( device, &queue );
 
-  	TESTING_CHECK( magma_malloc_cpu( (void**)&A_array, sizeof(float*)*batchCount ) );
-  	TESTING_CHECK( magma_malloc_cpu( (void**)&B_array, sizeof(float*)*batchCount ) );
-  	TESTING_CHECK( magma_malloc_cpu( (void**)&C_array, sizeof(float*)*batchCount ) );
+    TESTING_CHECK( magma_malloc_cpu( (void**)&A_array, sizeof(float*)*batchCount ) );
+    TESTING_CHECK( magma_malloc_cpu( (void**)&B_array, sizeof(float*)*batchCount ) );
+    TESTING_CHECK( magma_malloc_cpu( (void**)&C_array, sizeof(float*)*batchCount ) );
 
 
-  	for (int i = 0; i < batchCount; ++i)
-  	{
+    for (int i = 0; i < batchCount; ++i)
+    {
     // std::cout<<"processing input tensor:"<< i<< " \n";
 
-    	A_array[i] = (float *) A.data_ptr() + offset_A[i];
-    	B_array[i] = (float *) B.data_ptr() + offset_B[i];
-    	C_array[i] = (float *) C.data_ptr() + offset_C[i];
-  	}
+      A_array[i] = (float *) A.data_ptr() + offset_A[i];
+      B_array[i] = (float *) B.data_ptr() + offset_B[i];
+      C_array[i] = (float *) C.data_ptr() + offset_C[i];
+    }
 
 
 
 
     TESTING_CHECK( magma_malloc( (void**)&dA_array, sizeof(float*)*batchCount ) );
-  	TESTING_CHECK( magma_malloc( (void**)&dB_array, sizeof(float*)*batchCount ) );
-  	TESTING_CHECK( magma_malloc( (void**)&dC_array, sizeof(float*)*batchCount ) );
+    TESTING_CHECK( magma_malloc( (void**)&dB_array, sizeof(float*)*batchCount ) );
+    TESTING_CHECK( magma_malloc( (void**)&dC_array, sizeof(float*)*batchCount ) );
 
-  	magma_setvector(batchCount, sizeof(float*), A_array, 1, dA_array, 1, queue);
-  	magma_setvector(batchCount, sizeof(float*), B_array, 1, dB_array, 1, queue);
-  	magma_setvector(batchCount, sizeof(float*), C_array, 1, dC_array, 1, queue);
+    magma_setvector(batchCount, sizeof(float*), A_array, 1, dA_array, 1, queue);
+    magma_setvector(batchCount, sizeof(float*), B_array, 1, dB_array, 1, queue);
+    magma_setvector(batchCount, sizeof(float*), C_array, 1, dC_array, 1, queue);
 
-  	
+    
 
   };
 
   void magma_initialize(
-  	torch::Tensor m_,
+    torch::Tensor m_,
     torch::Tensor n_,
     torch::Tensor k_){
 
-  	magma_getdevice( &device );
-  	magma_queue_create( device, &queue );
+    magma_getdevice( &device );
+    magma_queue_create( device, &queue );
 
-  	magma_m  = (int*) m_.data_ptr();
-  	magma_n = (int*) n_.data_ptr();
-  	magma_k = (int*) k_.data_ptr();
+    magma_m  = (int*) m_.data_ptr();
+    magma_n = (int*) n_.data_ptr();
+    magma_k = (int*) k_.data_ptr();
         
     };
 
@@ -130,13 +130,27 @@ public:
   }
   };
 
-  void launch_kernel(int n, int m, int k, float* B, float* A, float* C, cudaStream_t stream, cublasHandle_t handle)
+//   void launch_kernel(int n, int m, int k, float* B, float* A, float* C, cudaStream_t stream, cublasHandle_t handle)
+// {
+
+//   cublasSetStream(handle,stream);
+//   float alpha=1.0f;
+//   float beta=0.0f;
+//   cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, n, m, k, &alpha, B, n, A, k, &beta, C, n);
+
+// };
+
+void launch_kernel(int n, int m, int k, float* B, float* A, float* C, cudaStream_t stream, cublasHandle_t handle, bool A_T, bool B_T)
 {
 
   cublasSetStream(handle,stream);
   float alpha=1.0f;
   float beta=0.0f;
-  cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, n, m, k, &alpha, B, n, A, k, &beta, C, n);
+  auto transa = A_T ? CUBLAS_OP_T : CUBLAS_OP_N;
+  auto transb = B_T ? CUBLAS_OP_T : CUBLAS_OP_N;
+  auto ldb = B_T ? k : n;
+  auto lda = A_T ? m : k;
+  cublasSgemm(handle, transb, transa, n, m, k, &alpha, B, ldb, A, lda, &beta, C, n);
 
 };
 
@@ -150,16 +164,29 @@ public:
     std::vector<int> m, std::vector<int> n, std::vector<int> k, int batchCount,
     std::vector<int> offset_A,
     std::vector<int> offset_B,
-    std::vector<int> offset_C
+    std::vector<int> offset_C,
+    bool A_T=false,
+    bool B_T=false
     ) {
+
+
+    // if A_T == False and B_T == False > PyTorch:A*B but we have to compute B^T x A^T in C++
+    // B: kxn A: mxk  C:nxm 
+    // so dimensions are B^T:nxk and A^T:kxm C^T:mxn> order: n m k ldb:n lda:k
+
+    // if A_T == False and B_T == True > PyTorch:A*B^T but we have to compute B x A^T in C++
+
+    // B: nxk A: mxk  C:mxn but we have to compute B x A^T 
+    // so dimensions are nxk and kxm > order: n m k ldb:n lda:k
 
 
 #pragma omp parallel
 #pragma omp for
 for(int i=0; i<batchCount; i++){
 
-   launch_kernel(n[i], m[i], k[i],  (float *) (B.data_ptr() )+ offset_B[i], (float *) (A.data_ptr() )+ offset_A[i], (float *) (C.data_ptr() )+ offset_C[i], streams[i], handles[i]);
+   // launch_kernel(n[i], m[i], k[i],  (float *) (B.data_ptr() )+ offset_B[i], (float *) (A.data_ptr() )+ offset_A[i], (float *) (C.data_ptr() )+ offset_C[i], streams[i], handles[i]);
 
+   launch_kernel(n[i], m[i], k[i], (float *) (B.data_ptr() )+ offset_B[i], (float *) (A.data_ptr() )+ offset_A[i], (float *) (C.data_ptr() )+ offset_C[i], streams[i], handles[i], A_T, B_T);
 }
 };
 
@@ -206,9 +233,9 @@ int MagmaForward(
 
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
-	std::string name = std::string("BatchMatmul");
+  std::string name = std::string("BatchMatmul");
 
-	py::class_<BatchMatmul>(m, name.c_str())
+  py::class_<BatchMatmul>(m, name.c_str())
       .def(py::init<>())
       // .def("setKey", &Foo::setKey)
       .def("set_pointers", &BatchMatmul::set_pointers)
